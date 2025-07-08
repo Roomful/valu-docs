@@ -31,7 +31,7 @@ jobs:
 
       - name: Add ssh key
         run: |
-          echo "${{ secrets.DEPLOY_SSH }}" | base64 --decode > $HOME/.ssh/id_rsa_deploy
+          echo "${{ secrets.DEPLOY_SSH }}" > $HOME/.ssh/id_rsa_deploy
           chmod 600 $HOME/.ssh/id_rsa_deploy
 
       - name: Achieve artifacts
