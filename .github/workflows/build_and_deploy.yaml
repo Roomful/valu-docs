@@ -29,13 +29,17 @@ jobs:
       - name: Build docs
         run: npm run docs:build
 
-      - name: Add ssh key
-        run: |
-          echo "${{ secrets.DEPLOY_SSH }}" > $HOME/.ssh/id_rsa_deploy
-          chmod 600 $HOME/.ssh/id_rsa_deploy
-
       - name: Achieve artifacts
         run: |
           cd docs/.vitepress/
           tar cvf dist.tar -C dist .
           ls -lh dist.tar
+
+      - name: Add ssh key
+        run: |
+          mkdir -p $HOME/.ssh/
+          echo "${{ secrets.DEPLOY_SSH }}" | base64 -d  > $HOME/.ssh/id_rsa_deploy
+          ls -lh $HOME/.ssh/id_rsa_deploy
+          chmod 600 $HOME/.ssh/id_rsa_deploy
+
+
