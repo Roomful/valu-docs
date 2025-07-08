@@ -9,33 +9,33 @@ jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
 
-  steps:
-    - name: Set UTF-8 Encoding
-      run: echo "LANG=en_US.UTF-8" >> $GITHUB_ENV
+    steps:
+      - name: Set UTF-8 Encoding
+        run: echo "LANG=en_US.UTF-8" >> $GITHUB_ENV
 
-    - name: Checkout application code
-      uses: actions/checkout@v4
-      with:
-        clean: true
+      - name: Checkout application code
+        uses: actions/checkout@v4
+        with:
+          clean: true
 
-    - name: Setup Node.js
-      uses: actions/setup-node@v4
-      with:
-        node-version: '20'
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
 
-    - name: Install dependencies
-      run: npm install
+      - name: Install dependencies
+        run: npm install
 
-    - name: Build docs
-      run: npm run docs:build
+      - name: Build docs
+        run: npm run docs:build
 
-    - name: Add ssh key
-      run: |
-        echo "${{ secrets.DEPLOY_SSH }}" | base64 --decode > $HOME/.ssh/id_rsa_deploy
-        chmod 600 $HOME/.ssh/id_rsa_deploy
+      - name: Add ssh key
+        run: |
+          echo "${{ secrets.DEPLOY_SSH }}" | base64 --decode > $HOME/.ssh/id_rsa_deploy
+          chmod 600 $HOME/.ssh/id_rsa_deploy
 
-    - name: Achieve artifacts
-      run: |
-        cd docs/.vitepress/
-        tar cvf dist.tar -C dist .
-        ls -lh dist.tar
+      - name: Achieve artifacts
+        run: |
+          cd docs/.vitepress/
+          tar cvf dist.tar -C dist .
+          ls -lh dist.tar
