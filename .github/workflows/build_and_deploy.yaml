@@ -1,5 +1,9 @@
 name: Deploy VitePress Docs
 
+env:
+  DEPLOY_HOST_IP: "52.37.45.2"
+  PATH_TO_DEPLOY: "/mnt/deploy/www"
+
 on:
   workflow_dispatch:
   push:
@@ -42,4 +46,16 @@ jobs:
           ls -lh $HOME/.ssh/id_rsa_deploy
           chmod 600 $HOME/.ssh/id_rsa_deploy
 
+      - name: Upload archive
+        run: |
+          scp -o StrictHostKeyChecking=no -i $HOME/.ssh/id_rsa_deploy "$GITHUB_WORKSPACE/docs/.vitepress/dist.tar" root@$DEPLOY_HOST_IP:$PATH_TO_DEPLOY/
 
+  #    - name: Deploy archive
+  #      run: ssh -o StrictHostKeyChecking=no -i $HOME/.ssh/id_rsa_deploy root@$DEPLOY_HOST_IP "cd $PATH_TO_DEPLOY && tar xvf $PATH_TO_DEPLOY/dist.tar"
+
+  #    - name: Remove archive
+  #      run: ssh -o StrictHostKeyChecking=no -i $HOME/.ssh/id_rsa_deploy root@$DEPLOY_HOST_IP "rm -f $PATH_TO_DEPLOY/dist.tar"
+
+      - name: Remove ssh key
+        if: always()
+        run: rm -f $HOME/.ssh/id_rsa_deploy || true
