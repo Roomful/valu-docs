@@ -34,9 +34,7 @@ jobs:
         run: npm run docs:build
 
       - name: Achieve artifacts
-        run: |
-          tar cvf dist.tar .vitepress/dist _resources 
-          ls -lh dist.tar
+        run: tar cvf dist.tar .vitepress/dist _resources
 
       - name: Add ssh key
         run: |
@@ -47,7 +45,7 @@ jobs:
 
       - name: Upload archive
         run: |
-          scp -o StrictHostKeyChecking=no -i $HOME/.ssh/id_rsa_deploy "$GITHUB_WORKSPACE/docs/.vitepress/dist.tar" root@$DEPLOY_HOST_IP:$PATH_TO_DEPLOY/"
+          scp -o StrictHostKeyChecking=no -i $HOME/.ssh/id_rsa_deploy "$GITHUB_WORKSPACE/docs/.vitepress/dist.tar" root@$DEPLOY_HOST_IP:$PATH_TO_DEPLOY/
 
       - name: Deploy archive
         run: ssh -o StrictHostKeyChecking=no -i $HOME/.ssh/id_rsa_deploy root@$DEPLOY_HOST_IP "tar xvf $PATH_TO_DEPLOY/dist.tar -C $PATH_TO_DEPLOY/docs.texpo.io/"
