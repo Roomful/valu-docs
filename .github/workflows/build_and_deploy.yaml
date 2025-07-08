@@ -34,7 +34,10 @@ jobs:
         run: npm run docs:build
 
       - name: Achieve artifacts
-        run: tar cvf dist.tar .vitepress/dist _resources
+        run: |
+          cd docs/
+          tar cvf dist.tar .vitepress/dist _resources
+          ls -lh dist.tar
 
       - name: Add ssh key
         run: |
@@ -45,13 +48,17 @@ jobs:
 
       - name: Upload archive
         run: |
-          scp -o StrictHostKeyChecking=no -i $HOME/.ssh/id_rsa_deploy "$GITHUB_WORKSPACE/docs/.vitepress/dist.tar" root@$DEPLOY_HOST_IP:$PATH_TO_DEPLOY/
+          scp -o StrictHostKeyChecking=no -i $HOME/.ssh/id_rsa_deploy "$GITHUB_WORKSPACE/docs/dist.tar" root@$DEPLOY_HOST_IP:$PATH_TO_DEPLOY/
 
       - name: Deploy archive
-        run: ssh -o StrictHostKeyChecking=no -i $HOME/.ssh/id_rsa_deploy root@$DEPLOY_HOST_IP "tar xvf $PATH_TO_DEPLOY/dist.tar -C $PATH_TO_DEPLOY/docs.texpo.io/"
-
-      - name: Remove archive
-        run: ssh -o StrictHostKeyChecking=no -i $HOME/.ssh/id_rsa_deploy root@$DEPLOY_HOST_IP "rm -f $PATH_TO_DEPLOY/dist.tar"
+        run: |
+          ssh -T -o StrictHostKeyChecking=no -i "$HOME/.ssh/id_rsa_deploy" root@$DEPLOY_HOST_IP << EOF
+          cd "$PATH_TO_DEPLOY" || exit 1
+          tar xvf dist.tar -C docs.texpo.io/
+          cp -r docs.texpo.io/.vitepress/dist/* docs.texpo.io/
+          rm -rf docs.texpo.io/.vitepress
+          rm -f "$PATH_TO_DEPLOY/dist.tar"
+          EOF
 
       - name: Remove ssh key
         if: always()
