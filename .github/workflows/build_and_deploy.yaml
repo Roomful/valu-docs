@@ -50,11 +50,11 @@ jobs:
         run: |
           scp -o StrictHostKeyChecking=no -i $HOME/.ssh/id_rsa_deploy "$GITHUB_WORKSPACE/docs/.vitepress/dist.tar" root@$DEPLOY_HOST_IP:$PATH_TO_DEPLOY/
 
-  #    - name: Deploy archive
-  #      run: ssh -o StrictHostKeyChecking=no -i $HOME/.ssh/id_rsa_deploy root@$DEPLOY_HOST_IP "cd $PATH_TO_DEPLOY && tar xvf $PATH_TO_DEPLOY/dist.tar"
+      - name: Deploy archive
+        run: ssh -o StrictHostKeyChecking=no -i $HOME/.ssh/id_rsa_deploy root@$DEPLOY_HOST_IP "cd $PATH_TO_DEPLOY && tar xvf $PATH_TO_DEPLOY/dist.tar -C $PATH_TO_DEPLOY/docs.texpo.io/"
 
-  #    - name: Remove archive
-  #      run: ssh -o StrictHostKeyChecking=no -i $HOME/.ssh/id_rsa_deploy root@$DEPLOY_HOST_IP "rm -f $PATH_TO_DEPLOY/dist.tar"
+      - name: Remove archive
+        run: ssh -o StrictHostKeyChecking=no -i $HOME/.ssh/id_rsa_deploy root@$DEPLOY_HOST_IP "rm -f $PATH_TO_DEPLOY/dist.tar"
 
       - name: Remove ssh key
         if: always()
