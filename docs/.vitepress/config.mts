@@ -20,7 +20,8 @@ export default defineConfig({
         text: 'Docs',
         items: [
           {text: 'Markdown Examples', link: '/markdown-examples'},
-          {text: 'Runtime API Examples', link: '/api-examples'}
+          {text: 'Runtime API Examples', link: '/api-examples'},
+          {text: 'Valuverse Backend Server', link: '/Roomful_Backend'}
         ]
       }
     ]
