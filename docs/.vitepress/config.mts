@@ -21,7 +21,7 @@ export default defineConfig({
         items: [
           {text: 'Markdown Examples', link: '/markdown-examples'},
           {text: 'ValuverseBackend API', link: '/apidocs/Readme'},
-          {text: 'Valuverse Backend Server', link: '/Roomful_Backend'}
+          {text: 'Valuverse Backend Server', link: '/Valuverse_Backend'}
         ]
       }
     ]
