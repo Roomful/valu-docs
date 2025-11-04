@@ -17,3 +17,10 @@
 
 <img src="/images/server-structure.png?raw=true" width="800" alt="Roomful Server Structure">
 
+## Deployment
+
+#### Prerequisites:
+
+* Golang 1.23
+* Docker
+* Access to google cloud project
