@@ -4,7 +4,7 @@ This document describes the internal architecture and mechanisms of the Netcode 
 It outlines how client connections are established and maintained, how communication hubs are created and disposed, and how client state and host migration are handled.
 
 ### 1. Connection Flow
-![Client Connection Sequence](./docs/_resources/netcode/client-connection.png)
+![Client Connection Sequence](./_resources/netcode/client-connection.png)
 
 The client connection process defines how a new client initializes communication with the host or server, including the authentication, handshake, and synchronization stages.
 
@@ -23,7 +23,7 @@ Synchronization – Initial state is synchronized to align the client’s view w
 Hubs serve as logical units for managing communication and synchronization between clients participating in a shared context.
 
 ### 2.1 Hub Creation
-![Hub Creation](./docs/_resources/netcode/hub-creation.png)
+![Hub Creation](./_resources/netcode/hub-creation.png)
 
 Key concepts:
 
@@ -34,7 +34,7 @@ On creation, the hub allocates resources and subscribes clients to its message c
 The system ensures deterministic initialization so all clients receive a consistent state.
 
 ### 2.2 Hub Disposal
-![Hub Disposal](./docs/_resources/netcode/hub-disposal.png)
+![Hub Disposal](./_resources/netcode/hub-disposal.png)
 
 Key concepts:
 
@@ -45,7 +45,7 @@ All pending messages are flushed and resources are released.
 Clients are unsubscribed and their references are cleaned up from the session registry.
 
 ### 3. Client Status Management
-![Client Status Update](./docs/_resources/netcode/client-status-update.png)
+![Client Status Update](./_resources/netcode/client-status-update.png)
 
 The Netcode layer continuously tracks client status and ensures consistency across participants.
 
@@ -58,7 +58,7 @@ Updating availability, readiness, or in-game states.
 Broadcasting status changes to other connected peers.
 
 ### 4. Host Migration
-![Host Migration](./docs/_resources/netcode/host-migration.png)
+![Host Migration](./_resources/netcode/host-migration.png)
 
 Host migration ensures session continuity when the current host disconnects or fails.
 
