@@ -4,10 +4,10 @@ The "Client General" UML diagram illustrates Netcode client-side architecture wi
 
 ![General Client UML Diagram](./_resources/netcode/netcode-client-uml-diagram.png)
 
-### Overview
+### 1. Overview
 The idea to have client-authoritive flexible design that allows: scale kind/size of data without changes on server-side, keep Netcode code clean from concrete implementations, have different type of data independent of from each other when transfer and have a maximum control over data that system transfers.
 
-### Intro
+### 2. Intro
 Diagram uses UML standarts to show data flows, dependencies between entities and general contracts. Diagram has few groups of blocks:
 1. **Core** (top part: ICLient, Receive/SendHandler, MessageQueue and IEvents).
 2. **FishNet and Valusocial** (left part: FishNet.ClientManager, FishNetMessage, ValusocialHubManager etc).
@@ -15,7 +15,11 @@ Diagram uses UML standarts to show data flows, dependencies between entities and
 4. **Transform**  (bottom right part: example of Receiver and Sender to sync object position and rotation)
 5. **Emotion** (bottom left part: example of IEventReceiver to broadcast avatar emotions/reactions)
 
-#### Bootstrap
+---
+
+### 3. Flows
+
+### 3.1 Bootstrap
 
 ![Bootstrap](./_resources/netcode/netcode-client-bootstrap.png)
 
@@ -32,7 +36,7 @@ Overall, the sequence follows three main stages:
 
 This ensures each new client becomes a synchronized, event-aware participant in the connected environment.
 
-#### Push Flow
+#### 3.2 Push Flow
 
 ![Push Flow](./_resources/netcode/netcode-client-data-push.png)
 
@@ -48,7 +52,7 @@ In summary, the sequence covers three major stages:
 
 This design ensures efficient, low-latency transform synchronization across networked clients while minimizing bandwidth usage through intelligent batching and timed dispatch.
 
-#### Receive Flow
+#### 3.3 Receive Flow
 
 ![Receive Flow](./_resources/netcode/netcode-client-data-receive.png)
 
@@ -63,3 +67,57 @@ In summary, the sequence follows three main stages:
 3. **Process & Apply** — NetworkTransform updates the local entity’s transform based on received data.
 
 This receive pipeline provides a reliable and efficient mechanism for keeping all clients synchronized in real-time through consistent message handling and transform application.
+
+---
+
+### 4. Hubs
+
+![Receive Flow](./_resources/netcode/netcode-client-hub-uml-diagram.png)
+
+#### 4.1 Overview
+
+Each **Client** manages hub connections through events, message exchanges, and status tracking.  
+It maintains a `HubConnection` for hub state and a `ClientConnection` for the low-level network link, using delegates to handle connection and disconnection events.
+
+#### 4.2 Core Components
+
+- **Client** — Coordinates all hub-related actions.  
+  - Methods: `Connect()`, `ConnectToHub()`, and `Disconnect()`.  
+  - Events:  
+    - `LocalConnectedToHub` / `LocalDisconnectedFromHub`  
+    - `RemoteConnectedToHub` / `RemoteDisconnectedFromHub`
+
+- **HubConnection** — Tracks current connection details: `Status`, `ClientId`, `HubId`, and connected clients.
+
+- **ClientConnection** — Manages direct network state (`ClientConnectionState`).
+
+- **DedicatedServerConnectionArgs** — Contains the server’s address and port for connection setup.
+
+#### 4.3 Message Flow
+
+Hub communication uses two main messages:
+
+- **HubConnect** (Client → Server)  
+  Contains `ClientId` and `HubId`, serialized via the `IMessage` interface.  
+
+- **HubConnectResult** (Server → Client)  
+  Returns `Status`, `ErrorMessage`, and the list of connected clients.
+
+Both implement standardized `ToBytes()` and `FromBytes()` methods for reliable serialization.
+
+#### 4.4 Connection States
+
+- **HubConnectionStatus**: `Disconnecting`, `Disconnected`, `Connecting`, `Connected`  
+- **ClientConnectionState**: `Disconnected`, `ConnectedToServer`, `ConnectedToHub`
+
+These ensure deterministic synchronization between local and remote peers.
+
+#### 4.5 Workflow Summary
+
+1. Client calls `ConnectToHub()`.  
+2. Sends a `HubConnect` message to the server.  
+3. Receives a `HubConnectResult` confirming status.  
+4. Triggers connection events (`LocalConnectedToHub`, etc.).  
+5. Updates `HubConnection` and `ClientConnection` states.
+
+This event-driven structure provides consistent and scalable hub management across all connected clients.
