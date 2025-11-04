@@ -2,7 +2,7 @@ import {defineConfig} from 'vitepress'
 
 // https://vitepress.dev/reference/site-config
 export default defineConfig({
-  title: "Valu Framework Documentation",
+  title: "Valuverse Docs",
   description: "Developers documentation for developers",
   head: [['link', {rel: 'icon', href: '/_resources/favicon.ico'}]],
   themeConfig: {
@@ -20,7 +20,7 @@ export default defineConfig({
         text: 'Docs',
         items: [
           {text: 'Markdown Examples', link: '/markdown-examples'},
-          {text: 'Runtime API Examples', link: '/api-examples'},
+          {text: 'ValuverseBackend API', link: '/apidocs/Readme'},
           {text: 'Valuverse Backend Server', link: '/Roomful_Backend'}
         ]
       }

@@ -1,8 +1,8 @@
-# Roomful Server
+# Valuverse Backend Server Infrastructure
 
-* Production endpoint: https://api.roomful.net
+* Production endpoint: https://api.valuverse.io
 
-* Development endpoint: https://dev.roomful.net
+* Development endpoint: https://dev.valuverse.io
 
 ## Services:
 
@@ -15,7 +15,7 @@
 * **Data Collection** - collects analytics data.
 * **OpenID Provider** - handles authorization requests from third party applications using OAuth 2.0.
 
-<img src="https://github.com/Roomful/roomful/blob/dev/roomful-server-structure.png?raw=true" width="800" alt="Roomful Server Structure">
+<img src="/images/valuverse-server-structure.png?raw=true" width="800" alt="Roomful Server Structure">
 
 ## Deployment
 
@@ -106,13 +106,4 @@ In order to restart other services (like redis or elasticsearch),
 execute the same commands with correct service name.
 See `docker-compose.yml` file for more info.
 
-## Vagrant (rfdev)
-vagrant plugin install vagrant-hostmanager - install hostmanager plugin 
 
-vagrant up - start enviroment machine
-vagrant reload - restart enviroment machine
-vagrant halt - stop enviroment machine
-
-vagrant ssh (vagrant:vagrant@roomful.dev) - connect
-
-vagrant destroy -f - remove enviroment machine
