@@ -36,7 +36,7 @@ Overall, the sequence follows three main stages:
 
 This ensures each new client becomes a synchronized, event-aware participant in the connected environment.
 
-#### 3.2 Push Flow
+### 3.2 Push Flow
 
 ![Push Flow](./_resources/netcode/netcode-client-data-push.png)
 
@@ -52,7 +52,7 @@ In summary, the sequence covers three major stages:
 
 This design ensures efficient, low-latency transform synchronization across networked clients while minimizing bandwidth usage through intelligent batching and timed dispatch.
 
-#### 3.3 Receive Flow
+### 3.3 Receive Flow
 
 ![Receive Flow](./_resources/netcode/netcode-client-data-receive.png)
 
@@ -74,12 +74,12 @@ This receive pipeline provides a reliable and efficient mechanism for keeping al
 
 ![Receive Flow](./_resources/netcode/netcode-client-hub-uml-diagram.png)
 
-#### 4.1 Overview
+### 4.1 Overview
 
 Each **Client** manages hub connections through events, message exchanges, and status tracking.  
 It maintains a `HubConnection` for hub state and a `ClientConnection` for the low-level network link, using delegates to handle connection and disconnection events.
 
-#### 4.2 Core Components
+### 4.2 Core Components
 
 - **Client** — Coordinates all hub-related actions.  
   - Methods: `Connect()`, `ConnectToHub()`, and `Disconnect()`.  
@@ -93,7 +93,7 @@ It maintains a `HubConnection` for hub state and a `ClientConnection` for the lo
 
 - **DedicatedServerConnectionArgs** — Contains the server’s address and port for connection setup.
 
-#### 4.3 Message Flow
+### 4.3 Message Flow
 
 Hub communication uses two main messages:
 
@@ -105,14 +105,14 @@ Hub communication uses two main messages:
 
 Both implement standardized `ToBytes()` and `FromBytes()` methods for reliable serialization.
 
-#### 4.4 Connection States
+### 4.4 Connection States
 
 - **HubConnectionStatus**: `Disconnecting`, `Disconnected`, `Connecting`, `Connected`  
 - **ClientConnectionState**: `Disconnected`, `ConnectedToServer`, `ConnectedToHub`
 
 These ensure deterministic synchronization between local and remote peers.
 
-#### 4.5 Workflow Summary
+### 4.5 Workflow Summary
 
 1. Client calls `ConnectToHub()`.  
 2. Sends a `HubConnect` message to the server.  
