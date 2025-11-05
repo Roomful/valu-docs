@@ -17,7 +17,7 @@
 * **Payments** - handles payment invoices and payments processing
 * **Coin Exchange** - handles coins transfer accross public bridges (like BTC, Etherreum, DAI)
 
-<img src="/images/scheme.png" width="800" alt="Roomful Server Structure">
+<img src="/images/CryptoServer_diagram.png" width="800" alt="Roomful Server Structure">
 
 ## Deployment
 
