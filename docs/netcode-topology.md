@@ -92,3 +92,80 @@ The following sequence outlines the communication flow when a new client connect
 
 **Result:**
 The client is now fully connected to its assigned dedicated server with synchronized state, ready to exchange real-time updates.
+
+
+## Load Balancer Architecture
+
+### Overview
+
+![Load Balancer Architecture](./_resources/netcode/loadbalancer-architecture.png)
+
+The diagram illustrates the **Load Balancer** component of the Netcode architecture.
+It acts as the **entry point for all client connections** and manages **endpoint resolution, user authentication**, and **session routing** between the backend and dedicated servers.
+This design ensures scalability, secure access control, and dynamic load distribution across multiple dedicated servers.
+
+### Components
+
+- **Users (User1, User2)**
+
+  Represent external clients or game instances initiating connections to the system.
+Each user communicates with the load balancer via REST API endpoints to obtain connection details for the appropriate hub or dedicated server.
+
+- **Load Balancer**
+
+  Central routing node responsible for:
+
+    - Handling incoming client requests (`/lb/api/v0/getEndpoint`, `/lb/api/v0/getEndpointPlaygroundId`)
+
+    - Communicating with the Backend Server to authenticate users and retrieve session data
+
+    - Managing active socket connections with Dedicated Servers to allocate users efficiently
+
+    - Monitoring server load and maintaining balanced client distribution
+
+- **Backend Server**
+
+  Provides authentication, session validation, and persistent data management.
+The load balancer queries it through `/api/v0/partnerRpc/authCheck.getUserBySessionId` to verify user credentials and session state.
+
+- **Dedicated Servers**
+
+  Handle real-time sessions, world simulation, and state synchronization.
+They maintain persistent socket connections with the load balancer, which routes players to the most suitable instance.
+
+### Request Flow
+
+1. **Client Connection Request**
+
+- The client (User1 or User2) sends a REST request to the load balancer:
+    - `/lb/api/v0/getEndpointPlaygroundId` — used when the client connects to a specific session or “playground”
+    - `/lb/api/v0/getEndpoint` — used for general or matchmaking-based connections
+
+2. **Authentication**
+
+- Upon receiving a request, the load balancer calls the backend server using:
+    - `/api/v0/partnerRpc/authCheck.getUserBySessionId`
+- This verifies the client’s session and ensures it is valid before proceeding.
+
+3. **Server Allocation**
+
+- After authentication, the load balancer determines which Dedicated Server should handle the connection.
+- The decision is based on availability, server load, and current session mappings.
+
+4. **Socket Communication**
+
+- The load balancer maintains an active socket-based communication channel with all dedicated servers.
+- This allows for:
+    - Low-latency data exchange
+    - Real-time monitoring of server status
+    - Fast reassignment or recovery in case of disconnection or failure
+
+### Key Points
+
+- The load balancer is stateless in terms of game logic — it routes and authenticates but does not simulate gameplay.
+
+- Authentication is fully delegated to the backend service for consistency and centralized security.
+
+- Dedicated servers are dynamically assigned and can scale horizontally to support multiple concurrent sessions.
+
+- Communication between the load balancer and servers is persistent and bidirectional, enabling real-time load updates.
