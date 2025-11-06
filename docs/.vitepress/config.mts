@@ -21,7 +21,8 @@ export default defineConfig({
         items: [
           {text: 'Markdown Examples', link: '/markdown-examples'},
           {text: 'Valuverse Backend Server', link: '/Valuverse_Backend'},
-          {text: 'ValuverseBackend API', link: '/apidocs/Readme'},
+          {text: 'Valuverse Backend API', link: '/apidocs/Readme'},
+          {text: 'Valuverse Frontend API', link: '/valu-api'},
           {text: 'Gaming Architecture Overview', link: '/netcode'},
           {text: 'Gaming Backend Server', link: '/netcode-topology'},
           {text: 'Gaming Client Engine', link: '/netcode-client'},
