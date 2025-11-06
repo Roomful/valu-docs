@@ -5,7 +5,7 @@ layout: home
 hero:
   name: "Valu Framework"
   text: "Developers documentation for developers"
-  tagline: My great project tagline
+  tagline: An Internet of Valu & Values
   actions:
     - theme: brand
       text: Markdown Examples
@@ -15,11 +15,11 @@ hero:
       link: /api-examples
 
 features:
-  - title: Feature A
-    details: Lorem ipsum dolor sit amet, consectetur adipiscing elit
-  - title: Feature B
-    details: Lorem ipsum dolor sit amet, consectetur adipiscing elit
-  - title: Feature C
-    details: Lorem ipsum dolor sit amet, consectetur adipiscing elit
+  - title: Valuverse
+    details: Decentralized, user-owned ecosystem with cryptographic rights, open access, shared values
+  - title: Valu Identity
+    details: Enabling Personal Private Agents with Secure DataValidation, Processing, and Storage.
+  - title: Valu Wallet
+    details: Empowering Financial Services for Individuals and Communities using Mobile Wallet.
 ---
 

@@ -11,18 +11,18 @@ export default defineConfig({
     logo: '/_resources/valu.svg',
     nav: [
       {text: 'Home', link: '/'},
-      {text: 'Docs', link: '/markdown-examples'},
-      {text: 'API', link: '/markdown-examples'}
+      {text: 'Docs', link: '/valu-overview'},
+      {text: 'API', link: '/valu-api'}
     ],
 
     sidebar: [
       {
         text: 'Docs',
         items: [
-          {text: 'Markdown Examples', link: '/markdown-examples'},
+          {text: 'Valu Overview', link: '/valu-overview'},
+          {text: 'Valuverse Frontend API', link: '/valu-api'},
           {text: 'Valuverse Backend Server', link: '/Valuverse_Backend'},
           {text: 'Valuverse Backend API', link: '/apidocs/Readme'},
-          {text: 'Valuverse Frontend API', link: '/valu-api'},
           {text: 'Gaming Architecture Overview', link: '/netcode'},
           {text: 'Gaming Backend Server', link: '/netcode-topology'},
           {text: 'Gaming Client Engine', link: '/netcode-client'},
