@@ -20,13 +20,14 @@ export default defineConfig({
         text: 'Docs',
         items: [
           {text: 'Valu Overview', link: '/valu-overview'},
-          {text: 'Valuverse Frontend API', link: '/valu-api'},
+          {text: 'Valuverse SuperApp API', link: '/valu-api'},
           {text: 'Valuverse Backend Server', link: '/Valuverse_Backend'},
           {text: 'Valuverse Backend API', link: '/apidocs/Readme'},
           {text: 'Gaming Architecture Overview', link: '/netcode'},
           {text: 'Gaming Backend Server', link: '/netcode-topology'},
           {text: 'Gaming Client Engine', link: '/netcode-client'},
-          {text: 'Crypto Server', link: '/crypto_server'}
+          {text: 'Crypto Server', link: '/crypto_server'},
+          {text: 'Valu Wallet API', link: 'https://valu-verse.github.io/valuapi/'},
         ]
       }
     ]
