@@ -1,10 +1,14 @@
-import {defineConfig} from 'vitepress'
+import {defineConfigWithTheme} from "vitepress";
+import baseConfig from "vitepress-carbon/config";
 
 // https://vitepress.dev/reference/site-config
-export default defineConfig({
+export default defineConfigWithTheme({
+  extends: baseConfig,
+
   title: "Valuverse Docs",
   description: "Developers documentation for developers",
   head: [['link', {rel: 'icon', href: '/_resources/favicon.ico'}]],
+
   themeConfig: {
     // https://vitepress.dev/reference/default-theme-config
 
@@ -14,6 +18,10 @@ export default defineConfig({
       {text: 'Docs', link: '/valu-overview'},
       {text: 'API', link: '/valu-api'}
     ],
+
+    search: {
+      provider: 'local'
+    },
 
     sidebar: [
       {
@@ -30,6 +38,10 @@ export default defineConfig({
           {text: 'Valu Wallet API', link: 'https://valu-verse.github.io/valuapi/'},
         ]
       }
+    ],
+
+    socialLinks: [
+      {icon: 'github', link: 'https://github.com/Roomful/valu-docs'}
     ]
   }
 })
