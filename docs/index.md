@@ -4,7 +4,7 @@ layout: home
 
 hero:
   name: "Valu Framework"
-  text: "Developers documentation for developers"
+  text: "Documentation for Developers"
   tagline: An Internet of Valu & Values
   actions:
     - theme: brand
