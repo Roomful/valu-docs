@@ -16,7 +16,7 @@ export default defineConfigWithTheme({
         let applicationId, source, origin;
 
         window.addEventListener('message', event => {
-          if(event.data?.target !== 'valuApi') return;
+          if (event.data?.target !== 'valuApi') return;
 
           const message = event.data.message;
 
@@ -47,7 +47,7 @@ export default defineConfigWithTheme({
         window.addEventListener('valu_api-ready', async () => {
           let oldPath = document.location.pathname;
           const body = document.querySelector('body');
-          const observer = new MutationObserver(mutations => {
+          const observer = new MutationObserver(() => {
             if (oldPath !== document.location.pathname) {
               pushRoute(document.location.pathname);
               oldPath = document.location.pathname;
