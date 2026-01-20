@@ -4,6 +4,7 @@ import baseConfig from "vitepress-carbon/config";
 // https://vitepress.dev/reference/site-config
 export default defineConfigWithTheme({
   extends: baseConfig,
+  cleanUrls: true,
 
   title: "Valuverse Docs",
   description: "Developers documentation for developers",
