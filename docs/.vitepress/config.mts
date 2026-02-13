@@ -82,6 +82,7 @@ export default defineConfigWithTheme({
           {text: 'Valu Overview', link: '/valu-overview'},
           {text: 'Valuverse SuperApp API', link: '/valu-api'},
           {text: 'Valuverse API Snippets', link: 'valu-snippets'},
+          {text: 'Intents Reference', link: '/intents-doc'},
           {text: 'Valuverse Backend Server', link: '/Valuverse_Backend'},
           {text: 'Valuverse Backend API', link: '/apidocs/Readme'},
           {text: 'Gaming Architecture Overview', link: '/netcode'},
