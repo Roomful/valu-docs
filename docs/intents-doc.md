@@ -14,11 +14,7 @@
 - [Communities (`community`)](#communities-community)
 - [Groups (`groups`)](#groups-groups)
 - [My Connections (`contacts`)](#my-connections-contacts)
-- [Profile (`profile`)](#profile-profile)
-- [Resources Viewer (`preview`)](#resources-viewer-preview)
-- [Rooms (`rooms`)](#rooms-rooms)
-- [ValuVerse Application (`metaverse`)](#valuverse-application-metaverse)
-- [Video Chat (`videochat`)](#video-chat-videochat)
+
 
 ### Services
 
