@@ -5,6 +5,9 @@ on:
     types: [update-intents]
   workflow_dispatch:
 
+permissions:
+  contents: write
+
 jobs:
   update-intents:
     runs-on: ubuntu-latest
@@ -19,7 +22,7 @@ jobs:
         uses: actions/checkout@v4
         with:
           repository: Roomful/valusocial-web
-          token: ${{ secrets.GITHUB_TOKEN }}
+          token: ${{ secrets.VALUSOCIAL_WEB_READ_TOKEN }}
           path: valusocial-web
 
       - name: Setup Node.js
