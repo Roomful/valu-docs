@@ -233,8 +233,6 @@ View and manage rooms
 
 Opens the room invitation dialog for a specific room.
 
-**Permissions:** room.invite
-
 | Parameter | Type | Required | Description |
 |-----------|------|----------|-------------|
 | `roomId` | string | Yes | The unique identifier of the room to invite users to. |
