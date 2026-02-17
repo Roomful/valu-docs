@@ -1,12 +1,12 @@
-name: Sync Valu API README
+name: Sync Valu Package Docs
 
 on:
   repository_dispatch:
-    types: [update-valu-api-docs]
+    types: [update-valu-api-docs, update-valu-routing-docs]
   workflow_dispatch:
 
 jobs:
-  sync-readme:
+  sync-docs:
     runs-on: ubuntu-latest
 
     steps:
@@ -22,15 +22,24 @@ jobs:
           token: ${{ secrets.GITHUB_TOKEN }}
           path: valu-api
 
-      - name: Copy README to docs
-        run: cp valu-api/README.md valu-docs/docs/valu-api.md
+      - name: Checkout valu-routing
+        uses: actions/checkout@v4
+        with:
+          repository: Roomful/valu-routing
+          token: ${{ secrets.GITHUB_TOKEN }}
+          path: valu-routing
+
+      - name: Copy docs
+        run: |
+          cp valu-api/README.md valu-docs/docs/valu-api.md
+          cp valu-routing/README.md valu-docs/docs/valu-routing.md
 
       - name: Commit and push
         working-directory: valu-docs
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add docs/valu-api.md
+          git add docs/valu-api.md docs/valu-routing.md
           git diff --cached --quiet && echo "No changes to commit" && exit 0
-          git commit -m "docs: sync valu-api README"
+          git commit -m "docs: sync valu-api and valu-routing READMEs"
           git push
