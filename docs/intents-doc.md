@@ -306,31 +306,33 @@ Deletes a resource from the calling application's storage.
 
 ### CMS Service (`CMS`)
 
-Content management service for uploading, searching, and deleting resources scoped to rooms, props, communities, and channels.
+Content management service for uploading, searching, and deleting resources scoped to rooms, props, communities, channels, and directories.
 
 *Source: `src/Services/CMS/CMSService.js`*
 
 #### `resource-upload`
 
-Uploads files to a resource storage scoped by belonging (room, prop, community, channel, or post).
+Uploads files to a resource storage scoped by belonging (room, prop, community, channel, directory, or post).
 
 | Parameter | Type | Required | Description |
 |-----------|------|----------|-------------|
 | `files` | FileList | Yes | The files to upload. |
 | `communityId` | string | No | The community to associate the uploaded resources with. |
 | `channelId` | string | No | The channel to associate the uploaded resources with. |
+| `directoryId` | string | No | The directory to associate the uploaded resources with. If omitted and channelId is provided, it is resolved automatically from the channel's contentDirectoryId. |
 | `postId` | string | No | The post to attach the uploaded resources to. |
 | `roomId` | string | No | The room to associate the uploaded resources with. |
 | `propId` | string | No | The prop to move the uploaded resources into. |
 
 #### `resource-search`
 
-Searches for resources within a given scope (room, prop, community, channel, or post).
+Searches for resources within a given scope (room, prop, community, channel, directory, or post).
 
 | Parameter | Type | Required | Description |
 |-----------|------|----------|-------------|
 | `communityId` | string | No | The community to search resources in. |
 | `channelId` | string | No | The channel to search resources in. |
+| `directoryId` | string | No | The directory to search resources in. If omitted and channelId is provided, it is resolved automatically from the channel's contentDirectoryId. |
 | `postId` | string | No | The post to load resources for. |
 | `roomId` | string | No | The room to search resources in. |
 | `propId` | string | No | The prop to search resources in. |
