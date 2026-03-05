@@ -1,7 +1,7 @@
 # Intents Reference
 
 > Auto-generated from application and service manifests.  
-> Generated on: 2026-03-03
+> Generated on: 2026-03-05
 
 ## Table of Contents
 
@@ -24,6 +24,7 @@
 
 - [Application Storage Service (`ApplicationStorage`)](#application-storage-service-applicationstorage)
 - [CMS Service (`CMS`)](#cms-service-cms)
+- [Data Provider Service (`DataProvider`)](#data-provider-service-dataprovider)
 - [Resource Service (`Resources`)](#resource-service-resources)
 
 ---
@@ -89,6 +90,16 @@ Opens an AI‑powered chat session scoped to a specific room.
 | Parameter | Type | Required | Description |
 |-----------|------|----------|-------------|
 | `roomId` | string | Yes | The unique identifier of the room in which to start the AI chat. |
+
+#### `send-message`
+
+Sends a rich text message with optional interactive buttons to a direct channel. Buttons trigger app intents when clicked.
+
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `userId` | string | Yes | The target user ID to send the message to (direct channel). |
+| `text` | string | Yes | The text body of the rich message. |
+| `buttons` | Array<{text: string, intent: {applicationId: string, action: string, params?: object}}> | No | Array of interactive buttons. Each button has a text label and an intent to run when clicked. |
 
 ---
 
@@ -352,6 +363,38 @@ Deletes a resource or removes it from a prop or post.
 | `postId` | string | No | The post to remove the resource from (removes association, does not delete the resource). |
 | `roomId` | string | No | The room the resource belongs to. |
 | `propId` | string | No | The prop to remove the resource from (removes association, does not delete the resource). |
+
+---
+
+### Data Provider Service (`DataProvider`)
+
+Picker service for selecting items from data providers (rooms, contacts, etc.) via modal or inline overlay.
+
+*Source: `src/Services/DataProvider/DataProviderService.js`*
+
+#### `pick-single`
+
+Opens a single-select data-provider picker. Returns the selected item or null on cancel.
+
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `providers` | string[] | Yes | Provider IDs to show (e.g. ['rooms', 'contacts']). |
+| `title` | string | No | Dialog title. |
+| `width` | string | No | CSS width for the modal (desktop only). |
+| `height` | string | No | CSS height for the modal (desktop only). |
+
+#### `pick-multiple`
+
+Opens a multi-select data-provider picker. Returns an array of selected items or null on cancel.
+
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `providers` | string[] | Yes | Provider IDs to show. |
+| `title` | string | No | Dialog title. |
+| `confirmLabel` | string | No | Confirm button label. |
+| `confirmIcon` | string | No | Confirm button icon class. |
+| `width` | string | No | CSS width for the modal (desktop only). |
+| `height` | string | No | CSS height for the modal (desktop only). |
 
 ---
 
