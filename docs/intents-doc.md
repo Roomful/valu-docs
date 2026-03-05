@@ -99,7 +99,7 @@ Sends a rich text message with optional interactive buttons to a direct channel.
 |-----------|------|----------|-------------|
 | `userId` | string | Yes | The target user ID to send the message to (direct channel). |
 | `text` | string | Yes | The text body of the rich message. |
-| `buttons` | Array<{text: string, intent: {applicationId: string, action: string, params?: object}}> | No | Array of interactive buttons. Each button has a text label and an intent to run when clicked. |
+| `buttons` | object | No | Array of interactive buttons. Each button has {text: string, intent: {applicationId: string, action: string, params?: object}}. |
 
 ---
 
