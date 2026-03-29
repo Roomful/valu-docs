@@ -1,7 +1,7 @@
 # Intents Reference
 
 > Auto-generated from application and service manifests.  
-> Generated on: 2026-03-25
+> Generated on: 2026-03-29
 
 ## Table of Contents
 
@@ -24,8 +24,12 @@
 
 - [Application Storage Service (`ApplicationStorage`)](#application-storage-service-applicationstorage)
 - [CMS Service (`CMS`)](#cms-service-cms)
+- [Community Service (`Community`)](#community-service-community)
 - [Data Provider Service (`DataProvider`)](#data-provider-service-dataprovider)
 - [Resource Service (`Resources`)](#resource-service-resources)
+- [Rooms Service (`Rooms`)](#rooms-service-rooms)
+- [Users Service (`Users`)](#users-service-users)
+- [Valu Guru Service (`AiGuru`)](#valu-guru-service-aiguru)
 
 ---
 
@@ -366,6 +370,52 @@ Deletes a resource or removes it from a prop or post.
 
 ---
 
+### Community Service (`Community`)
+
+Community service for browsing communities, listing channels, and loading posts within channels.
+
+*Source: `src/Services/Community/CommunityService.js`*
+
+#### `search-communities`
+
+Search for available communities. Returns community objects with communityId, name, description, and other properties.
+
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `query` | string | No | Search query to filter communities by name. |
+| `limit` | number | No | Number of results to return. Defaults to 10. |
+| `afterCommunityId` | string | No | Pagination cursor — ID of the last community from previous page. |
+
+#### `get-community-info`
+
+Retrieves detailed information about a specific community by its ID.
+
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `communityId` | string | Yes | The unique community identifier. |
+
+#### `get-channels`
+
+Lists channels within a specific community. Returns channel objects with channelId, title, and other properties.
+
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `communityId` | string | Yes | The unique community identifier. |
+| `limit` | number | No | Maximum number of channels to return. Defaults to 100. |
+
+#### `get-posts`
+
+Loads posts/messages in a specific channel. Returns message objects with messageId, messageTitle, messageBody, authorId, created, attachments, upVoteCount, downVoteCount, and other properties.
+
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `channelId` | string | Yes | The channel ID to load posts from (use originId from get-channels result). |
+| `subChannelId` | string | No | Sub-channel ID if loading from a nested channel. |
+| `limit` | number | No | Number of posts to return. Defaults to 10. |
+| `afterMessageId` | string | No | Pagination cursor — ID of the last message from previous page. |
+
+---
+
 ### Data Provider Service (`DataProvider`)
 
 Picker service for selecting items from data providers (rooms, contacts, etc.) via modal or inline overlay.
@@ -436,6 +486,130 @@ Generates a direct public API URL for downloading a resource.
 | Parameter | Type | Required | Description |
 |-----------|------|----------|-------------|
 | `resourceId` | string | Yes | The unique identifier of the resource. |
+
+---
+
+### Rooms Service (`Rooms`)
+
+Room management service for searching rooms, retrieving room details, and checking permissions.
+
+*Source: `src/Applications/RoomsApplication/Services/RoomsService.js`*
+
+#### `search-rooms`
+
+Search for rooms by name within the current network. Returns room objects with id, name, and other properties. Use this to find a room ID when you only know the room name.
+
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `filter` | string | Yes | Room filter. Must be one of: "all" — all rooms the current user belongs to; "favourite" — user's favorite rooms only; "open" — public rooms open for anyone to join; "invites" — rooms the user has been invited to. |
+| `query` | string | No | Search query to filter rooms by name. |
+| `offset` | number | No | Pagination offset. Defaults to 0. |
+| `size` | number | No | Number of results to return. Defaults to 10. |
+
+#### `get-room`
+
+Retrieves basic room model data by room ID including name, description, settings, and metadata.
+
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `roomId` | string | Yes | The unique room identifier. |
+| `networkId` | string | No | Network ID the room belongs to. |
+
+#### `get-permissions`
+
+Retrieves the current user permissions for a room (view, comment, contribute, edit, manage).
+
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `roomId` | string | Yes | The unique room identifier. |
+
+#### `get-room-props`
+
+Lists all props (interactive objects) in a room. Returns prop objects with id, name, type, contentCount, and assetId.
+
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `roomId` | string | Yes | The unique room identifier. |
+| `networkId` | string | No | Network ID the room belongs to. |
+
+---
+
+### Users Service (`Users`)
+
+User management service for getting current user info, looking up users by ID, and searching contacts/followers/following.
+
+*Source: `src/Services/Users/UsersService.js`*
+
+#### `current`
+
+Returns the currently authenticated user info (id, firstName, lastName, etc.).
+
+*No parameters.*
+
+#### `get`
+
+Retrieves a user by their unique ID. Returns user object with id, firstName, lastName, etc.
+
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `userId` | string | Yes | The unique user identifier. |
+
+#### `search-users`
+
+Search for users within the current network. Use this to find a user ID when you only know their name.
+
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `filter` | string | Yes | User filter. Must be one of: "contacts" — current user's friends/connections; "followers" — users who follow the current user; "following" — users the current user follows. |
+| `query` | string | No | Search query to filter users by name. |
+| `offset` | number | No | Pagination offset. Defaults to 0. |
+| `size` | number | No | Number of results to return. Defaults to 10. |
+
+---
+
+### Valu Guru Service (`AiGuru`)
+
+System service for managing applications via AI. Provides tools to open, close, list, and check application status.
+
+*Source: `src/Services/AiGuru/AiGuruService.js`*
+
+#### `open`
+
+Opens (loads) an application by its ID into the dock.
+
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `applicationId` | string | Yes | The unique identifier of the application to open. |
+
+#### `close`
+
+Closes (unloads) an application by its ID from the dock.
+
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `applicationId` | string | Yes | The unique identifier of the application to close. |
+
+#### `has-application`
+
+Checks whether an application with the given ID exists in the registry.
+
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `applicationId` | string | Yes | The unique identifier of the application to check. |
+
+#### `get-applications`
+
+Returns a list of all registered applications with their id, slug, icon, and title.
+
+*No parameters.*
+
+#### `is-application-loaded`
+
+Checks whether an application with the given ID is currently loaded (open) in the dock.
+
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `applicationId` | string | Yes | The unique identifier of the application to check. |
 
 ---
 
