@@ -12,6 +12,7 @@
 - [Chats (`textchat`)](#chats-textchat)
 - [CMS (`cms`)](#cms-cms)
 - [Communities (`community`)](#communities-community)
+- [Content Studio (`staging-content-studio`)](#content-studio-staging-content-studio)
 - [Groups (`groups`)](#groups-groups)
 - [My Connections (`contacts`)](#my-connections-contacts)
 - [Profile (`profile`)](#profile-profile)
@@ -176,6 +177,28 @@ Opens the community view and navigates to a specific post within a channel.
 | `rootChannel` | object | Yes | Root channel of the community. |
 | `subChannelId` | string | No | The sub-channel identifier to navigate to. |
 | `messageId` | string | No | The unique identifier of the post message to display. |
+
+---
+
+### Content Studio (`staging-content-studio`)
+
+#### `toggle`
+
+Toggle the floating navigation menu (show if hidden, hide if visible)
+
+*No parameters.*
+
+#### `show`
+
+Show the floating navigation menu
+
+*No parameters.*
+
+#### `hide`
+
+Hide the floating navigation menu
+
+*No parameters.*
 
 ---
 
