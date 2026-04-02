@@ -1,7 +1,7 @@
 # Intents Reference
 
 > Auto-generated from application and service manifests.  
-> Generated on: 2026-03-31
+> Generated on: 2026-04-02
 
 ## Table of Contents
 
@@ -99,6 +99,16 @@ Opens an AI‑powered chat session scoped to a specific room.
 #### `send-message`
 
 Sends a rich text message with optional interactive buttons to a direct channel. Buttons trigger app intents when clicked.
+
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `userId` | string | Yes | The target user ID to send the message to (direct channel). |
+| `text` | string | Yes | The text body of the rich message. |
+| `buttons` | object | No | Array of interactive buttons. Each button has {text: string, intent: {applicationId: string, action: string, params?: object}}. |
+
+#### `send-message-with-approve`
+
+Sends a rich text message with optional interactive buttons to a direct channel after approval. Buttons trigger app intents when clicked.
 
 | Parameter | Type | Required | Description |
 |-----------|------|----------|-------------|
@@ -286,6 +296,22 @@ initiate the opening of the Metaverse 3d application with spsific route
 | Parameter | Type | Required | Description |
 |-----------|------|----------|-------------|
 | `route` | string | Yes | The route to set. Defines the current view or action in the application. If not provided, the default application state will open. |
+
+#### `open-room`
+
+Open a specific room in the ValuVerse 3D environment by room ID.
+
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `roomId` | string | Yes | The ID of the room to open. |
+
+#### `preview-prop`
+
+Navigate the camera to a specific prop in the current room.
+
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `propId` | string | Yes | The ID of the prop to navigate to. |
 
 ---
 
