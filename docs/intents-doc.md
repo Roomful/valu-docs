@@ -18,6 +18,7 @@
 - [Profile (`profile`)](#profile-profile)
 - [Resources Viewer (`preview`)](#resources-viewer-preview)
 - [Rooms (`rooms`)](#rooms-rooms)
+- [Valu Guru (`aiguru`)](#valu-guru-aiguru)
 - [ValuVerse Application (`metaverse`)](#valuverse-application-metaverse)
 - [Video Chat (`videochat`)](#video-chat-videochat)
 
@@ -284,6 +285,19 @@ Opens the room invitation dialog for a specific room.
 | Parameter | Type | Required | Description |
 |-----------|------|----------|-------------|
 | `roomId` | string | Yes | The unique identifier of the room to invite users to. |
+
+---
+
+### Valu Guru (`aiguru`)
+
+#### `start-session`
+
+Opens the Valu Guru app and starts a brand-new conversation session with an initial message. Always creates a new session regardless of existing ones.
+
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `message` | string | Yes | The initial user message to send in the new session. |
+| `agentId` | string | No | Agent ID to use for the new session. Defaults to the currently active agent. |
 
 ---
 
