@@ -1,7 +1,7 @@
 # Intents Reference
 
 > Auto-generated from application and service manifests.  
-> Generated on: 2026-04-03
+> Generated on: 2026-04-05
 
 ## Table of Contents
 
@@ -64,6 +64,39 @@ Opens the calendar view filtered by a specific source type (room, group, user, o
 | `communityFullName` | string | No | The display name of the community. |
 | `eventId` | string | No | The unique identifier of the community event. |
 | `eventFullName` | string | No | The display name of the community event. |
+
+#### `create-meeting`
+
+Creates a new meeting on the calendar with the specified title, type, time range, and optional participants, description, color, and recurrence.
+
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `title` | string | Yes | The title of the meeting. |
+| `type` | string | Yes | The meeting type. Must be one of: room, group, community, direct (private). |
+| `startDate` | string | No | The meeting start date/time as an ISO 8601 string (e.g. "2026-04-10T14:00:00.000Z"). Defaults to today's current time rounded up to the next 15-minute mark. |
+| `endDate` | string | No | The meeting end date/time as an ISO 8601 string (e.g. "2026-04-10T15:00:00.000Z"). Defaults to 1 hour after startDate. |
+| `description` | string | No | An optional description for the meeting. |
+| `color` | string | No | Hex color code for the meeting (e.g. "#4299f5"). Defaults to the type's default color when omitted. |
+| `participants` | string[] | No | Array of user IDs to invite to the meeting. For private meetings with multiple participants, a group is created automatically. |
+| `recurringWeekly` | boolean | No | If true, the meeting repeats every week at the same time. Not supported for community meetings. |
+| `roomId` | string | No | The room ID. Required when type is "room". |
+| `groupId` | string | No | The group ID. Required when type is "group". |
+| `communityId` | string | No | The community ID. Required when type is "community". |
+| `globalEventId` | string | No | The community global event ID. Required when type is "community". |
+
+#### `edit-meeting`
+
+Updates an existing meeting's fields (title, description, time, participants, or color) by meeting ID.
+
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `meetingId` | string | Yes | The unique identifier of the meeting to update. |
+| `title` | string | No | New title for the meeting. |
+| `description` | string | No | New description for the meeting. |
+| `startDate` | string | No | New start date/time as an ISO 8601 string. |
+| `endDate` | string | No | New end date/time as an ISO 8601 string. |
+| `color` | string | No | New hex color code for the meeting (e.g. "#4299f5"). |
+| `participants` | string[] | No | Updated list of invited participant user IDs. |
 
 ---
 
