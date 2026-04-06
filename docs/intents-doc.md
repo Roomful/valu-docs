@@ -1,7 +1,7 @@
 # Intents Reference
 
 > Auto-generated from application and service manifests.  
-> Generated on: 2026-04-05
+> Generated on: 2026-04-06
 
 ## Table of Contents
 
@@ -331,6 +331,12 @@ Opens the Valu Guru app and starts a brand-new conversation session with an init
 |-----------|------|----------|-------------|
 | `message` | string | Yes | The initial user message to send in the new session. |
 | `agentId` | string | No | Agent ID to use for the new session. Defaults to the currently active agent. |
+
+#### `show-agents`
+
+Opens the Valu Guru app and switches to the Agents tab in the left panel.
+
+*No parameters.*
 
 ---
 
