@@ -203,24 +203,24 @@ Opens the community view and starts channel creation in a specific community con
 
 #### `show-channel`
 
-Opens the community view and navigates to a specific channel.
+Opens the community view and navigates to a specific channel. IMPORTANT: rootChannel MUST always be the top-level (root) channel — never a sub-channel, never empty. Use subChannelId only when navigating deeper inside a root channel. Case 1 — navigating to a root channel: set rootChannel.channelId to the channel ID, omit subChannelId. Case 2 — navigating to a sub-channel: set rootChannel.channelId to the PARENT root channel ID, and set subChannelId to the target sub-channel ID. The RAG args channelId always refers to the currently selected channel (root or sub). Check the loaded channels tree in the AI context to determine if the target is a root channel or a sub-channel.
 
 | Parameter | Type | Required | Description |
 |-----------|------|----------|-------------|
-| `community` | object | Yes | Community data object. |
-| `rootChannel` | object | Yes | Root channel of the community. |
-| `subChannelId` | string | No | The sub-channel identifier to navigate to. |
+| `community` | object | Yes | Community object. Required fields: communityId (string), communityTitle (string). Use values from RAG args or AI context. |
+| `rootChannel` | object | Yes | Top-level root channel object. MUST NOT be empty. Required fields: channelId (string) — the root channel ID, title (string). Never put a sub-channel ID here. |
+| `subChannelId` | string | No | ID of the sub-channel to navigate to within the rootChannel. Only provide this when the target is a sub-channel. Omit entirely when navigating to the root channel itself. |
 
 #### `show-post`
 
-Opens the community view and navigates to a specific post within a channel.
+Opens the community view and navigates to a specific post within a channel. IMPORTANT: rootChannel MUST always be the top-level (root) channel — never a sub-channel, never empty. Use subChannelId only when the post lives inside a sub-channel. Case 1 — post is in a root channel: set rootChannel.channelId to the channel ID, omit subChannelId. Case 2 — post is in a sub-channel: set rootChannel.channelId to the PARENT root channel ID, and set subChannelId to the sub-channel ID. Check the loaded channels tree in the AI context to determine the correct hierarchy. Use messageId from the RAG args or AI context to identify the target post.
 
 | Parameter | Type | Required | Description |
 |-----------|------|----------|-------------|
-| `community` | object | Yes | Community data object. |
-| `rootChannel` | object | Yes | Root channel of the community. |
-| `subChannelId` | string | No | The sub-channel identifier to navigate to. |
-| `messageId` | string | No | The unique identifier of the post message to display. |
+| `community` | object | Yes | Community object. Required fields: communityId (string), communityTitle (string). Use values from RAG args or AI context. |
+| `rootChannel` | object | Yes | Top-level root channel object. MUST NOT be empty. Required fields: channelId (string) — the root channel ID, title (string). Never put a sub-channel ID here. |
+| `subChannelId` | string | No | ID of the sub-channel containing the post. Only provide when the post lives inside a sub-channel. Omit entirely when the post is in the root channel itself. |
+| `messageId` | string | No | The unique identifier of the post to display. Use the value from AI context. |
 
 ---
 
