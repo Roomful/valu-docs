@@ -1,7 +1,7 @@
 # Intents Reference
 
 > Auto-generated from application and service manifests.  
-> Generated on: 2026-04-06
+> Generated on: 2026-04-07
 
 ## Table of Contents
 
@@ -638,7 +638,7 @@ Lists all props (interactive objects) in a room. Returns prop objects with id, n
 
 ### Users Service (`Users`)
 
-User management service for getting current user info, looking up users by ID, and searching contacts/followers/following.
+User management service for getting current user info, looking up users by ID, searching contacts/followers/following, and managing connection requests.
 
 *Source: `src/Services/Users/UsersService.js`*
 
@@ -658,7 +658,7 @@ Retrieves a user by their unique ID. Returns user object with id, firstName, las
 
 #### `search-users`
 
-Search for users within the current network. Use this to find a user ID when you only know their name.
+Search for users within existing connections (contacts, followers, or following). Use this to find a user ID when you only know their name and they are already in your network. To discover new users outside your network, use find-user instead.
 
 | Parameter | Type | Required | Description |
 |-----------|------|----------|-------------|
@@ -666,6 +666,48 @@ Search for users within the current network. Use this to find a user ID when you
 | `query` | string | No | Search query to filter users by name. |
 | `offset` | number | No | Pagination offset. Defaults to 0. |
 | `size` | number | No | Number of results to return. Defaults to 10. |
+
+#### `find-user`
+
+Discover new users to connect with by searching by name. Uses a suggestion engine — distinct from search-users which searches within existing connections.
+
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `query` | string | No | Search query to filter users by name. |
+| `offset` | number | No | Pagination offset. Defaults to 0. |
+| `size` | number | No | Number of results to return. Defaults to 10. |
+
+#### `send-connection-request`
+
+Sends a connection request to a user by their ID.
+
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `userId` | string | Yes | The unique identifier of the user to send a connection request to. |
+
+#### `accept-connection-request`
+
+Accepts a pending connection request from a user.
+
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `userId` | string | Yes | The unique identifier of the user whose connection request to accept. |
+
+#### `decline-connection-request`
+
+Declines a pending connection request from a user.
+
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `userId` | string | Yes | The unique identifier of the user whose connection request to decline. |
+
+#### `cancel-connection-request`
+
+Cancels a pending connection request that the current user previously sent.
+
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `userId` | string | Yes | The unique identifier of the user to whom the connection request was sent. |
 
 ---
 
