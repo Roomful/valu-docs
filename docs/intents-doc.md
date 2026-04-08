@@ -1,7 +1,7 @@
 # Intents Reference
 
 > Auto-generated from application and service manifests.  
-> Generated on: 2026-04-07
+> Generated on: 2026-04-08
 
 ## Table of Contents
 
@@ -28,6 +28,7 @@
 - [CMS Service (`CMS`)](#cms-service-cms)
 - [Community Service (`Community`)](#community-service-community)
 - [Data Provider Service (`DataProvider`)](#data-provider-service-dataprovider)
+- [Events Service (`Events`)](#events-service-events)
 - [Resource Service (`Resources`)](#resource-service-resources)
 - [Rooms Service (`Rooms`)](#rooms-service-rooms)
 - [Users Service (`Users`)](#users-service-users)
@@ -64,39 +65,6 @@ Opens the calendar view filtered by a specific source type (room, group, user, o
 | `communityFullName` | string | No | The display name of the community. |
 | `eventId` | string | No | The unique identifier of the community event. |
 | `eventFullName` | string | No | The display name of the community event. |
-
-#### `create-meeting`
-
-Creates a new meeting on the calendar with the specified title, type, time range, and optional participants, description, color, and recurrence.
-
-| Parameter | Type | Required | Description |
-|-----------|------|----------|-------------|
-| `title` | string | Yes | The title of the meeting. |
-| `type` | string | Yes | The meeting type. Must be one of: room, group, community, direct (private). |
-| `startDate` | string | No | The meeting start date/time as an ISO 8601 string (e.g. "2026-04-10T14:00:00.000Z"). Defaults to today's current time rounded up to the next 15-minute mark. |
-| `endDate` | string | No | The meeting end date/time as an ISO 8601 string (e.g. "2026-04-10T15:00:00.000Z"). Defaults to 1 hour after startDate. |
-| `description` | string | No | An optional description for the meeting. |
-| `color` | string | No | Hex color code for the meeting (e.g. "#4299f5"). Defaults to the type's default color when omitted. |
-| `participants` | string[] | No | Array of user IDs to invite to the meeting. For private meetings with multiple participants, a group is created automatically. |
-| `recurringWeekly` | boolean | No | If true, the meeting repeats every week at the same time. Not supported for community meetings. |
-| `roomId` | string | No | The room ID. Required when type is "room". |
-| `groupId` | string | No | The group ID. Required when type is "group". |
-| `communityId` | string | No | The community ID. Required when type is "community". |
-| `globalEventId` | string | No | The community global event ID. Required when type is "community". |
-
-#### `edit-meeting`
-
-Updates an existing meeting's fields (title, description, time, participants, or color) by meeting ID.
-
-| Parameter | Type | Required | Description |
-|-----------|------|----------|-------------|
-| `meetingId` | string | Yes | The unique identifier of the meeting to update. |
-| `title` | string | No | New title for the meeting. |
-| `description` | string | No | New description for the meeting. |
-| `startDate` | string | No | New start date/time as an ISO 8601 string. |
-| `endDate` | string | No | New end date/time as an ISO 8601 string. |
-| `color` | string | No | New hex color code for the meeting (e.g. "#4299f5"). |
-| `participants` | string[] | No | Updated list of invited participant user IDs. |
 
 ---
 
@@ -547,6 +515,58 @@ Opens a multi-select data-provider picker. Returns an array of selected items or
 | `confirmIcon` | string | No | Confirm button icon class. |
 | `width` | string | No | CSS width for the modal (desktop only). |
 | `height` | string | No | CSS height for the modal (desktop only). |
+
+---
+
+### Events Service (`Events`)
+
+Calendar service for listing, creating, and editing meetings.
+
+*Source: `src/Applications/EventsApplication/Services/EventsService.js`*
+
+#### `list-events`
+
+Returns a list of calendar events for the specified date range and optional meeting filter, sorted by start time ascending.
+
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `range` | string | No | Date range to fetch. Must be one of: day, week, month, year. Defaults to month. |
+| `startDate` | string | No | ISO 8601 anchor date (e.g. "2026-04-07"). Defaults to today. |
+| `filter` | string | No | Meeting source filter. Must be one of: all, room, group, user, community. Defaults to all. |
+| `id` | string | No | ID of the room, group, user, or community. Used when filter is not all. |
+
+#### `create-meeting`
+
+Creates a new meeting on the calendar with the specified title, type, time range, and optional participants, description, color, and recurrence.
+
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `title` | string | Yes | The title of the meeting. |
+| `type` | string | Yes | The meeting type. Must be one of: room, group, community, direct (private). |
+| `startDate` | string | No | The meeting start date/time as a UTC ISO 8601 string (e.g. "2026-04-10T14:00:00.000Z"). Always use UTC — convert from local time if needed. Defaults to today's current time rounded up to the next 15-minute mark. |
+| `endDate` | string | No | The meeting end date/time as a UTC ISO 8601 string (e.g. "2026-04-10T15:00:00.000Z"). Always use UTC — convert from local time if needed. Defaults to 1 hour after startDate. |
+| `description` | string | No | An optional description for the meeting. |
+| `color` | string | No | Hex color code for the meeting (e.g. "#4299f5"). Defaults to the type's default color when omitted. |
+| `participants` | string[] | No | Array of user IDs to invite to the meeting. For private meetings with multiple participants, a group is created automatically. |
+| `recurringWeekly` | boolean | No | If true, the meeting repeats every week at the same time. Not supported for community meetings. |
+| `roomId` | string | No | The room ID. Required when type is "room". |
+| `groupId` | string | No | The group ID. Required when type is "group". |
+| `communityId` | string | No | The community ID. Required when type is "community". |
+| `globalEventId` | string | No | The community global event ID. Required when type is "community". |
+
+#### `edit-meeting`
+
+Updates an existing meeting's fields (title, description, time, participants, or color) by meeting ID.
+
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `meetingId` | string | Yes | The unique identifier of the meeting to update. |
+| `title` | string | No | New title for the meeting. |
+| `description` | string | No | New description for the meeting. |
+| `startDate` | string | No | New start date/time as a UTC ISO 8601 string (e.g. "2026-04-10T14:00:00.000Z"). Always use UTC — convert from local time if needed. |
+| `endDate` | string | No | New end date/time as a UTC ISO 8601 string (e.g. "2026-04-10T15:00:00.000Z"). Always use UTC — convert from local time if needed. |
+| `color` | string | No | New hex color code for the meeting (e.g. "#4299f5"). |
+| `participants` | string[] | No | Updated list of invited participant user IDs. |
 
 ---
 
