@@ -793,5 +793,21 @@ Checks whether an application with the given ID is currently loaded (open) in th
 |-----------|------|----------|-------------|
 | `applicationId` | string | Yes | The unique identifier of the application to check. |
 
+#### `get-chat-history`
+
+Returns the in-memory message history for a chat session. Omit chatId to get the currently active session.
+
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `chatId` | string | No | ID of the chat session. Omit to use the currently active session. |
+
+#### `get-agent-history`
+
+Returns the in-memory message history for a background agent.
+
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `agentId` | string | Yes | ID of the background agent whose message history to retrieve. |
+
 ---
 
