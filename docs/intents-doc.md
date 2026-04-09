@@ -1,7 +1,7 @@
 # Intents Reference
 
 > Auto-generated from application and service manifests.  
-> Generated on: 2026-04-08
+> Generated on: 2026-04-09
 
 ## Table of Contents
 
@@ -31,6 +31,7 @@
 - [Events Service (`Events`)](#events-service-events)
 - [Resource Service (`Resources`)](#resource-service-resources)
 - [Rooms Service (`Rooms`)](#rooms-service-rooms)
+- [Server Status Service (`ServerStatus`)](#server-status-service-serverstatus)
 - [Users Service (`Users`)](#users-service-users)
 - [Valu Guru Service (`AiGuru`)](#valu-guru-service-aiguru)
 
@@ -653,6 +654,23 @@ Lists all props (interactive objects) in a room. Returns prop objects with id, n
 |-----------|------|----------|-------------|
 | `roomId` | string | Yes | The unique room identifier. |
 | `networkId` | string | No | Network ID the room belongs to. |
+
+---
+
+### Server Status Service (`ServerStatus`)
+
+Checks whether a remote URL is reachable by sending a HEAD request and returning up/down status with latency.
+
+*Source: `src/Services/ServerStatus/ServerStatusService.js`*
+
+#### `ping`
+
+Pings a URL and returns whether it is reachable, the response latency in ms, and the HTTP status code (0 for cross-origin or unreachable servers).
+
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `url` | string | Yes | The URL to ping. |
+| `timeout` | number | No | Request timeout in milliseconds. Defaults to 10000. |
 
 ---
 
