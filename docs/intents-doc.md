@@ -29,6 +29,7 @@
 - [Community Service (`Community`)](#community-service-community)
 - [Data Provider Service (`DataProvider`)](#data-provider-service-dataprovider)
 - [Events Service (`Events`)](#events-service-events)
+- [Networks Service (`Networks`)](#networks-service-networks)
 - [Resource Service (`Resources`)](#resource-service-resources)
 - [Rooms Service (`Rooms`)](#rooms-service-rooms)
 - [Server Status Service (`ServerStatus`)](#server-status-service-serverstatus)
@@ -329,7 +330,7 @@ Open a specific room in the ValuVerse 3D environment by room ID.
 
 #### `preview-prop`
 
-Navigate the camera to a specific prop in the current room.
+Navigate the camera to a specific prop in the current room, opening the Metaverse view. Only call this when the user explicitly asks to show, open, navigate to, or view a prop. Do not call this automatically when listing or describing props.
 
 | Parameter | Type | Required | Description |
 |-----------|------|----------|-------------|
@@ -571,6 +572,20 @@ Updates an existing meeting's fields (title, description, time, participants, or
 
 ---
 
+### Networks Service (`Networks`)
+
+Network management service for retrieving information about the current network.
+
+*Source: `src/Applications/NetworksApplication/Services/NetworksService.js`*
+
+#### `get-current-network`
+
+Returns the id and name of the network the user is currently in. Call this to get the current networkId before making any room or network-related calls.
+
+*No parameters.*
+
+---
+
 ### Resource Service (`Resources`)
 
 Low-level resource service for generating URLs (thumbnails, public links, direct downloads) for resources.
@@ -620,11 +635,21 @@ Room management service for searching rooms, retrieving room details, and checki
 
 #### `search-rooms`
 
-Search for rooms by name within the current network. Returns room objects with id, name, and other properties. Use this to find a room ID when you only know the room name.
+Searches all public/discoverable rooms in the current network using the explorer service. Returns rooms anyone can find and join, regardless of membership. Use this when the user wants to discover or browse rooms.
 
 | Parameter | Type | Required | Description |
 |-----------|------|----------|-------------|
-| `filter` | string | Yes | Room filter. Must be one of: "all" — all rooms the current user belongs to; "favourite" — user's favorite rooms only; "open" — public rooms open for anyone to join; "invites" — rooms the user has been invited to. |
+| `query` | string | No | Search query to filter rooms by name. |
+| `offset` | number | No | Pagination offset. Defaults to 0. |
+| `size` | number | No | Number of results to return. Defaults to 10. |
+
+#### `search-my-rooms`
+
+Searches rooms belonging to the current user within the current network — their joined rooms, favorites, or pending invitations. Use this when the user asks about their own rooms.
+
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `filter` | string | Yes | Room filter. Must be one of: "all" — all rooms the current user belongs to; "favourite" — user's favorite rooms only; "invites" — rooms the user has been invited to but not yet joined. |
 | `query` | string | No | Search query to filter rooms by name. |
 | `offset` | number | No | Pagination offset. Defaults to 0. |
 | `size` | number | No | Number of results to return. Defaults to 10. |
@@ -653,6 +678,16 @@ Lists all props (interactive objects) in a room. Returns prop objects with id, n
 | Parameter | Type | Required | Description |
 |-----------|------|----------|-------------|
 | `roomId` | string | Yes | The unique room identifier. |
+| `networkId` | string | No | Network ID the room belongs to. |
+
+#### `get-prop`
+
+Returns details for a single prop by ID (name, type, contentCount, assetId) with no navigation or UI side effects. Use this to read prop data. Only use preview-prop when the user explicitly asks to show, open, or navigate to a prop.
+
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `propId` | string | Yes | The unique prop identifier. |
+| `roomId` | string | Yes | The room the prop belongs to. |
 | `networkId` | string | No | Network ID the room belongs to. |
 
 ---
