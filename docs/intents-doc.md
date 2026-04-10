@@ -33,6 +33,7 @@
 - [Resource Service (`Resources`)](#resource-service-resources)
 - [Rooms Service (`Rooms`)](#rooms-service-rooms)
 - [Server Status Service (`ServerStatus`)](#server-status-service-serverstatus)
+- [Text Chat Service (`TextChat`)](#text-chat-service-textchat)
 - [Users Service (`Users`)](#users-service-users)
 - [Valu Guru Service (`AiGuru`)](#valu-guru-service-aiguru)
 
@@ -99,26 +100,6 @@ Opens an AI‑powered chat session scoped to a specific room.
 | Parameter | Type | Required | Description |
 |-----------|------|----------|-------------|
 | `roomId` | string | Yes | The unique identifier of the room in which to start the AI chat. |
-
-#### `send-message`
-
-Sends a rich text message with optional interactive buttons to a direct channel. Buttons trigger app intents when clicked.
-
-| Parameter | Type | Required | Description |
-|-----------|------|----------|-------------|
-| `userId` | string | Yes | The target user ID to send the message to (direct channel). |
-| `text` | string | Yes | The text body of the rich message. |
-| `buttons` | object | No | Array of interactive buttons. Each button has {text: string, intent: {applicationId: string, action: string, params?: object}}. |
-
-#### `send-message-with-approve`
-
-Sends a rich text message with optional interactive buttons to a direct channel after approval. Buttons trigger app intents when clicked.
-
-| Parameter | Type | Required | Description |
-|-----------|------|----------|-------------|
-| `userId` | string | Yes | The target user ID to send the message to (direct channel). |
-| `text` | string | Yes | The text body of the rich message. |
-| `buttons` | object | No | Array of interactive buttons. Each button has {text: string, intent: {applicationId: string, action: string, params?: object}}. |
 
 ---
 
@@ -728,6 +709,36 @@ Pings a URL and returns whether it is reachable, the response latency in ms, and
 |-----------|------|----------|-------------|
 | `url` | string | Yes | The URL to ping. |
 | `timeout` | number | No | Request timeout in milliseconds. Defaults to 10000. |
+
+---
+
+### Text Chat Service (`TextChat`)
+
+Headless text-chat I/O for non-UI callers (agents, sub-agents, scripts). Read channel history and send messages without opening the TextChat application or changing the active channel. Encryption and decryption are handled automatically.
+
+*Source: `src/Services/TextChat/TextChatService.js`*
+
+#### `get-channel-history`
+
+Fetches the most recent messages for a text-chat channel by channelId, decrypted and ready to read. Returns a plain list of messages with authorId, body, timestamp, and messageType. Does not open any UI or change the active channel.
+
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `channelId` | string | Yes | The text-chat channel ID to load messages from. |
+| `limit` | number | No | Maximum number of messages to return. Defaults to 20. |
+| `beforeMessageId` | string | No | Load messages older than this messageId (for paginating backwards). |
+| `afterMessageId` | string | No | Load messages newer than this messageId (for paginating forwards). |
+
+#### `send-message`
+
+Sends a text message to a text-chat channel. You must provide EITHER a channelId (preferred when you already have one) OR a userId (for a direct message — the service resolves the direct channel automatically). Silent — does NOT open the TextChat application, does NOT change the active channel, does NOT affect any UI. Encryption is handled automatically if the channel is encrypted.
+
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `text` | string | Yes | The message body to send. |
+| `channelId` | string | No | Target channel ID. Use this when you already know the channel (e.g. from a platform event). Takes precedence over userId. |
+| `userId` | string | No | Target user ID for a direct message. The service resolves the direct channel by calling channel:getDirectChannel under the hood. Ignored if channelId is also provided. |
+| `buttons` | object[] | No | Optional interactive buttons to attach to the message as a rich card. |
 
 ---
 
