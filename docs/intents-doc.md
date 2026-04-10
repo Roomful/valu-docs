@@ -134,6 +134,28 @@ Open and display the specified chat channel
 |-----------|------|----------|-------------|
 | `channelId` | string | Yes | The unique identifier of the chat channel to display |
 
+#### `show-folder`
+
+Navigate to and open a specific folder in the CMS by its folder ID
+
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `folderId` | string | Yes | The unique identifier of the folder to open |
+
+#### `preview-resource`
+
+Open a resource (file) in the CMS preview viewer by its resource ID
+
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `resourceId` | string | Yes | The unique identifier of the resource to preview |
+
+#### `show-my-files`
+
+Navigate to the user's own files in the CMS (the "My Files" / "My Content" view). Use this when the user asks about their files, uploads, or personal content — do not use show-folder for this.
+
+*No parameters.*
+
 #### `show-community-channel`
 
 Open and display the specified community channel
