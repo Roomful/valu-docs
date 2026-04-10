@@ -1,7 +1,7 @@
 # Intents Reference
 
 > Auto-generated from application and service manifests.  
-> Generated on: 2026-04-09
+> Generated on: 2026-04-10
 
 ## Table of Contents
 
@@ -231,9 +231,9 @@ Opens the groups view and navigates to a specific group.
 
 Manage and chat with your personal connections.
 
-#### `show-user`
+#### `show-user-connections`
 
-Open view for the specified user
+Open the connections view for the specified user
 
 | Parameter | Type | Required | Description |
 |-----------|------|----------|-------------|
@@ -245,15 +245,15 @@ Open view for the specified user
 
 Your user profile
 
-#### `openForUser`
+#### `show-user`
 
-Opens the profile view for a specific user, or the current user if no userId is provided.
+Shows the profile view for a specific user, or the current user if no userId is provided.
 
 | Parameter | Type | Required | Description |
 |-----------|------|----------|-------------|
-| `userId` | string | No | The unique identifier of the user whose profile to open. Defaults to the current user. |
+| `userId` | string | Yes | The unique identifier of the user whose profile to open. |
 
-#### `openForUserWithMode`
+#### `open-profile-with-mode`
 
 Opens the profile view for a user and optionally navigates to a specific mode such as the marketplace.
 
