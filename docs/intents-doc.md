@@ -1,7 +1,7 @@
 # Intents Reference
 
 > Auto-generated from application and service manifests.  
-> Generated on: 2026-04-10
+> Generated on: 2026-04-12
 
 ## Table of Contents
 
@@ -176,24 +176,24 @@ Opens the community view and starts channel creation in a specific community con
 
 #### `show-channel`
 
-Opens the community view and navigates to a specific channel. IMPORTANT: rootChannel MUST always be the top-level (root) channel — never a sub-channel, never empty. Use subChannelId only when navigating deeper inside a root channel. Case 1 — navigating to a root channel: set rootChannel.channelId to the channel ID, omit subChannelId. Case 2 — navigating to a sub-channel: set rootChannel.channelId to the PARENT root channel ID, and set subChannelId to the target sub-channel ID. The RAG args channelId always refers to the currently selected channel (root or sub). Check the loaded channels tree in the AI context to determine if the target is a root channel or a sub-channel.
+Opens the community view and navigates to a specific channel. Use communityId from AI context. For a root channel: pass its id as rootChannelId, omit subChannelId. For a sub-channel: the sub-channel object in AI context has a rootChannelId field — pass that as rootChannelId, and the sub-channel id as subChannelId.
 
 | Parameter | Type | Required | Description |
 |-----------|------|----------|-------------|
-| `community` | object | Yes | Community object. Required fields: communityId (string), communityTitle (string). Use values from RAG args or AI context. |
-| `rootChannel` | object | Yes | Top-level root channel object. MUST NOT be empty. Required fields: channelId (string) — the root channel ID, title (string). Never put a sub-channel ID here. |
-| `subChannelId` | string | No | ID of the sub-channel to navigate to within the rootChannel. Only provide this when the target is a sub-channel. Omit entirely when navigating to the root channel itself. |
+| `communityId` | string | Yes | The community id from AI context. |
+| `rootChannelId` | string | Yes | The top-level root channel id. Never a sub-channel id. |
+| `subChannelId` | string | No | The sub-channel id to navigate into. Omit when navigating to the root channel itself. |
 
 #### `show-post`
 
-Opens the community view and navigates to a specific post within a channel. IMPORTANT: rootChannel MUST always be the top-level (root) channel — never a sub-channel, never empty. Use subChannelId only when the post lives inside a sub-channel. Case 1 — post is in a root channel: set rootChannel.channelId to the channel ID, omit subChannelId. Case 2 — post is in a sub-channel: set rootChannel.channelId to the PARENT root channel ID, and set subChannelId to the sub-channel ID. Check the loaded channels tree in the AI context to determine the correct hierarchy. Use messageId from the RAG args or AI context to identify the target post.
+Opens the community view and navigates to a specific post. Use communityId from AI context. For a post in a root channel: pass the channel id as rootChannelId, omit subChannelId. For a post in a sub-channel: pass the sub-channel's rootChannelId as rootChannelId, and the sub-channel id as subChannelId. Pass the post id as messageId.
 
 | Parameter | Type | Required | Description |
 |-----------|------|----------|-------------|
-| `community` | object | Yes | Community object. Required fields: communityId (string), communityTitle (string). Use values from RAG args or AI context. |
-| `rootChannel` | object | Yes | Top-level root channel object. MUST NOT be empty. Required fields: channelId (string) — the root channel ID, title (string). Never put a sub-channel ID here. |
-| `subChannelId` | string | No | ID of the sub-channel containing the post. Only provide when the post lives inside a sub-channel. Omit entirely when the post is in the root channel itself. |
-| `messageId` | string | No | The unique identifier of the post to display. Use the value from AI context. |
+| `communityId` | string | Yes | The community id from AI context. |
+| `rootChannelId` | string | Yes | The top-level root channel id. Never a sub-channel id. |
+| `messageId` | string | Yes | The post id from AI context. |
+| `subChannelId` | string | No | The sub-channel id containing the post. Omit when the post is in the root channel itself. |
 
 ---
 
@@ -325,18 +325,21 @@ initiate the opening of the Metaverse 3d application with spsific route
 
 #### `open-room`
 
-Open a specific room in the ValuVerse 3D environment by room ID.
+Open a specific room in the ValuVerse 3D environment. Both networkId and roomId are required. Use the networkId provided in context.
 
 | Parameter | Type | Required | Description |
 |-----------|------|----------|-------------|
+| `networkId` | string | Yes | The network the room belongs to. Use the networkId from context. |
 | `roomId` | string | Yes | The ID of the room to open. |
 
 #### `preview-prop`
 
-Navigate the camera to a specific prop in the current room, opening the Metaverse view. Only call this when the user explicitly asks to show, open, navigate to, or view a prop. Do not call this automatically when listing or describing props.
+Navigate the camera to a specific prop in a room, opening the Metaverse view. networkId, roomId, and propId are all required. Only call this when the user explicitly asks to show, open, navigate to, or view a prop. Do not call this automatically when listing or describing props.
 
 | Parameter | Type | Required | Description |
 |-----------|------|----------|-------------|
+| `networkId` | string | Yes | The network the room belongs to. Use the networkId from context. |
+| `roomId` | string | Yes | The ID of the room containing the prop. |
 | `propId` | string | Yes | The ID of the prop to navigate to. |
 
 ---
