@@ -1,7 +1,7 @@
 # Intents Reference
 
 > Auto-generated from application and service manifests.  
-> Generated on: 2026-04-12
+> Generated on: 2026-04-13
 
 ## Table of Contents
 
@@ -29,6 +29,7 @@
 - [Community Service (`Community`)](#community-service-community)
 - [Data Provider Service (`DataProvider`)](#data-provider-service-dataprovider)
 - [Events Service (`Events`)](#events-service-events)
+- [Groups Service (`Groups`)](#groups-service-groups)
 - [Networks Service (`Networks`)](#networks-service-networks)
 - [Resource Service (`Resources`)](#resource-service-resources)
 - [Rooms Service (`Rooms`)](#rooms-service-rooms)
@@ -575,6 +576,35 @@ Updates an existing meeting's fields (title, description, time, participants, or
 | `endDate` | string | No | New end date/time as a UTC ISO 8601 string (e.g. "2026-04-10T15:00:00.000Z"). Always use UTC — convert from local time if needed. |
 | `color` | string | No | New hex color code for the meeting (e.g. "#4299f5"). |
 | `participants` | string[] | No | Updated list of invited participant user IDs. |
+
+---
+
+### Groups Service (`Groups`)
+
+Group management service for listing groups the current user belongs to and their participants.
+
+*Source: `src/Services/Groups/GroupsService.js`*
+
+#### `list-groups`
+
+Returns groups the current user belongs to. Supports search and cursor-based pagination.
+
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `query` | string | No | Search query to filter groups by name. |
+| `limit` | number | No | Maximum number of groups to return. Defaults to 20. |
+| `cursor` | string | No | Pagination cursor for fetching the next page of results. |
+
+#### `list-group-participants`
+
+Returns participants of a specific group. Supports search and cursor-based pagination.
+
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `groupId` | string | Yes | The unique identifier of the group. |
+| `query` | string | No | Search query to filter participants by name. |
+| `limit` | number | No | Maximum number of participants to return. Defaults to 20. |
+| `cursor` | string | No | Pagination cursor for fetching the next page of results. |
 
 ---
 
