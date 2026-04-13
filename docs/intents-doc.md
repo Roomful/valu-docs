@@ -175,6 +175,14 @@ Opens the community view and starts channel creation in a specific community con
 | `mode` | string | No | The creation mode for the channel. |
 | `contentDirectoryTitle` | string | No | Display title for the content directory. |
 
+#### `open-community`
+
+Opens the community view and navigates to a community by its ID. Use when you only have a communityId and no specific channel to target — the app will land on the first available channel.
+
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `communityId` | string | Yes | The community id. |
+
 #### `show-channel`
 
 Opens the community view and navigates to a specific channel. Use communityId from AI context. For a root channel: pass its id as rootChannelId, omit subChannelId. For a sub-channel: the sub-channel object in AI context has a rootChannelId field — pass that as rootChannelId, and the sub-channel id as subChannelId.
@@ -475,7 +483,7 @@ Retrieves detailed information about a specific community by its ID.
 
 #### `get-channels`
 
-Lists channels within a specific community. Returns channel objects with channelId, title, and other properties.
+Lists channels within a specific community. Returns {communityId, channels[]} where each channel has channelId, rootChannelId (same as channelId — use this for entity tags), title, and other properties.
 
 | Parameter | Type | Required | Description |
 |-----------|------|----------|-------------|
@@ -484,12 +492,13 @@ Lists channels within a specific community. Returns channel objects with channel
 
 #### `get-posts`
 
-Loads posts/messages in a specific channel. Returns message objects with messageId, messageTitle, messageBody, authorId, created, attachments, upVoteCount, downVoteCount, and other properties.
+Loads posts/messages in a specific channel or sub-channel. Returns {communityId?, rootChannelId, subChannelId?, messages[]}. The rootChannelId and subChannelId in the response are the exact values to use when constructing community-post or community-sub-channel-post entity tags — no need to track them separately.
 
 | Parameter | Type | Required | Description |
 |-----------|------|----------|-------------|
-| `channelId` | string | Yes | The channel ID to load posts from (use originId from get-channels result). |
-| `subChannelId` | string | No | Sub-channel ID if loading from a nested channel. |
+| `channelId` | string | Yes | The root channel ID (use rootChannelId from get-channels result). |
+| `communityId` | string | No | The community ID. Pass this so the response echoes it back for entity tag construction. |
+| `subChannelId` | string | No | Sub-channel ID when loading posts from a nested channel. Use the subChannelId field from the app context sub-channel entry. |
 | `limit` | number | No | Number of posts to return. Defaults to 10. |
 | `afterMessageId` | string | No | Pagination cursor — ID of the last message from previous page. |
 
