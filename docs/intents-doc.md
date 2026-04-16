@@ -1,7 +1,7 @@
 # Intents Reference
 
 > Auto-generated from application and service manifests.  
-> Generated on: 2026-04-13
+> Generated on: 2026-04-16
 
 ## Table of Contents
 
@@ -101,6 +101,17 @@ Opens an AI‑powered chat session scoped to a specific room.
 | Parameter | Type | Required | Description |
 |-----------|------|----------|-------------|
 | `roomId` | string | Yes | The unique identifier of the room in which to start the AI chat. |
+
+#### `send-message`
+
+Sends a rich text message to a text-chat channel on behalf of an initiator (e.g. an AI agent or automated service). Silent — does NOT open or change the visible chat. Use channelId when you know it; otherwise provide userId for a direct message.
+
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `text` | string | Yes | The message body to send. |
+| `channelId` | string | No | Target channel ID. Takes precedence over userId. |
+| `userId` | string | No | Target user ID for a direct message. Ignored if channelId is provided. |
+| `buttons` | object[] | No | Optional interactive buttons to attach to the message as a rich card. |
 
 ---
 
@@ -319,6 +330,22 @@ Opens the Valu Guru app and starts a brand-new conversation session with an init
 Opens the Valu Guru app and switches to the Agents tab in the left panel.
 
 *No parameters.*
+
+#### `open-chat`
+
+Opens the Valu Guru app and navigates to a specific chat session by ID.
+
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `chatId` | string | Yes | The chat session ID to open. |
+
+#### `open-agent`
+
+Opens the Valu Guru app and navigates to a specific agent chat by ID.
+
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `agentId` | string | Yes | The agent ID to open. |
 
 ---
 
