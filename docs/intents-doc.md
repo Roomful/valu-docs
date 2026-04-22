@@ -1,7 +1,7 @@
 # Intents Reference
 
 > Auto-generated from application and service manifests.  
-> Generated on: 2026-04-21
+> Generated on: 2026-04-22
 
 ## Table of Contents
 
@@ -37,6 +37,7 @@
 - [Text Chat Service (`TextChat`)](#text-chat-service-textchat)
 - [Users Service (`Users`)](#users-service-users)
 - [Valu Guru Service (`AiGuru`)](#valu-guru-service-aiguru)
+- [Verus Wallet Service (`VerusWallet`)](#verus-wallet-service-veruswallet)
 
 ---
 
@@ -945,6 +946,34 @@ Returns the in-memory message history for a background agent.
 | Parameter | Type | Required | Description |
 |-----------|------|----------|-------------|
 | `agentId` | string | Yes | ID of the background agent whose message history to retrieve. |
+
+---
+
+### Verus Wallet Service (`VerusWallet`)
+
+Executes on-chain transfers from an AI agent's attached Verus wallet identity. Every call takes an agentId — the client resolves which wallet is attached to that agent. Returns an error if the agent has no wallet attached or the wallet has not finished being provisioned on-chain.
+
+*Source: `src/Services/AiGuru/VerusWalletService.js`*
+
+#### `transfer`
+
+Send currency from the agent's attached Verus wallet to a destination address or identity. Call this when the user or agent needs to move funds out of an agent wallet. Fails if the agent has no wallet attached, or if the wallet is still pending creation.
+
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `agentId` | string | Yes | ID of the AI agent performing the transfer. The service looks up which wallet identity is attached to this agent — NEVER pass a wallet ID or i-address here. |
+| `destination` | string | Yes | Recipient address, i-address, or Verus identity (e.g. "alice@"). |
+| `amount` | number | Yes | Amount to send (positive number). Interpreted in the selected currency — defaults to VRSC when currency is omitted. |
+| `currency` | string | No | Currency ticker or identity (e.g. "VRSC", "VRSC-BTC"). Defaults to the native chain currency. |
+| `memo` | string | No | Optional memo attached to the transaction. |
+
+#### `get-balance`
+
+Return the last-known balance of the wallet attached to the specified agent. Reads from the client cache — call verus:getAgentsBalance (via AiGuruStore.refreshAgentBalances) for a fresh value.
+
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `agentId` | string | Yes | ID of the AI agent whose wallet balance should be returned. |
 
 ---
 
