@@ -1,7 +1,7 @@
 # Intents Reference
 
 > Auto-generated from application and service manifests.  
-> Generated on: 2026-04-22
+> Generated on: 2026-04-24
 
 ## Table of Contents
 
@@ -24,6 +24,7 @@
 
 ### Services
 
+- [Application Service (`Application`)](#application-service-application)
 - [Application Storage Service (`ApplicationStorage`)](#application-storage-service-applicationstorage)
 - [CMS Service (`CMS`)](#cms-service-cms)
 - [Community Service (`Community`)](#community-service-community)
@@ -399,6 +400,22 @@ Connects to a specific meeting by room, prop, group, or user and manages video c
 ---
 
 ## Service Intents
+
+### Application Service (`Application`)
+
+Issues short-lived signed identity JWTs for iFrame (mini-app) applications. Allows an embedded application to obtain a signed token proving the current user's identity to the mini-app's own backend.
+
+*Source: `src/Services/Application/ApplicationService.js`*
+
+#### `get-identity-token`
+
+Issues a short-lived signed identity JWT for the given mini-app. Requires the user to be authenticated. JWT claims: sub=userId, aud=applicationId, iss=platform, exp=5min.
+
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `applicationId` | string | Yes | The unique identifier of the mini-app (iFrame application) to issue the identity token for. Used as the JWT audience claim. |
+
+---
 
 ### Application Storage Service (`ApplicationStorage`)
 
