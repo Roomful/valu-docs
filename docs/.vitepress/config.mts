@@ -82,6 +82,7 @@ export default defineConfigWithTheme({
           {text: 'Valu Overview', link: '/valu-overview'},
           {text: 'Valuverse SuperApp API', link: '/valu-api'},
           {text: 'Valuverse API Snippets', link: 'valu-snippets'},
+          {text: 'Identity Token Validation', link: '/identity-token-validation'},
           {text: 'Intents Reference', link: '/intents-doc'},
           {text: 'Valu Routing', link: '/valu-routing'},
           {text: 'CMS Service API', link: '/cms-service'},
