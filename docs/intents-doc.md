@@ -409,11 +409,9 @@ Issues short-lived signed identity JWTs for iFrame (mini-app) applications. Allo
 
 #### `get-identity-token`
 
-Issues a short-lived signed identity JWT for the given mini-app. Requires the user to be authenticated. JWT claims: sub=userId, aud=applicationId, iss=platform, exp=5min.
+Issues a short-lived signed identity JWT for the calling mini-app. The target application is inferred from the intent sender — no parameters needed. Requires the user to be authenticated. JWT claims: sub=userId, aud=callingApplicationId, iss=platform, exp=5min.
 
-| Parameter | Type | Required | Description |
-|-----------|------|----------|-------------|
-| `applicationId` | string | Yes | The unique identifier of the mini-app (iFrame application) to issue the identity token for. Used as the JWT audience claim. |
+*No parameters.*
 
 ---
 
