@@ -16,13 +16,9 @@ From the miniapp, call the `Application` service intent `get-identity-token` to 
 | Action | `get-identity-token` |
 | Availability | Developer |
 
-**Parameters:**
+**Parameters:** None — the target application is inferred from the calling mini-app.
 
-| Name | Type | Required | Description |
-| ---- | ---- | -------- | ----------- |
-| `applicationId` | `string` | Yes | The unique identifier of the mini-app (iFrame application) to issue the identity token for. Used as the JWT `aud` claim. |
-
-**JWT claims returned:** `sub` = userId, `aud` = applicationId, `iss` = platform, `exp` = 5 min from now.
+**JWT claims returned:** `sub` = userId, `aud` = callingApplicationId, `iss` = platform, `exp` = 5 min from now.
 
 ### Usage example
 
@@ -36,9 +32,7 @@ if (!valuApi) {
 
 async function fetchIdentityToken() {
   const appService = await valuApi.getApi('Application');
-  const token = await appService.run('get-identity-token', {
-    applicationId: 'YOUR_APP_ID',
-  });
+  const token = await appService.run('get-identity-token');
 
   // Send the token to your backend with each request
   const res = await fetch('https://your-backend.example.com/api/data', {
@@ -49,7 +43,7 @@ async function fetchIdentityToken() {
 ```
 
 ::: warning
-The token is valid for **5 minutes**. Request a fresh one for each backend call.
+The token is valid for **5 minutes**. You can reuse it for multiple requests within that window — just make sure to request a fresh one before it expires.
 :::
 
 ## Fetch the public keys
