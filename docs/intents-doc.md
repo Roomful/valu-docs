@@ -12,6 +12,7 @@
 - [Chats (`textchat`)](#chats-textchat)
 - [CMS (`cms`)](#cms-cms)
 - [Communities (`community`)](#communities-community)
+- [Content Studio (`content-studio`)](#content-studio-content-studio)
 - [Content Studio (`staging-content-studio`)](#content-studio-staging-content-studio)
 - [Groups (`groups`)](#groups-groups)
 - [LLM Activity (`llmactivity`)](#llm-activity-llmactivity)
@@ -220,25 +221,97 @@ Opens the community view and navigates to a specific post. Use communityId from 
 
 ---
 
+### Content Studio (`content-studio`)
+
+#### `open-create`
+
+Open the content upload page with an optional upload destination
+
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `roomId` | string | No | ID of the room to upload to |
+| `communityId` | string | No | ID of the community to upload to |
+| `channelId` | string | No | ID of the channel to upload to |
+| `groupId` | string | No | ID of the group to upload to |
+| `label` | string | No | Label to apply to the content |
+| `department` | string | No | Department associated with the content |
+| `theme` | string | No | Theme to apply to the upload page |
+
+#### `open-edit`
+
+Open the edit page for a specific content item
+
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `contentItemId` | string | Yes | ID of the content item to edit |
+| `roomId` | string | No | ID of the room context |
+| `communityId` | string | No | ID of the community context |
+| `channelId` | string | No | ID of the channel context |
+| `groupId` | string | No | ID of the group context |
+| `label` | string | No | Label to apply to the content |
+| `department` | string | No | Department associated with the content |
+| `theme` | string | No | Theme to apply to the edit page |
+
+#### `open-search`
+
+Open the search page
+
+*No parameters.*
+
+#### `navigate`
+
+Navigate to a specific route within Content Studio
+
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `route` | string | Yes | The route path to navigate to within Content Studio |
+
+---
+
 ### Content Studio (`staging-content-studio`)
 
-#### `toggle`
+#### `open-create`
 
-Toggle the floating navigation menu (show if hidden, hide if visible)
+Open the content upload page with an optional upload destination
+
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `roomId` | string | No | ID of the room to upload to |
+| `communityId` | string | No | ID of the community to upload to |
+| `channelId` | string | No | ID of the channel to upload to |
+| `groupId` | string | No | ID of the group to upload to |
+| `label` | string | No | Label to apply to the content |
+| `department` | string | No | Department associated with the content |
+| `theme` | string | No | Theme to apply to the upload page |
+
+#### `open-edit`
+
+Open the edit page for a specific content item
+
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `contentItemId` | string | Yes | ID of the content item to edit |
+| `roomId` | string | No | ID of the room context |
+| `communityId` | string | No | ID of the community context |
+| `channelId` | string | No | ID of the channel context |
+| `groupId` | string | No | ID of the group context |
+| `label` | string | No | Label to apply to the content |
+| `department` | string | No | Department associated with the content |
+| `theme` | string | No | Theme to apply to the edit page |
+
+#### `open-search`
+
+Open the search page
 
 *No parameters.*
 
-#### `show`
+#### `navigate`
 
-Show the floating navigation menu
+Navigate to a specific route within Content Studio
 
-*No parameters.*
-
-#### `hide`
-
-Hide the floating navigation menu
-
-*No parameters.*
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `route` | string | Yes | The route path to navigate to within Content Studio |
 
 ---
 
