@@ -1,8 +1,9 @@
 import {defineConfigWithTheme} from "vitepress";
 import baseConfig from "vitepress-carbon/config";
+import {withMermaid} from "vitepress-plugin-mermaid";
 
 // https://vitepress.dev/reference/site-config
-export default defineConfigWithTheme({
+export default defineConfigWithTheme(withMermaid({
   extends: baseConfig,
   cleanUrls: true,
 
@@ -100,5 +101,12 @@ export default defineConfigWithTheme({
     socialLinks: [
       {icon: 'github', link: 'https://github.com/Roomful/valu-docs'}
     ]
-  }
-})
+  },
+  
+  mermaid: {
+    // refer https://mermaid.js.org/config/setup/modules/mermaidAPI.html#mermaidapi-configuration-defaults for options
+  },
+  mermaidPlugin: {
+    class: "mermaid", // set additional css classes for parent container 
+  },
+}))
