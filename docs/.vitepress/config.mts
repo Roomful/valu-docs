@@ -3,7 +3,7 @@ import baseConfig from "vitepress-carbon/config";
 import mermaidPlugin from "./mermaidPlugin.mjs";
 
 // https://vitepress.dev/reference/site-config
-export default defineConfigWithTheme(withMermaid({
+export default defineConfigWithTheme({
   extends: baseConfig,
   cleanUrls: true,
 
