@@ -1,6 +1,9 @@
-import { VPCarbon } from 'vitepress-carbon'
-//Uncomment to use custom css
-//import './override.css'
+import {VPCarbon} from "vitepress-carbon";
+import Mermaid from "./Mermaid.vue";
 
-export default VPCarbon;
-
+export default {
+  extends: VPCarbon,
+  enhanceApp({app}) {
+    app.component('Mermaid', Mermaid);
+  }
+};

@@ -1,6 +1,6 @@
 import {defineConfigWithTheme} from "vitepress";
 import baseConfig from "vitepress-carbon/config";
-import {withMermaid} from "vitepress-plugin-mermaid";
+import mermaidPlugin from "./mermaidPlugin.mjs";
 
 // https://vitepress.dev/reference/site-config
 export default defineConfigWithTheme(withMermaid({
@@ -9,6 +9,13 @@ export default defineConfigWithTheme(withMermaid({
 
   title: "Valuverse Docs",
   description: "Developers documentation for developers",
+  
+  markdown: {
+    config: md => {
+      md.use(mermaidPlugin);
+    }
+  },
+  
   head: [
     ['link', {rel: 'icon', href: '/_resources/favicon.ico'}],
     [
@@ -102,11 +109,4 @@ export default defineConfigWithTheme(withMermaid({
       {icon: 'github', link: 'https://github.com/Roomful/valu-docs'}
     ]
   },
-  
-  mermaid: {
-    // refer https://mermaid.js.org/config/setup/modules/mermaidAPI.html#mermaidapi-configuration-defaults for options
-  },
-  mermaidPlugin: {
-    class: "mermaid", // set additional css classes for parent container 
-  },
-}))
+})
