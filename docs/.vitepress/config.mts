@@ -89,6 +89,7 @@ export default defineConfigWithTheme({
         items: [
           {text: 'Valu Overview', link: '/valu-overview'},
           {text: 'Valuverse SuperApp API', link: '/valu-api'},
+          {text: 'Valuverse Bootsrap Pipeline', link: '/application-pipeline'},
           {text: 'Valuverse API Snippets', link: 'valu-snippets'},
           {text: 'Identity Token Validation', link: '/identity-token-validation'},
           {text: 'Intents Reference', link: '/intents-doc'},

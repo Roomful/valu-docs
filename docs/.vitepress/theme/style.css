@@ -137,7 +137,6 @@
   --docsearch-primary-color: var(--vp-c-brand-1) !important;
 }
 
-.mermaid {
+.mermaid-container {
   text-align: center;
 }
-
