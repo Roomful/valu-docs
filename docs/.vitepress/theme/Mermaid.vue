@@ -145,9 +145,7 @@ async function renderMermaid() {
   }
 }
 
-onMounted(async () => {
-  await renderMermaid();
-  
+async function panzoomMermaid() {
   const $ = document.querySelectorAll('.mermaid-container svg:not(.panzoomsvg)');  
   if ($?.length > 0) {
     for(let i = 0, length = $.length; i < length; i++) {
@@ -157,21 +155,27 @@ onMounted(async () => {
         minZoom: 0.5,
         
         beforeWheel: (e) => {
-          return !e.shiftKey;
+          return !(e.shiftKey || e.ctrlKey);
         },
         beforeMouseDown: (e) => {
-          return !e.shiftKey;
+          return !(e.shiftKey || e.ctrlKey);
         }
       });
       $[i].classList.add('panzoomsvg');
     }
   }
+}
+
+onMounted(async () => {
+  await renderMermaid();
+  await panzoomMermaid();
 });
 
 
-watch(isDark, () => {
+watch(isDark, async () => {
   // svgContent.value = '';
-  renderMermaid();
+  await renderMermaid();
+  await panzoomMermaid();
 });
 
 </script>
