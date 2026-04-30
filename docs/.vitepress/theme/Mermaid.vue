@@ -42,10 +42,6 @@ async function renderMermaid() {
       tertiaryTextColor: '#000',
       tertiaryBorderColor: '#fff',
       
-      noteTextColor: '#000',
-      noteBkgColor: '#ccc',
-      noteBorderColor: '#fff',
-      
       labelColor: '#000',
       altBackground: '#fff',
       lineColor: '#fff',
@@ -65,6 +61,7 @@ async function renderMermaid() {
       
       noteBkgColor: '#000',
       noteTextColor: '#fff',
+      noteBorderColor: '#fff',
       
       nodeTextColor: '#000',
       nodeBorder: '#000',
@@ -93,10 +90,6 @@ async function renderMermaid() {
       tertiaryTextColor: '#fff',
       tertiaryBorderColor: '#000',
       
-      noteTextColor: '#000',
-      noteBkgColor: '#ccc',
-      noteBorderColor: '#000',
-      
       labelColor: '#000',
       altBackground: '#000',
       lineColor: '#000',
@@ -115,6 +108,7 @@ async function renderMermaid() {
       
       noteBkgColor: '#fff',
       noteTextColor: '#000',
+      noteBorderColor: '#000',
       
       nodeTextColor: '#fff',
       nodeBorder: '#fff',

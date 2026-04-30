@@ -2,25 +2,25 @@
 
 ## Overview
 
-The application initialization pipeline implements a sequential process for loading, registering, and activating system components. The process begins with mounting the root React component in [`application.jsx`](src/application.jsx:1) and concludes with rendering UI components after full initialization of services, stores, and WebSocket connection.
+The application initialization pipeline implements a sequential process for loading, registering, and activating system components. The process begins with mounting the root React component in src/application.jsx and concludes with rendering UI components after full initialization of services, stores, and WebSocket connection.
 
 ### Purpose
 
 The pipeline ensures:
 - Deterministic order of dependency initialization
-- Centralized registration of services and stores through [`ApplicationStore`](src/Stores/Application/ApplicationStore.js:1)
+- Centralized registration of services and stores through src/Stores/Application/ApplicationStore.js
 - State synchronization between modules via WebSocket events
 - Lazy loading of applications for performance optimization
 
 ### Entry Point
 
-The launch process is initiated in [`application.jsx`](src/application.jsx:1):
+The launch process is initiated in src/application.jsx:
 
 ```javascript
 createRoot(document.getElementById('root')).render(<RootApplication />)
 ```
 
-`RootApplication` loads `LazyMultipleApplicationLoader`, which dynamically imports [`MultipleApplication`](src/Applications/MultipleApplication/MultipleApplication.jsx:1).
+`RootApplication` loads `LazyMultipleApplicationLoader`, which dynamically imports src/Applications/MultipleApplication/MultipleApplication.jsx.
 
 ---
 
@@ -95,7 +95,7 @@ ApplicationBuilder
 
 ### Phase 1: ApplicationStore Creation
 
-**Trigger:** `ApplicationBuilder` initialization in [`MultipleApplication.jsx`](src/Applications/MultipleApplication/MultipleApplication.jsx:1).
+**Trigger:** `ApplicationBuilder` initialization in src/Applications/MultipleApplication/MultipleApplication.jsx.
 
 **Actions:**
 1. Create `ApplicationStore` instance with passed services, stores, and router
@@ -168,7 +168,7 @@ ApplicationBuilder
 **Trigger:** Mounting flag set through `setMounted(true)`.
 
 **Actions:**
-Rendering components of [`MultipleApplicationComponent`](src/Applications/MultipleApplication/Components/MultipleApplicationComponent.jsx:1):
+Rendering components of src/Applications/MultipleApplication/Components/MultipleApplicationComponent.jsx:
 - AudioTracks — audio track management
 - SidebarMenu — side navigation menu
 - DockContainer — application docking container
@@ -727,9 +727,9 @@ When modifying the initialization pipeline:
 
 | File | Description |
 |------|-------------|
-| [`application.jsx`](src/application.jsx:1) | Application entry point, RootApplication mounting |
-| [`MultipleApplication.jsx`](src/Applications/MultipleApplication/MultipleApplication.jsx:1) | Main component for multiple applications |
-| [`ApplicationBuilder`](src/Stores/Application/ApplicationStore.js:1) | Application constructor, initialization orchestration |
-| [`ApplicationStore`](src/Stores/Application/ApplicationStore.js:1) | Central hub for service and store registration |
-| [`Network Service`](src/Services/Network/NetworkService.js:1) | Network request management and configuration |
-| [`WebSocket Service`](src/Services/WebSocket/WebSocket.js:1) | Real-time connection through WebSocket |
+| src/application.jsx | Application entry point, RootApplication mounting |
+| src/Applications/MultipleApplication/MultipleApplication.jsx | Main component for multiple applications |
+| src/Stores/Application/ApplicationStore.js | Application constructor, initialization orchestration |
+| src/Stores/Application/ApplicationStore.js | Central hub for service and store registration |
+| src/Services/Network/NetworkService.js | Network request management and configuration |
+| src/Services/WebSocket/WebSocket.js | Real-time connection through WebSocket |
