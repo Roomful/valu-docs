@@ -1,7 +1,7 @@
 # Intents Reference
 
 > Auto-generated from application and service manifests.  
-> Generated on: 2026-05-01
+> Generated on: 2026-05-06
 
 ## Table of Contents
 
@@ -909,6 +909,17 @@ Sends a text message to a text-chat channel. You must provide EITHER a channelId
 | `text` | string | Yes | The message body to send. |
 | `channelId` | string | No | Target channel ID. Use this when you already know the channel (e.g. from a platform event). Takes precedence over userId. |
 | `userId` | string | No | Target user ID for a direct message. The service resolves the direct channel by calling channel:getDirectChannel under the hood. Ignored if channelId is also provided. |
+| `buttons` | object[] | No | Optional interactive buttons to attach to the message as a rich card. |
+
+#### `send-agent-message`
+
+Sends a message to a specific user authored by the AI agent itself (NOT by the agent's host/owner). Unlike send-message — which sends as the logged-in user — this delivers the text into the dedicated agent-to-user channel resolved from source `userAIAgent:{userId}:{agentId}`. The recipient sees the agent as the author. The channel is created on first use. Silent — does NOT open the TextChat application or change the active channel. The recipient may be any user, including the agent's own host.
+
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `userId` | string | Yes | Recipient user ID. The user who will receive the message in their agent channel. |
+| `agentId` | string | Yes | The calling agent's own ID. Used to address the dedicated `userAIAgent:{userId}:{agentId}` channel so the message is authored by this agent. |
+| `text` | string | Yes | The message body to send. |
 | `buttons` | object[] | No | Optional interactive buttons to attach to the message as a rich card. |
 
 ---
