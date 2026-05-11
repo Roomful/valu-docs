@@ -20,7 +20,7 @@
 - [Profile (`profile`)](#profile-profile)
 - [Resources Viewer (`preview`)](#resources-viewer-preview)
 - [Rooms (`rooms`)](#rooms-rooms)
-- [Valu Guru (`aiguru`)](#valu-guru-aiguru)
+- [Valu Guru (`valuguru`)](#valu-guru-valuguru)
 - [ValuVerse Application (`metaverse`)](#valuverse-application-metaverse)
 - [Video Chat (`videochat`)](#video-chat-videochat)
 
@@ -402,7 +402,7 @@ Opens the room invitation dialog for a specific room.
 
 ---
 
-### Valu Guru (`aiguru`)
+### Valu Guru (`valuguru`)
 
 #### `start-session`
 
