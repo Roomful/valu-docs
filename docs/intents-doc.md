@@ -1,7 +1,7 @@
 # Intents Reference
 
 > Auto-generated from application and service manifests.  
-> Generated on: 2026-05-11
+> Generated on: 2026-05-14
 
 ## Table of Contents
 
@@ -33,6 +33,7 @@
 - [Data Provider Service (`DataProvider`)](#data-provider-service-dataprovider)
 - [Events Service (`Events`)](#events-service-events)
 - [Groups Service (`Groups`)](#groups-service-groups)
+- [Logging Service (`Logging`)](#logging-service-logging)
 - [Networks Service (`Networks`)](#networks-service-networks)
 - [Resource Service (`Resources`)](#resource-service-resources)
 - [Rooms Service (`Rooms`)](#rooms-service-rooms)
@@ -743,6 +744,22 @@ Returns participants of a specific group. Supports search and cursor-based pagin
 | `query` | string | No | Search query to filter participants by name. |
 | `limit` | number | No | Maximum number of participants to return. Defaults to 20. |
 | `cursor` | string | No | Pagination cursor for fetching the next page of results. |
+
+---
+
+### Logging Service (`Logging`)
+
+Exposes the in-memory console log buffer captured by ConsoleLogCapture for diagnostics and bug reporting.
+
+*Source: `src/Services/Logging/LoggingService.js`*
+
+#### `get-logs`
+
+Returns the captured console log buffer (log, info, warn, error) since app start. Choose the format: "text" returns { format: "text", text: <string> } with one line per entry; "file" returns { format: "file", filename, mimeType, size, file: File } — the File is for direct callers (upload/download) and is omitted in the AI/MCP serialized response, which still includes filename, mimeType, and size.
+
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `format` | string | No | Output format. Must be one of: "text", "file". Defaults to "text". |
 
 ---
 
