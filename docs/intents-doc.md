@@ -1,7 +1,7 @@
 # Intents Reference
 
 > Auto-generated from application and service manifests.  
-> Generated on: 2026-05-14
+> Generated on: 2026-05-15
 
 ## Table of Contents
 
@@ -358,13 +358,19 @@ Open the connections view for the specified user
 
 Your user profile
 
+#### `show-current-user`
+
+Opens the profile view for the currently signed-in user.
+
+*No parameters.*
+
 #### `show-user`
 
 Shows the profile view for a specific user, or the current user if no userId is provided.
 
 | Parameter | Type | Required | Description |
 |-----------|------|----------|-------------|
-| `userId` | string | Yes | The unique identifier of the user whose profile to open. |
+| `userId` | string | No | The unique identifier of the user whose profile to open. Defaults to the current user. |
 
 #### `open-profile-with-mode`
 
