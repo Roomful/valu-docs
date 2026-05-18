@@ -1,7 +1,7 @@
 # Intents Reference
 
 > Auto-generated from application and service manifests.  
-> Generated on: 2026-05-15
+> Generated on: 2026-05-18
 
 ## Table of Contents
 
@@ -503,6 +503,12 @@ Issues short-lived signed identity JWTs for iFrame (mini-app) applications. Allo
 #### `get-identity-token`
 
 Issues a short-lived signed identity JWT for the calling mini-app. The target application is inferred from the intent sender — no parameters needed. Requires the user to be authenticated. JWT claims: sub=userId, aud=callingApplicationId, iss=platform, exp=5min.
+
+*No parameters.*
+
+#### `close_all`
+
+Closes all currently loaded applications and clears all docks. Unlike the normal close flow, does not re-open the default application — the UI stays blank with no application displayed.
 
 *No parameters.*
 
