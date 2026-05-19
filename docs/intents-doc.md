@@ -1,7 +1,7 @@
 # Intents Reference
 
 > Auto-generated from application and service manifests.  
-> Generated on: 2026-05-18
+> Generated on: 2026-05-19
 
 ## Table of Contents
 
@@ -892,6 +892,37 @@ Returns details for a single prop by ID (name, type, contentCount, assetId) with
 | `propId` | string | Yes | The unique prop identifier. |
 | `roomId` | string | Yes | The room the prop belongs to. |
 | `networkId` | string | No | Network ID the room belongs to. |
+
+#### `list-prop-team-members`
+
+Lists all team member invitations for a prop in a room. Returns an array of invitation records, each containing the invited user's ID, their permissions (view/comment/contribute/edit/manage), and any stored custom metadata (e.g. an assigned agent via customParams.agentInfo).
+
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `roomId` | string | Yes | The room the prop belongs to. |
+| `propId` | string | Yes | The prop whose team members to list. |
+
+#### `invite-to-prop`
+
+Adds a user to a prop's team, or updates an existing team member's permissions and metadata. When called for a user already in the team this acts as an update — the invitation is replaced with the new permissions and customParams. Use list-prop-team-members first to check current membership before inviting.
+
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `roomId` | string | Yes | The room the prop belongs to. |
+| `propId` | string | Yes | The prop to invite the user to. |
+| `invitedUser` | string | Yes | User ID of the person to invite or update. |
+| `permissions` | object | No | Permission flags for the team member: { view: boolean, comment: boolean, contribute: boolean, edit: boolean, manage: boolean }. Defaults to view-only (view: true, all others false) when omitted. |
+| `customParams` | object | No | Arbitrary metadata stored on the invitation. Supports agentInfo: { id, name, description, avatarUrl } to assign an AI agent to this team member. Pass customParams: { agentInfo: null } to clear a previously assigned agent. |
+
+#### `delete-prop-invitation`
+
+Removes a user from a prop's team by deleting their invitation. Use list-prop-team-members first to confirm the user is currently a team member.
+
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `roomId` | string | Yes | The room the prop belongs to. |
+| `propId` | string | Yes | The prop to remove the user from. |
+| `invitedUser` | string | Yes | User ID of the team member to remove. |
 
 ---
 
