@@ -1,7 +1,7 @@
 # Intents Reference
 
 > Auto-generated from application and service manifests.  
-> Generated on: 2026-05-19
+> Generated on: 2026-05-25
 
 ## Table of Contents
 
@@ -895,7 +895,7 @@ Returns details for a single prop by ID (name, type, contentCount, assetId) with
 
 #### `list-prop-team-members`
 
-Lists all team member invitations for a prop in a room. Returns an array of invitation records, each containing the invited user's ID, their permissions (view/comment/contribute/edit/manage), and any stored custom metadata (e.g. an assigned agent via customParams.agentInfo).
+Lists all team member invitations for a prop in a room. Returns an array of invitation records, each containing the invited user's ID, their permissions (view/comment/contribute/edit/manage), and any stored custom metadata. Agent assignments are stored id-only as `customParams.agentInfo.id` (string). Older rows may still carry the full snapshot `customParams.agentInfo: { id, name, description, avatarUrl }` — only `id` is read; everything else is resolved from the live agent.
 
 | Parameter | Type | Required | Description |
 |-----------|------|----------|-------------|
@@ -912,7 +912,7 @@ Adds a user to a prop's team, or updates an existing team member's permissions a
 | `propId` | string | Yes | The prop to invite the user to. |
 | `invitedUser` | string | Yes | User ID of the person to invite or update. |
 | `permissions` | object | No | Permission flags for the team member: { view: boolean, comment: boolean, contribute: boolean, edit: boolean, manage: boolean }. Defaults to view-only (view: true, all others false) when omitted. |
-| `customParams` | object | No | Arbitrary metadata stored on the invitation. Supports agentInfo: { id, name, description, avatarUrl } to assign an AI agent to this team member. Pass customParams: { agentInfo: null } to clear a previously assigned agent. |
+| `customParams` | object | No | Arbitrary metadata stored on the invitation. To assign an AI agent to this team member, pass `customParams: { agentInfo: { id: "<agent-id>", avatarResourceId: "<picked-3d-avatar-resource-id>" | null } }` (id-only — do NOT include name/description/avatarUrl, those are resolved from the live agent). `avatarResourceId` is the team member's picked 3D avatar for this prop, or `null` when nothing has been picked — readers fall back to the user's own 3D profile avatar in that case. Pass `customParams: null` to clear a previously assigned agent. The full-snapshot shape `agentInfo: { id, name, description, avatarUrl }` is still read for backwards compatibility but only `id` is used. |
 
 #### `delete-prop-invitation`
 
