@@ -21,6 +21,7 @@
 - [Resources Viewer (`preview`)](#resources-viewer-preview)
 - [Rooms (`rooms`)](#rooms-rooms)
 - [Valu Guru (`valuguru`)](#valu-guru-valuguru)
+- [Valu Puzzles (`puzzles`)](#valu-puzzles-puzzles)
 - [ValuVerse Application (`metaverse`)](#valuverse-application-metaverse)
 - [Video Chat (`videochat`)](#video-chat-videochat)
 
@@ -442,6 +443,22 @@ Opens the Valu Guru app and navigates to a specific agent chat by ID.
 | Parameter | Type | Required | Description |
 |-----------|------|----------|-------------|
 | `agentId` | string | Yes | The agent ID to open. |
+
+---
+
+### Valu Puzzles (`puzzles`)
+
+Valu puzzle games
+
+#### `start-puzzle`
+
+Open Valu Puzzles and launch a specific puzzle, optionally with a score-to-beat challenge from another user.
+
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `puzzleId` | string | Yes | Which puzzle to start. One of: "sliding" (Sliding Puzzle), "memory" (Memory Match), "sudoku" (Mini Sudoku), "wordscramble" (Word Scramble). |
+| `scoreToBeat` | number | No | Target score (0–999) the recipient should try to beat. Shown as a challenge banner above the puzzle; if the player exceeds it the result screen reads "Beat <challengerName>!". |
+| `challengerName` | string | No | Display name of the user who issued the challenge. Shown on the challenge banner alongside the target score. |
 
 ---
 
