@@ -33,11 +33,11 @@
 - [Data Provider Service (`DataProvider`)](#data-provider-service-dataprovider)
 - [Events Service (`Events`)](#events-service-events)
 - [Groups Service (`Groups`)](#groups-service-groups)
+- [HTTP Service (`Http`)](#http-service-http)
 - [Logging Service (`Logging`)](#logging-service-logging)
 - [Networks Service (`Networks`)](#networks-service-networks)
 - [Resource Service (`Resources`)](#resource-service-resources)
 - [Rooms Service (`Rooms`)](#rooms-service-rooms)
-- [Server Status Service (`ServerStatus`)](#server-status-service-serverstatus)
 - [Text Chat Service (`TextChat`)](#text-chat-service-textchat)
 - [Time Service (`Time`)](#time-service-time)
 - [Users Service (`Users`)](#users-service-users)
@@ -760,6 +760,47 @@ Returns participants of a specific group. Supports search and cursor-based pagin
 
 ---
 
+### HTTP Service (`Http`)
+
+Generic HTTP utility: reachability ping, GET, and POST against any URL. Requests are sent without user credentials (cookies are stripped); responses include status, headers, and body. Timeouts are capped server-side.
+
+*Source: `src/Services/Http/HttpService.js`*
+
+#### `ping`
+
+Pings a URL with HEAD and returns whether it is reachable, the response latency in ms, and the HTTP status code (0 for cross-origin or unreachable servers). Returns: { up: boolean, latency: number, status: number, error?: string }.
+
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `url` | string | Yes | The URL to ping. |
+| `timeout` | number | No | Request timeout in milliseconds. Defaults to 10000, max 60000. |
+
+#### `get`
+
+Performs an HTTP GET against the URL and returns the response. Body is auto-parsed as JSON when the response Content-Type is application/json (or *+json), otherwise as text. Returns: { ok: boolean, status: number, statusText: string, headers: object, body: any, bodyType: "json"|"text", latency: number, error?: string }.
+
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `url` | string | Yes | Absolute URL to GET. |
+| `headers` | object | No | Map of request headers to send (e.g. { "Accept": "application/json" }). |
+| `timeout` | number | No | Request timeout in milliseconds. Defaults to 30000, max 60000. |
+| `responseType` | string | No | How to parse the response body: "auto" (default — JSON if Content-Type matches, else text), "json", or "text". |
+
+#### `post`
+
+Performs an HTTP POST against the URL with the given body and returns the response (same shape as get). If `body` is a plain object it is JSON-stringified and Content-Type defaults to application/json; strings are sent verbatim with the supplied or existing Content-Type.
+
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `url` | string | Yes | Absolute URL to POST to. |
+| `body` | object | No | Request body. Plain object → JSON-stringified; string → sent verbatim. Omit for an empty-body POST. |
+| `headers` | object | No | Map of request headers to send. |
+| `contentType` | string | No | Override the Content-Type header (defaults to application/json when `body` is an object). |
+| `timeout` | number | No | Request timeout in milliseconds. Defaults to 30000, max 60000. |
+| `responseType` | string | No | How to parse the response body: "auto" (default), "json", or "text". |
+
+---
+
 ### Logging Service (`Logging`)
 
 Exposes the in-memory console log buffer captured by ConsoleLogCapture for diagnostics and bug reporting.
@@ -924,23 +965,6 @@ Removes a user from a prop's team by deleting their invitation. Use list-prop-te
 | `roomId` | string | Yes | The room the prop belongs to. |
 | `propId` | string | Yes | The prop to remove the user from. |
 | `invitedUser` | string | Yes | User ID of the team member to remove. |
-
----
-
-### Server Status Service (`ServerStatus`)
-
-Checks whether a remote URL is reachable by sending a HEAD request and returning up/down status with latency.
-
-*Source: `src/Services/ServerStatus/ServerStatusService.js`*
-
-#### `ping`
-
-Pings a URL and returns whether it is reachable, the response latency in ms, and the HTTP status code (0 for cross-origin or unreachable servers).
-
-| Parameter | Type | Required | Description |
-|-----------|------|----------|-------------|
-| `url` | string | Yes | The URL to ping. |
-| `timeout` | number | No | Request timeout in milliseconds. Defaults to 10000. |
 
 ---
 
