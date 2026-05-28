@@ -1,7 +1,7 @@
 # Intents Reference
 
 > Auto-generated from application and service manifests.  
-> Generated on: 2026-05-25
+> Generated on: 2026-05-28
 
 ## Table of Contents
 
@@ -39,6 +39,7 @@
 - [Rooms Service (`Rooms`)](#rooms-service-rooms)
 - [Server Status Service (`ServerStatus`)](#server-status-service-serverstatus)
 - [Text Chat Service (`TextChat`)](#text-chat-service-textchat)
+- [Time Service (`Time`)](#time-service-time)
 - [Users Service (`Users`)](#users-service-users)
 - [Valu Guru Service (`AiGuru`)](#valu-guru-service-aiguru)
 - [Verus Wallet Service (`VerusWallet`)](#verus-wallet-service-veruswallet)
@@ -981,6 +982,20 @@ Sends a message to a specific user authored by the AI agent itself (NOT by the a
 | `agentId` | string | Yes | The calling agent's own ID. Used to address the dedicated `userAIAgent:{userId}:{agentId}` channel so the message is authored by this agent. |
 | `text` | string | Yes | The message body to send. |
 | `buttons` | object[] | No | Optional interactive buttons to attach to the message as a rich card. |
+
+---
+
+### Time Service (`Time`)
+
+Returns the current user's local clock context — local ISO with offset, UTC ISO for the same instant, IANA timezone, offset in minutes, day-of-week, and resolved locale. Use this before any "today"/"tomorrow"/"now" reasoning or when converting natural-language times to ISO strings.
+
+*Source: `src/Services/Time/TimeService.js`*
+
+#### `get-local-time`
+
+Returns an object describing the user's current local time: { iso: local ISO 8601 with offset (e.g. "2026-05-28T13:45:30.000+02:00"), utcIso: same instant in UTC (e.g. "2026-05-28T11:45:30.000Z"), timezone: IANA name (e.g. "Europe/Berlin"), offsetMinutes: integer minutes ahead of UTC (e.g. 120), dayOfWeek: long English day name (e.g. "Thursday"), localDate: "YYYY-MM-DD" in local time, localTime: "HH:MM" in local time, locale: resolved BCP 47 locale (e.g. "en-US") }. Takes no parameters.
+
+*No parameters.*
 
 ---
 
