@@ -672,25 +672,25 @@ Picker service for selecting items from data providers (rooms, contacts, etc.) v
 
 #### `pick-single`
 
-Opens a single-select data-provider picker. Returns the selected item or null on cancel.
+Opens an interactive picker so the END USER can choose ONE item (a room, contact, group, etc.) and returns their selection. BLOCKS until the user picks or cancels. Returns the selected item object (its shape depends on the provider — typically `{id, name, ...}`) or `null` if the user cancelled. Use this when the user's request needs an entity reference and they have NOT named a specific one — e.g. "share this in a group" without naming the group → call with providers: ["groups"]. Do not use to search programmatically; use the provider's own search/list service intent for that.
 
 | Parameter | Type | Required | Description |
 |-----------|------|----------|-------------|
-| `providers` | string[] | Yes | Provider IDs to show (e.g. ['rooms', 'contacts']). |
-| `title` | string | No | Dialog title. |
+| `providers` | string[] | Yes | Provider IDs to show as picker sources. Available IDs include: "rooms", "contacts", "groups", "communities", "props", "events". Pass one entry for a single-source picker, or multiple to let the user switch sources via tabs. Example: ["rooms"] or ["contacts", "groups"]. |
+| `title` | string | No | Dialog title shown above the picker. Defaults to the provider's built-in title. |
 | `width` | string | No | CSS width for the modal (desktop only). |
 | `height` | string | No | CSS height for the modal (desktop only). |
 
 #### `pick-multiple`
 
-Opens a multi-select data-provider picker. Returns an array of selected items or null on cancel.
+Same as pick-single but lets the END USER select MORE THAN ONE item. BLOCKS until they confirm or cancel. Returns an array of selected items (`[{id, name, ...}, ...]`) or `null` if cancelled. Use when the user's request implies multiple targets — e.g. "invite some people to the room" → call with providers: ["contacts"].
 
 | Parameter | Type | Required | Description |
 |-----------|------|----------|-------------|
-| `providers` | string[] | Yes | Provider IDs to show. |
+| `providers` | string[] | Yes | Provider IDs to show. Same set as pick-single. |
 | `title` | string | No | Dialog title. |
-| `confirmLabel` | string | No | Confirm button label. |
-| `confirmIcon` | string | No | Confirm button icon class. |
+| `confirmLabel` | string | No | Confirm button label (e.g. "Invite", "Share with"). Defaults to "Select". |
+| `confirmIcon` | string | No | Confirm button icon class (Font Awesome, e.g. "fa-light fa-paper-plane-top"). |
 | `width` | string | No | CSS width for the modal (desktop only). |
 | `height` | string | No | CSS height for the modal (desktop only). |
 
@@ -1011,7 +1011,7 @@ Sends a text message to a text-chat channel. You must provide EITHER a channelId
 | `text` | string | Yes | The message body to send. |
 | `channelId` | string | No | Target channel ID. Use this when you already know the channel (e.g. from a platform event). Takes precedence over userId. |
 | `userId` | string | No | Target user ID for a direct message. The service resolves the direct channel by calling channel:getDirectChannel under the hood. Ignored if channelId is also provided. |
-| `buttons` | object[] | No | Optional interactive buttons to attach to the message as a rich card. |
+| `buttons` | object[] | No | Optional interactive buttons rendered below the message body. Pass a real JSON array (NOT a JSON-stringified array). Each entry MUST be an object with this exact NESTED shape: `{text: string, intent: {applicationId: string, action: string, params?: object}}`. Do NOT flatten `applicationId`/`action` onto the button itself — `intent` is a sub-object. `text` is the visible label. Clicking dispatches `intent` via Application.run on the recipient's client (use an `applicationId` + `action` the recipient's app exposes — see other service manifests for valid pairs). Entries that are malformed are repaired-or-dropped by the service and reported back in `buttonWarnings`; check that field on the response and use the canonical shape going forward. Example: `[{"text":"Open profile","intent":{"applicationId":"valuguru","action":"open-agent","params":{"agentId":"agent_xxx"}}}]`. |
 
 #### `send-agent-message`
 
@@ -1022,7 +1022,7 @@ Sends a message to a specific user authored by the AI agent itself (NOT by the a
 | `userId` | string | Yes | Recipient user ID. The user who will receive the message in their agent channel. |
 | `agentId` | string | Yes | The calling agent's own ID. Used to address the dedicated `userAIAgent:{userId}:{agentId}` channel so the message is authored by this agent. |
 | `text` | string | Yes | The message body to send. |
-| `buttons` | object[] | No | Optional interactive buttons to attach to the message as a rich card. |
+| `buttons` | object[] | No | Optional interactive buttons rendered below the message body. Pass a real JSON array (NOT a JSON-stringified array). Each entry MUST be an object with this exact NESTED shape: `{text: string, intent: {applicationId: string, action: string, params?: object}}`. Do NOT flatten `applicationId`/`action` onto the button itself — `intent` is a sub-object. `text` is the visible label. Clicking dispatches `intent` via Application.run on the recipient's client (use an `applicationId` + `action` the recipient's app exposes — see other service manifests for valid pairs). Entries that are malformed are repaired-or-dropped by the service and reported back in `buttonWarnings`; check that field on the response and use the canonical shape going forward. Example: `[{"text":"Open profile","intent":{"applicationId":"valuguru","action":"open-agent","params":{"agentId":"agent_xxx"}}}]`. |
 
 ---
 
