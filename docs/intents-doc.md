@@ -1,7 +1,7 @@
 # Intents Reference
 
 > Auto-generated from application and service manifests.  
-> Generated on: 2026-05-29
+> Generated on: 2026-06-05
 
 ## Table of Contents
 
@@ -507,6 +507,12 @@ Connects to a specific meeting by room, prop, group, or user and manages video c
 | `userId` | string | No | The unique identifier of the user to connect to. |
 | `withLocalTracks` | boolean | No | If true, view shared screens or presenter content without joining the video chat. |
 | `autoConnectToVideochat` | boolean | No | If true, automatically join the video chat after connecting. |
+
+#### `open-source-picker`
+
+Opens the "Open Videochat from" source picker (Rooms, Groups, Contacts, Textchats). Selecting an item starts a video chat with that source.
+
+*No parameters.*
 
 ---
 
