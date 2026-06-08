@@ -1,7 +1,7 @@
 # Intents Reference
 
 > Auto-generated from application and service manifests.  
-> Generated on: 2026-06-05
+> Generated on: 2026-06-08
 
 ## Table of Contents
 
@@ -510,9 +510,11 @@ Connects to a specific meeting by room, prop, group, or user and manages video c
 
 #### `open-source-picker`
 
-Opens the "Open Videochat from" source picker (Rooms, Groups, Contacts, Textchats). Selecting an item starts a video chat with that source.
+Opens the "Open Videochat from" source picker (Rooms, Groups, Contacts, Textchats) as the inline full-view list. Selecting an item starts a video chat with that source.
 
-*No parameters.*
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `standalone` | boolean | No | If true, render the picker as a standalone window with no back button (e.g. when launched from the native app, where there is no video chat to return to). |
 
 ---
 
