@@ -1,7 +1,7 @@
 # Intents Reference
 
 > Auto-generated from application and service manifests.  
-> Generated on: 2026-06-08
+> Generated on: 2026-06-16
 
 ## Table of Contents
 
