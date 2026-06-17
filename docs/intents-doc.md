@@ -1,7 +1,7 @@
 # Intents Reference
 
 > Auto-generated from application and service manifests.  
-> Generated on: 2026-06-16
+> Generated on: 2026-06-17
 
 ## Table of Contents
 
@@ -1021,9 +1021,9 @@ Sends a text message to a text-chat channel. You must provide EITHER a channelId
 | `userId` | string | No | Target user ID for a direct message. The service resolves the direct channel by calling channel:getDirectChannel under the hood. Ignored if channelId is also provided. |
 | `buttons` | object[] | No | Optional interactive buttons rendered below the message body. Pass a real JSON array (NOT a JSON-stringified array). Each entry MUST be an object with this exact NESTED shape: `{text: string, intent: {applicationId: string, action: string, params?: object}}`. Do NOT flatten `applicationId`/`action` onto the button itself — `intent` is a sub-object. `text` is the visible label. Clicking dispatches `intent` via Application.run on the recipient's client (use an `applicationId` + `action` the recipient's app exposes — see other service manifests for valid pairs). Entries that are malformed are repaired-or-dropped by the service and reported back in `buttonWarnings`; check that field on the response and use the canonical shape going forward. Example: `[{"text":"Open profile","intent":{"applicationId":"valuguru","action":"open-agent","params":{"agentId":"agent_xxx"}}}]`. |
 
-#### `send-agent-message`
+#### `message-owner`
 
-Sends a message to a specific user authored by the AI agent itself (NOT by the agent's host/owner). Unlike send-message — which sends as the logged-in user — this delivers the text into the dedicated agent-to-user channel resolved from source `userAIAgent:{userId}:{agentId}`. The recipient sees the agent as the author. The channel is created on first use. Silent — does NOT open the TextChat application or change the active channel. The recipient may be any user, including the agent's own host.
+Delivers a message authored by the AI agent itself (NOT by the logged-in user) into a user's dedicated agent-to-user channel, resolved from source `userAIAgent:{userId}:{agentId}`. The recipient sees the agent as the author and the channel is created on first use. This is the INVASIVE owner-notification channel: use it to ping/notify the owner (pass the owner's userId) — or, occasionally, any other user. Unlike send-message (which sends as the logged-in user), this is authored by the agent. Silent toward the UI — does NOT open the TextChat application or change the active channel.
 
 | Parameter | Type | Required | Description |
 |-----------|------|----------|-------------|
