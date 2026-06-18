@@ -1,7 +1,7 @@
 # Intents Reference
 
 > Auto-generated from application and service manifests.  
-> Generated on: 2026-06-17
+> Generated on: 2026-06-18
 
 ## Table of Contents
 
@@ -16,6 +16,7 @@
 - [Content Studio (`staging-content-studio`)](#content-studio-staging-content-studio)
 - [Groups (`groups`)](#groups-groups)
 - [LLM Activity (`llmactivity`)](#llm-activity-llmactivity)
+- [LLM Debug (`iframe_llm_debug`)](#llm-debug-iframe-llm-debug)
 - [My Connections (`contacts`)](#my-connections-contacts)
 - [Profile (`profile`)](#profile-profile)
 - [Resources Viewer (`preview`)](#resources-viewer-preview)
@@ -339,6 +340,29 @@ Opens the LLM Activity app and preselects a specific debug session (chat, agent,
 | Parameter | Type | Required | Description |
 |-----------|------|----------|-------------|
 | `sessionId` | string | Yes | The LLM debug session ID to preselect. |
+
+---
+
+### LLM Debug (`iframe_llm_debug`)
+
+Live LLM / agent activity debug panel (your own agents)
+
+#### `open-session`
+
+Opens the LLM Debug panel and navigates to a specific debug session (chat, agent, or sub-agent) by its session ID.
+
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `sessionId` | string | Yes | The LLM debug session ID to open. |
+
+#### `open-agent`
+
+Opens the LLM Debug panel and navigates to a specific agent's page by its agent ID (its persistent session). Pass `sessionId` to target one of the agent's runs instead.
+
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `agentId` | string | Yes | The agent ID (its persistent agent session ID) to open. |
+| `sessionId` | string | No | A specific session of the agent to open instead of its main page. |
 
 ---
 
