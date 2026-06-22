@@ -1,7 +1,7 @@
 # Intents Reference
 
 > Auto-generated from application and service manifests.  
-> Generated on: 2026-06-18
+> Generated on: 2026-06-22
 
 ## Table of Contents
 
@@ -93,6 +93,12 @@ Opens a text chat session based on channel, user, group, room, or prop.
 | `groupId` | string | No | The unique identifier of the group to open a group chat. |
 | `roomId` | string | No | The unique identifier of the room to open a room chat. |
 | `propId` | string | No | The unique identifier of the prop to open a prop-specific chat. |
+
+#### `close-channel`
+
+Closes the currently open channel and returns to the channel list. Mirrors the toolbar back button used on mobile/narrow layouts.
+
+*No parameters.*
 
 #### `options`
 
