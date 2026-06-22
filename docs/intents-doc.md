@@ -100,6 +100,12 @@ Closes the currently open channel and returns to the channel list. Mirrors the t
 
 *No parameters.*
 
+#### `get-ui-state`
+
+Read-only. Returns a snapshot of what the chat is currently showing — the channels list, an open channel, or both side by side (wide layout) — plus the in-app back action. Lets non-web clients (e.g. the Android device back button) mirror the toolbar back-button navigation. Changes nothing. Returns { view: "list" | "channel" | "list-and-channel", isWide, activeChannelId, openThreadId, threadTakeover, canNavigateBack, backAction: "close-thread" | "close-channel" | null }.
+
+*No parameters.*
+
 #### `options`
 
 Sets the text‑chat view layout (e.g. wide or narrow mode).
