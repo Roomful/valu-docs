@@ -9,22 +9,22 @@
 
 - [Auth (`auth`)](#auth-auth)
 - [Calendar (`events`)](#calendar-events)
+- [Calls (`videochat`)](#calls-videochat)
 - [Chats (`textchat`)](#chats-textchat)
-- [CMS (`cms`)](#cms-cms)
-- [Communities (`community`)](#communities-community)
+- [Contacts (`contacts`)](#contacts-contacts)
 - [Content Studio (`content-studio`)](#content-studio-content-studio)
 - [Content Studio (`staging-content-studio`)](#content-studio-staging-content-studio)
 - [Groups (`groups`)](#groups-groups)
 - [LLM Activity (`llmactivity`)](#llm-activity-llmactivity)
 - [LLM Debug (`iframe_llm_debug`)](#llm-debug-iframe-llm-debug)
-- [My Connections (`contacts`)](#my-connections-contacts)
+- [Media (`cms`)](#media-cms)
+- [Metaverse (`metaverse`)](#metaverse-metaverse)
 - [Profile (`profile`)](#profile-profile)
 - [Resources Viewer (`preview`)](#resources-viewer-preview)
 - [Rooms (`rooms`)](#rooms-rooms)
+- [Social (`community`)](#social-community)
 - [Valu Guru (`valuguru`)](#valu-guru-valuguru)
 - [Valu Puzzles (`puzzles`)](#valu-puzzles-puzzles)
-- [ValuVerse Application (`metaverse`)](#valuverse-application-metaverse)
-- [Video Chat (`videochat`)](#video-chat-videochat)
 
 ### Services
 
@@ -77,6 +77,31 @@ Opens the calendar view filtered by a specific source type (room, group, user, o
 | `communityFullName` | string | No | The display name of the community. |
 | `eventId` | string | No | The unique identifier of the community event. |
 | `eventFullName` | string | No | The display name of the community event. |
+
+---
+
+### Calls (`videochat`)
+
+#### `connect-to-meeting`
+
+Connects to a specific meeting by room, prop, group, or user and manages video chat and presentation settings.
+
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `roomId` | string | No | The unique identifier of the room to connect to. |
+| `propId` | string | No | The unique identifier of the prop to connect to. |
+| `groupId` | string | No | The unique identifier of the group to connect to. |
+| `userId` | string | No | The unique identifier of the user to connect to. |
+| `withLocalTracks` | boolean | No | If true, view shared screens or presenter content without joining the video chat. |
+| `autoConnectToVideochat` | boolean | No | If true, automatically join the video chat after connecting. |
+
+#### `open-source-picker`
+
+Opens the "Open Videochat from" source picker (Rooms, Groups, Contacts, Textchats) as the inline full-view list. Selecting an item starts a video chat with that source.
+
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `standalone` | boolean | No | If true, render the picker as a standalone window with no back button (e.g. when launched from the native app, where there is no video chat to return to). |
 
 ---
 
@@ -135,105 +160,17 @@ Sends a rich text message to a text-chat channel on behalf of an initiator (e.g.
 
 ---
 
-### CMS (`cms`)
+### Contacts (`contacts`)
 
-Content management module
+Manage and chat with your personal connections.
 
-#### `show-chat-channel`
+#### `show-user-connections`
 
-Open and display the specified chat channel
-
-| Parameter | Type | Required | Description |
-|-----------|------|----------|-------------|
-| `channelId` | string | Yes | The unique identifier of the chat channel to display |
-
-#### `show-folder`
-
-Navigate to and open a specific folder in the CMS by its folder ID
+Open the connections view for the specified user
 
 | Parameter | Type | Required | Description |
 |-----------|------|----------|-------------|
-| `folderId` | string | Yes | The unique identifier of the folder to open |
-
-#### `preview-resource`
-
-Open a resource (file) in the CMS preview viewer by its resource ID
-
-| Parameter | Type | Required | Description |
-|-----------|------|----------|-------------|
-| `resourceId` | string | Yes | The unique identifier of the resource to preview |
-
-#### `show-my-files`
-
-Navigate to the user's own files in the CMS (the "My Files" / "My Content" view). Use this when the user asks about their files, uploads, or personal content — do not use show-folder for this.
-
-*No parameters.*
-
-#### `show-community-channel`
-
-Open and display the specified community channel
-
-| Parameter | Type | Required | Description |
-|-----------|------|----------|-------------|
-| `communityId` | string | Yes | The unique identifier of the community |
-| `communityChannelId` | string | Yes | The unique identifier of the channel within the community |
-
----
-
-### Communities (`community`)
-
-#### `create-post`
-
-Open view and open post editor
-
-| Parameter | Type | Required | Description |
-|-----------|------|----------|-------------|
-| `resourceId` | string | Yes | Resource id for post attachment |
-| `rootChannel` | object | Yes | Root chanel of community |
-| `community` | object | Yes | Community data |
-| `path` | string | Yes | Full path to channel or subchannel |
-
-#### `create-channel`
-
-Opens the community view and starts channel creation in a specific community context.
-
-| Parameter | Type | Required | Description |
-|-----------|------|----------|-------------|
-| `community` | object | Yes | Community data object. |
-| `contentDirectoryId` | string | No | The content directory identifier for the new channel. |
-| `rootChannel` | object | No | Root channel of the community. |
-| `subChannelId` | string | No | The sub-channel identifier to navigate to. |
-| `mode` | string | No | The creation mode for the channel. |
-| `contentDirectoryTitle` | string | No | Display title for the content directory. |
-
-#### `open-community`
-
-Opens the community view and navigates to a community by its ID. Use when you only have a communityId and no specific channel to target — the app will land on the first available channel.
-
-| Parameter | Type | Required | Description |
-|-----------|------|----------|-------------|
-| `communityId` | string | Yes | The community id. |
-
-#### `show-channel`
-
-Opens the community view and navigates to a specific channel. Use communityId from AI context. For a root channel: pass its id as rootChannelId, omit subChannelId. For a sub-channel: the sub-channel object in AI context has a rootChannelId field — pass that as rootChannelId, and the sub-channel id as subChannelId.
-
-| Parameter | Type | Required | Description |
-|-----------|------|----------|-------------|
-| `communityId` | string | Yes | The community id from AI context. |
-| `rootChannelId` | string | Yes | The top-level root channel id. Never a sub-channel id. |
-| `subChannelId` | string | No | The sub-channel id to navigate into. Omit when navigating to the root channel itself. |
-
-#### `show-post`
-
-Opens the community view and navigates to a specific post. Use communityId from AI context. For a post in a root channel: pass the channel id as rootChannelId, omit subChannelId. For a post in a sub-channel: pass the sub-channel's rootChannelId as rootChannelId, and the sub-channel id as subChannelId. Pass the post id as messageId.
-
-| Parameter | Type | Required | Description |
-|-----------|------|----------|-------------|
-| `communityId` | string | Yes | The community id from AI context. |
-| `rootChannelId` | string | Yes | The top-level root channel id. Never a sub-channel id. |
-| `messageId` | string | Yes | The post id from AI context. |
-| `subChannelId` | string | No | The sub-channel id containing the post. Omit when the post is in the root channel itself. |
+| `userId` | string | Yes | The unique identifier of the user to display |
 
 ---
 
@@ -378,17 +315,79 @@ Opens the LLM Debug panel and navigates to a specific agent's page by its agent 
 
 ---
 
-### My Connections (`contacts`)
+### Media (`cms`)
 
-Manage and chat with your personal connections.
+Content management module
 
-#### `show-user-connections`
+#### `show-chat-channel`
 
-Open the connections view for the specified user
+Open and display the specified chat channel
 
 | Parameter | Type | Required | Description |
 |-----------|------|----------|-------------|
-| `userId` | string | Yes | The unique identifier of the user to display |
+| `channelId` | string | Yes | The unique identifier of the chat channel to display |
+
+#### `show-folder`
+
+Navigate to and open a specific folder in the CMS by its folder ID
+
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `folderId` | string | Yes | The unique identifier of the folder to open |
+
+#### `preview-resource`
+
+Open a resource (file) in the CMS preview viewer by its resource ID
+
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `resourceId` | string | Yes | The unique identifier of the resource to preview |
+
+#### `show-my-files`
+
+Navigate to the user's own files in the CMS (the "My Files" / "My Content" view). Use this when the user asks about their files, uploads, or personal content — do not use show-folder for this.
+
+*No parameters.*
+
+#### `show-community-channel`
+
+Open and display the specified community channel
+
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `communityId` | string | Yes | The unique identifier of the community |
+| `communityChannelId` | string | Yes | The unique identifier of the channel within the community |
+
+---
+
+### Metaverse (`metaverse`)
+
+#### `set-route`
+
+initiate the opening of the Metaverse 3d application with spsific route
+
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `route` | string | Yes | The route to set. Defines the current view or action in the application. If not provided, the default application state will open. |
+
+#### `open-room`
+
+Open a specific room in the ValuVerse 3D environment. Both networkId and roomId are required. Use the networkId provided in context.
+
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `networkId` | string | Yes | The network the room belongs to. Use the networkId from context. |
+| `roomId` | string | Yes | The ID of the room to open. |
+
+#### `preview-prop`
+
+Navigate the camera to a specific prop in a room, opening the Metaverse view. networkId, roomId, and propId are all required. Only call this when the user explicitly asks to show, open, navigate to, or view a prop. Do not call this automatically when listing or describing props.
+
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `networkId` | string | Yes | The network the room belongs to. Use the networkId from context. |
+| `roomId` | string | Yes | The ID of the room containing the prop. |
+| `propId` | string | Yes | The ID of the prop to navigate to. |
 
 ---
 
@@ -447,6 +446,63 @@ Opens the room invitation dialog for a specific room.
 
 ---
 
+### Social (`community`)
+
+#### `create-post`
+
+Open view and open post editor
+
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `resourceId` | string | Yes | Resource id for post attachment |
+| `rootChannel` | object | Yes | Root chanel of community |
+| `community` | object | Yes | Community data |
+| `path` | string | Yes | Full path to channel or subchannel |
+
+#### `create-channel`
+
+Opens the community view and starts channel creation in a specific community context.
+
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `community` | object | Yes | Community data object. |
+| `contentDirectoryId` | string | No | The content directory identifier for the new channel. |
+| `rootChannel` | object | No | Root channel of the community. |
+| `subChannelId` | string | No | The sub-channel identifier to navigate to. |
+| `mode` | string | No | The creation mode for the channel. |
+| `contentDirectoryTitle` | string | No | Display title for the content directory. |
+
+#### `open-community`
+
+Opens the community view and navigates to a community by its ID. Use when you only have a communityId and no specific channel to target — the app will land on the first available channel.
+
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `communityId` | string | Yes | The community id. |
+
+#### `show-channel`
+
+Opens the community view and navigates to a specific channel. Use communityId from AI context. For a root channel: pass its id as rootChannelId, omit subChannelId. For a sub-channel: the sub-channel object in AI context has a rootChannelId field — pass that as rootChannelId, and the sub-channel id as subChannelId.
+
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `communityId` | string | Yes | The community id from AI context. |
+| `rootChannelId` | string | Yes | The top-level root channel id. Never a sub-channel id. |
+| `subChannelId` | string | No | The sub-channel id to navigate into. Omit when navigating to the root channel itself. |
+
+#### `show-post`
+
+Opens the community view and navigates to a specific post. Use communityId from AI context. For a post in a root channel: pass the channel id as rootChannelId, omit subChannelId. For a post in a sub-channel: pass the sub-channel's rootChannelId as rootChannelId, and the sub-channel id as subChannelId. Pass the post id as messageId.
+
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `communityId` | string | Yes | The community id from AI context. |
+| `rootChannelId` | string | Yes | The top-level root channel id. Never a sub-channel id. |
+| `messageId` | string | Yes | The post id from AI context. |
+| `subChannelId` | string | No | The sub-channel id containing the post. Omit when the post is in the root channel itself. |
+
+---
+
 ### Valu Guru (`valuguru`)
 
 #### `start-session`
@@ -495,62 +551,6 @@ Open Valu Puzzles and launch a specific puzzle, optionally with a score-to-beat 
 | `puzzleId` | string | Yes | Which puzzle to start. One of: "sliding" (Sliding Puzzle), "memory" (Memory Match), "sudoku" (Mini Sudoku), "wordscramble" (Word Scramble). |
 | `scoreToBeat` | number | No | Target score (0–999) the recipient should try to beat. Shown as a challenge banner above the puzzle; if the player exceeds it the result screen reads "Beat <challengerName>!". |
 | `challengerName` | string | No | Display name of the user who issued the challenge. Shown on the challenge banner alongside the target score. |
-
----
-
-### ValuVerse Application (`metaverse`)
-
-#### `set-route`
-
-initiate the opening of the Metaverse 3d application with spsific route
-
-| Parameter | Type | Required | Description |
-|-----------|------|----------|-------------|
-| `route` | string | Yes | The route to set. Defines the current view or action in the application. If not provided, the default application state will open. |
-
-#### `open-room`
-
-Open a specific room in the ValuVerse 3D environment. Both networkId and roomId are required. Use the networkId provided in context.
-
-| Parameter | Type | Required | Description |
-|-----------|------|----------|-------------|
-| `networkId` | string | Yes | The network the room belongs to. Use the networkId from context. |
-| `roomId` | string | Yes | The ID of the room to open. |
-
-#### `preview-prop`
-
-Navigate the camera to a specific prop in a room, opening the Metaverse view. networkId, roomId, and propId are all required. Only call this when the user explicitly asks to show, open, navigate to, or view a prop. Do not call this automatically when listing or describing props.
-
-| Parameter | Type | Required | Description |
-|-----------|------|----------|-------------|
-| `networkId` | string | Yes | The network the room belongs to. Use the networkId from context. |
-| `roomId` | string | Yes | The ID of the room containing the prop. |
-| `propId` | string | Yes | The ID of the prop to navigate to. |
-
----
-
-### Video Chat (`videochat`)
-
-#### `connect-to-meeting`
-
-Connects to a specific meeting by room, prop, group, or user and manages video chat and presentation settings.
-
-| Parameter | Type | Required | Description |
-|-----------|------|----------|-------------|
-| `roomId` | string | No | The unique identifier of the room to connect to. |
-| `propId` | string | No | The unique identifier of the prop to connect to. |
-| `groupId` | string | No | The unique identifier of the group to connect to. |
-| `userId` | string | No | The unique identifier of the user to connect to. |
-| `withLocalTracks` | boolean | No | If true, view shared screens or presenter content without joining the video chat. |
-| `autoConnectToVideochat` | boolean | No | If true, automatically join the video chat after connecting. |
-
-#### `open-source-picker`
-
-Opens the "Open Videochat from" source picker (Rooms, Groups, Contacts, Textchats) as the inline full-view list. Selecting an item starts a video chat with that source.
-
-| Parameter | Type | Required | Description |
-|-----------|------|----------|-------------|
-| `standalone` | boolean | No | If true, render the picker as a standalone window with no back button (e.g. when launched from the native app, where there is no video chat to return to). |
 
 ---
 
