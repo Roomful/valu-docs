@@ -1,7 +1,7 @@
 # Intents Reference
 
 > Auto-generated from application and service manifests.  
-> Generated on: 2026-06-22
+> Generated on: 2026-06-25
 
 ## Table of Contents
 
@@ -124,6 +124,18 @@ Opens a text chat session based on channel, user, group, room, or prop.
 Closes the currently open channel and returns to the channel list. Mirrors the toolbar back button used on mobile/narrow layouts.
 
 *No parameters.*
+
+#### `share-card`
+
+Shares one or more entities into a chat as rich, interactive cards — Rooms, Groups, Communities, Meetings, or Contacts — instead of plain links. Pass "id" for a single card or "ids" for several in one message. All cards in one call must be the SAME cardType (mixed types need separate calls). Posts into the currently open channel by default; pass channelId to target a specific channel.
+
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `cardType` | string | Yes | The entity type to share: "room", "group", "community", "meeting", or "contact". Applies to every id in this call. |
+| `id` | string | No | A single entity id to share (room/group/community id, meeting id, or user id for a contact). Use this OR "ids". |
+| `ids` | string[] | No | Several entity ids to share as multiple cards in one message — all of the given cardType. Use this OR "id". |
+| `channelId` | string | No | Target channel id. Defaults to the currently active channel. |
+| `networkId` | string | No | The network the entities belong to. Defaults to the active network. |
 
 #### `get-ui-state`
 
