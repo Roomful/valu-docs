@@ -1,7 +1,7 @@
 # Intents Reference
 
 > Auto-generated from application and service manifests.  
-> Generated on: 2026-06-25
+> Generated on: 2026-06-26
 
 ## Table of Contents
 
@@ -132,8 +132,8 @@ Shares one or more entities into a chat as rich, interactive cards — Rooms, Gr
 | Parameter | Type | Required | Description |
 |-----------|------|----------|-------------|
 | `cardType` | string | Yes | The entity type to share: "room", "group", "community", "meeting", or "contact". Applies to every id in this call. |
-| `id` | string | No | A single entity id to share (room/group/community id, meeting id, or user id for a contact). Use this OR "ids". |
-| `ids` | string[] | No | Several entity ids to share as multiple cards in one message — all of the given cardType. Use this OR "id". |
+| `id` | string | No | A single entity id to share (room/group/community id, user id for a contact, or — for meetings — the occurrence id from list-events; a one-off meeting id also works). Use this OR "ids". |
+| `ids` | string[] | No | Several entity ids to share as multiple cards in one message — all of the given cardType (for meetings, occurrence ids from list-events). Use this OR "id". |
 | `channelId` | string | No | Target channel id. Defaults to the currently active channel. |
 | `networkId` | string | No | The network the entities belong to. Defaults to the active network. |
 
