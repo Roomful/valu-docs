@@ -943,6 +943,14 @@ Generates a direct public API URL for downloading a resource.
 |-----------|------|----------|-------------|
 | `resourceId` | string | Yes | The unique identifier of the resource. |
 
+#### `list-bot-avatars`
+
+Returns the network-allowed bot avatar collection (id, name, tags) from the shared bot-avatars directory. Avatars carrying the current network's denied tags (same modesty/policy filter as the user avatar picker) are excluded. Use a returned `id` as a 3D avatar resource id (e.g. an agent's avatarResourceId).
+
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `limit` | number | No | Max avatars to return. Defaults to 50. |
+
 ---
 
 ### Rooms Service (`Rooms`)
