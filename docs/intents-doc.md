@@ -312,6 +312,16 @@ Opens the LLM Debug panel and navigates to a specific agent's page by its agent 
 | `agentId` | string | Yes | The agent ID (its persistent agent session ID) to open. |
 | `sessionId` | string | No | A specific session of the agent to open instead of its main page. |
 
+#### `open-run`
+
+Opens the LLM Debug panel on a specific agent/chatbot RUN by its run id. Pass the entity kind + id and the run id from the originating message.
+
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `entityKind` | string | Yes | The entity kind: "agent" or "chatbot". |
+| `entityId` | string | Yes | The agent or chatbot id the run belongs to. |
+| `runId` | string | Yes | The run id (agentRunId/chatbotRunId) to open. |
+
 ---
 
 ### Media (`cms`)
