@@ -649,7 +649,7 @@ Uploads files to a resource storage scoped by belonging (room, prop, community, 
 
 #### `resource-search`
 
-Searches for resources within a given scope (room, prop, community, channel, directory, or post).
+Searches for resources within a given scope (room, prop, community, channel, directory, or post). Each returned resource has an id (and a title/name) — tag every resource you reference in your reply as @[cms-resource:id|title].
 
 | Parameter | Type | Required | Description |
 |-----------|------|----------|-------------|
