@@ -15,7 +15,6 @@
 - [Content Studio (`content-studio`)](#content-studio-content-studio)
 - [Content Studio (`staging-content-studio`)](#content-studio-staging-content-studio)
 - [Groups (`groups`)](#groups-groups)
-- [LLM Activity (`llmactivity`)](#llm-activity-llmactivity)
 - [LLM Debug (`iframe_llm_debug`)](#llm-debug-iframe-llm-debug)
 - [Media (`cms`)](#media-cms)
 - [Metaverse (`metaverse`)](#metaverse-metaverse)
@@ -289,18 +288,6 @@ Opens the groups view and navigates to a specific group.
 | Parameter | Type | Required | Description |
 |-----------|------|----------|-------------|
 | `groupId` | string | Yes | The unique identifier of the group to open. |
-
----
-
-### LLM Activity (`llmactivity`)
-
-#### `open-session`
-
-Opens the LLM Activity app and preselects a specific debug session (chat, agent, or sub-agent) by its session ID.
-
-| Parameter | Type | Required | Description |
-|-----------|------|----------|-------------|
-| `sessionId` | string | Yes | The LLM debug session ID to preselect. |
 
 ---
 
