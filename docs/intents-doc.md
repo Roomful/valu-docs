@@ -1,7 +1,7 @@
 # Intents Reference
 
 > Auto-generated from application and service manifests.  
-> Generated on: 2026-06-30
+> Generated on: 2026-07-01
 
 ## Table of Contents
 
@@ -360,6 +360,14 @@ Open a resource (file) in the CMS preview viewer by its resource ID
 Navigate to the user's own files in the CMS (the "My Files" / "My Content" view). Use this when the user asks about their files, uploads, or personal content — do not use show-folder for this.
 
 *No parameters.*
+
+#### `show-application-storage`
+
+Open an application's storage folder in the CMS — the files that app has stored under the current user, shown at Applications › <app>. Provide the application id (e.g. "valuguru"). The app must declare `storage: true` in its manifest.
+
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `applicationId` | string | Yes | The id of the application whose storage folder to open (e.g. "valuguru"). |
 
 #### `show-community-channel`
 
