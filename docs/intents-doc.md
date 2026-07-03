@@ -1,7 +1,7 @@
 # Intents Reference
 
 > Auto-generated from application and service manifests.  
-> Generated on: 2026-07-01
+> Generated on: 2026-07-03
 
 ## Table of Contents
 
@@ -552,6 +552,14 @@ Opens the Valu Guru app and navigates to a specific agent chat by ID.
 | Parameter | Type | Required | Description |
 |-----------|------|----------|-------------|
 | `agentId` | string | Yes | The agent ID to open. |
+
+#### `open-chatbot`
+
+Opens the Valu Guru app on a library chatbot's detail page. Unlike open-chat, the target is not personal — any user in the network can view it (used e.g. by the bot badge on shared chatbot replies).
+
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `chatbotId` | string | Yes | The library chatbot ID whose detail page to open. |
 
 ---
 
