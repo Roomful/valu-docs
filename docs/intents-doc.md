@@ -1,7 +1,7 @@
 # Intents Reference
 
 > Auto-generated from application and service manifests.  
-> Generated on: 2026-07-03
+> Generated on: 2026-07-06
 
 ## Table of Contents
 
@@ -529,7 +529,7 @@ Opens the Valu Guru app and starts a brand-new conversation session with an init
 | Parameter | Type | Required | Description |
 |-----------|------|----------|-------------|
 | `message` | string | Yes | The initial user message to send in the new session. |
-| `agentId` | string | No | Agent ID to use for the new session. Defaults to the currently active agent. |
+| `chatbotId` | string | No | Chatbot ID to start the session with. Defaults to the default Valu Guru chatbot ('default'). |
 
 #### `show-agents`
 
@@ -560,6 +560,19 @@ Opens the Valu Guru app on a library chatbot's detail page. Unlike open-chat, th
 | Parameter | Type | Required | Description |
 |-----------|------|----------|-------------|
 | `chatbotId` | string | Yes | The library chatbot ID whose detail page to open. |
+
+#### `create-chatbot`
+
+Opens the Valu Guru app on the new-chatbot creation wizard, optionally pre-filled. Pass `instructions` to land on the Design step fully filled in, or just `prompt` to land on the Describe step with the task pre-typed and ready to generate.
+
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `prompt` | string | No | Plain-language task description to seed the Describe step (e.g. "a bot that answers HR policy questions"). Ignored if `instructions` is also given. |
+| `instructions` | string | No | Full system-prompt instructions for the chatbot. When given, the wizard opens straight on the Design step instead of Describe. |
+| `name` | string | No | Chatbot display name. |
+| `description` | string | No | Short chatbot description shown in the library/list. |
+| `icon` | string | No | Font Awesome icon class (e.g. "fa-light fa-robot") or a DiceBear avatar URL. |
+| `skillIds` | string[] | No | IDs of skills (from the shared Skills Catalogue) to pre-select for the chatbot. |
 
 ---
 
@@ -1251,6 +1264,16 @@ Returns the in-memory message history for a background agent.
 | Parameter | Type | Required | Description |
 |-----------|------|----------|-------------|
 | `agentId` | string | Yes | ID of the background agent whose message history to retrieve. |
+
+#### `query-knowledge-base`
+
+Queries the RAG knowledge base directly over the Valu Guru server's socket connection, bypassing chat entirely. Returns the raw tool result text.
+
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `query` | string | Yes | The search query text. |
+| `toolName` | string | No | Name of the RAG tool to call. Only needed if the RAG server exposes more than one tool — omit to auto-pick the sole registered tool. |
+| `args` | object | No | Extra arguments merged into the RAG tool call alongside `query` (tool-specific, e.g. scope filters). |
 
 ---
 
