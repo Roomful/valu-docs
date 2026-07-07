@@ -365,6 +365,7 @@ Open an application's storage folder in the CMS — the files that app has store
 | Parameter | Type | Required | Description |
 |-----------|------|----------|-------------|
 | `applicationId` | string | Yes | The id of the application whose storage folder to open (e.g. "valuguru"). |
+| `resourceId` | string | No | A resource inside that storage folder to open in the Edit side panel after navigating. |
 
 #### `show-community-channel`
 
