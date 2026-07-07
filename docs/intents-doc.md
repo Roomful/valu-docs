@@ -360,7 +360,7 @@ Navigate to the user's own files in the CMS (the "My Files" / "My Content" view)
 
 #### `show-application-storage`
 
-Open an application's storage folder in the CMS — the files that app has stored under the current user, shown at Applications › <app>. Provide the application id (e.g. "valuguru"). The app must declare `storage: true` in its manifest.
+Open an application's storage folder in the CMS — the files that app has stored under the current user, shown at Applications › `<app>`. Provide the application id (e.g. "valuguru"). The app must declare `storage: true` in its manifest.
 
 | Parameter | Type | Required | Description |
 |-----------|------|----------|-------------|
@@ -587,7 +587,7 @@ Open Valu Puzzles and launch a specific puzzle, optionally with a score-to-beat 
 | Parameter | Type | Required | Description |
 |-----------|------|----------|-------------|
 | `puzzleId` | string | Yes | Which puzzle to start. One of: "sliding" (Sliding Puzzle), "memory" (Memory Match), "sudoku" (Mini Sudoku), "wordscramble" (Word Scramble). |
-| `scoreToBeat` | number | No | Target score (0–999) the recipient should try to beat. Shown as a challenge banner above the puzzle; if the player exceeds it the result screen reads "Beat <challengerName>!". |
+| `scoreToBeat` | number | No | Target score (0–999) the recipient should try to beat. Shown as a challenge banner above the puzzle; if the player exceeds it the result screen reads "Beat `<challengerName>`!". |
 | `challengerName` | string | No | Display name of the user who issued the challenge. Shown on the challenge banner alongside the target score. |
 
 ---
@@ -908,7 +908,7 @@ Exposes the in-memory console log buffer captured by ConsoleLogCapture for diagn
 
 #### `get-logs`
 
-Returns the captured console log buffer (log, info, warn, error) since app start. Choose the format: "text" returns { format: "text", text: <string> } with one line per entry; "file" returns { format: "file", filename, mimeType, size, file: File } — the File is for direct callers (upload/download) and is omitted in the AI/MCP serialized response, which still includes filename, mimeType, and size.
+Returns the captured console log buffer (log, info, warn, error) since app start. Choose the format: "text" returns { format: "text", text: `<string>` } with one line per entry; "file" returns { format: "file", filename, mimeType, size, file: File } — the File is for direct callers (upload/download) and is omitted in the AI/MCP serialized response, which still includes filename, mimeType, and size.
 
 | Parameter | Type | Required | Description |
 |-----------|------|----------|-------------|
@@ -1061,7 +1061,7 @@ Adds a user to a prop's team, or updates an existing team member's permissions a
 | `propId` | string | Yes | The prop to invite the user to. |
 | `invitedUser` | string | Yes | User ID of the person to invite or update. |
 | `permissions` | object | No | Permission flags for the team member: { view: boolean, comment: boolean, contribute: boolean, edit: boolean, manage: boolean }. Defaults to view-only (view: true, all others false) when omitted. |
-| `customParams` | object | No | Arbitrary metadata stored on the invitation. To assign an AI agent to this team member, pass `customParams: { agentInfo: { id: "<agent-id>", avatarResourceId: "<picked-3d-avatar-resource-id>" | null } }` (id-only — do NOT include name/description/avatarUrl, those are resolved from the live agent). `avatarResourceId` is the team member's picked 3D avatar for this prop, or `null` when nothing has been picked — readers fall back to the user's own 3D profile avatar in that case. Pass `customParams: null` to clear a previously assigned agent. The full-snapshot shape `agentInfo: { id, name, description, avatarUrl }` is still read for backwards compatibility but only `id` is used. |
+| `customParams` | object | No | Arbitrary metadata stored on the invitation. To assign an AI agent to this team member, pass `customParams: { agentInfo: { id: "<agent-id>", avatarResourceId: "<picked-3d-avatar-resource-id>" \| null } }` (id-only — do NOT include name/description/avatarUrl, those are resolved from the live agent). `avatarResourceId` is the team member's picked 3D avatar for this prop, or `null` when nothing has been picked — readers fall back to the user's own 3D profile avatar in that case. Pass `customParams: null` to clear a previously assigned agent. The full-snapshot shape `agentInfo: { id, name, description, avatarUrl }` is still read for backwards compatibility but only `id` is used. |
 
 #### `delete-prop-invitation`
 
