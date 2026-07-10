@@ -1,7 +1,7 @@
 # Intents Reference
 
 > Auto-generated from application and service manifests.  
-> Generated on: 2026-07-08
+> Generated on: 2026-07-10
 
 ## Table of Contents
 
@@ -32,6 +32,7 @@
 - [CMS Service (`CMS`)](#cms-service-cms)
 - [Community Service (`Community`)](#community-service-community)
 - [Data Provider Service (`DataProvider`)](#data-provider-service-dataprovider)
+- [Developer Service (`Developer`)](#developer-service-developer)
 - [Events Service (`Events`)](#events-service-events)
 - [Groups Service (`Groups`)](#groups-service-groups)
 - [HTTP Service (`Http`)](#http-service-http)
@@ -776,6 +777,29 @@ Same as pick-single but lets the END USER select MORE THAN ONE item. BLOCKS unti
 | `confirmIcon` | string | No | Confirm button icon class (Font Awesome, e.g. "fa-light fa-paper-plane-top"). |
 | `width` | string | No | CSS width for the modal (desktop only). |
 | `height` | string | No | CSS height for the modal (desktop only). |
+
+---
+
+### Developer Service (`Developer`)
+
+Developer Portal service for creating and listing the current user's applications.
+
+*Source: `src/Applications/DeveloperPortal/Services/DeveloperService.js`*
+
+#### `create-application`
+
+Creates a new application in the Developer Portal. The application is served in an iframe from https://web.texpo.io/{userId}/{appSlug}, where the slug is derived from the name (lowercased, dashes; deduplicated with -2, -3, … on collision). Returns the created app's id, devId, slug, URL, and a ready-made `tag` — a chat entity tag of the form @[application:`<appId>`|`<Name>`]. To give the user a clickable link that opens the application inside the platform, paste that `tag` value verbatim into your reply (do NOT link the raw URL).
+
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `name` | string | Yes | Human-readable name for the application. Also used to derive the URL slug. |
+| `description` | string | No | Short description of what the application does. |
+
+#### `list-applications`
+
+Lists the current user's applications in the Developer Portal. Returns each application's appId, devId, name, slug, url, description, createdAt timestamp, and a ready-made `tag` — a chat entity tag of the form @[application:`<appId>`|`<Name>`]. To give the user a clickable link that opens an application inside the platform, paste its `tag` value verbatim into your reply (do NOT link the raw URL).
+
+*No parameters.*
 
 ---
 
