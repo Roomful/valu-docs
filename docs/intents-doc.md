@@ -477,6 +477,8 @@ Open view and open post editor
 | `rootChannel` | object | Yes | Root chanel of community |
 | `community` | object | Yes | Community data |
 | `path` | string | Yes | Full path to channel or subchannel |
+| `title` | string | No | Pre-fills the post title in the editor. Optional; the editor opens with this title instead of blank. |
+| `body` | string | No | Pre-fills the post body (Markdown) in the editor. Optional; the editor opens with this body instead of blank. |
 
 #### `create-channel`
 
@@ -788,12 +790,14 @@ Developer Portal service for creating and listing the current user's application
 
 #### `create-application`
 
-Creates a new application in the Developer Portal. The application is served in an iframe from https://web.texpo.io/{userId}/{appSlug}, where the slug is derived from the name (lowercased, dashes; deduplicated with -2, -3, … on collision). Returns the created app's id, devId, slug, URL, and a ready-made `tag` — a chat entity tag of the form @[application:`<appId>`|`<Name>`]. To give the user a clickable link that opens the application inside the platform, paste that `tag` value verbatim into your reply (do NOT link the raw URL).
+Creates a new application in the Developer Portal. By default the application is served in an iframe from https://web.texpo.io/{userId}/{appSlug} (its slug is derived from the name — lowercased, dashes; deduplicated with -2, -3, … on collision) and that texpo page needs code deployed to it before it shows anything. Pass the optional `url` to instead point the app's iframe DIRECTLY at an existing external page (no code/build needed) — the created app then opens straight to that URL. Returns the created app's id, devId, slug, URL, and a ready-made `tag` — a chat entity tag of the form @[application:`<appId>`|`<Name>`]. To give the user a clickable link that opens the application inside the platform, paste that `tag` value verbatim into your reply (do NOT link the raw URL).
 
 | Parameter | Type | Required | Description |
 |-----------|------|----------|-------------|
 | `name` | string | Yes | Human-readable name for the application. Also used to derive the URL slug. |
 | `description` | string | No | Short description of what the application does. |
+| `url` | string | No | Optional external URL (http/https) to embed directly in the app's iframe, e.g. https://example.com. When provided, the app frames this page as-is with no build/deploy — the created app opens straight to it. The target site MUST allow third-party framing: many major sites (news portals, Google, most social networks) send X-Frame-Options or a CSP frame-ancestors directive that forbids embedding, and the browser will render them blank. Prefer a site known to permit framing. |
+| `icon` | string | No | Font Awesome icon for the application, in the "fa-light fa-`<name>`" format (e.g. "fa-light fa-newspaper"). Set this for EVERY app you create, choosing an icon that represents what the app does — if omitted it falls back to a generic lightbulb. Pick the best match from this set: fa-light fa-robot, fa-light fa-brain-circuit, fa-light fa-microchip-ai, fa-light fa-user-robot, fa-light fa-message-bot, fa-light fa-cpu, fa-light fa-binary, fa-light fa-code, fa-light fa-terminal, fa-light fa-database, fa-light fa-network-wired, fa-light fa-satellite-dish, fa-light fa-palette, fa-light fa-pen-fancy, fa-light fa-paintbrush, fa-light fa-music, fa-light fa-camera, fa-light fa-film, fa-light fa-photo-film, fa-light fa-wand-magic-sparkles, fa-light fa-sparkles, fa-light fa-stars, fa-light fa-hat-wizard, fa-light fa-crystal-ball, fa-light fa-graduation-cap, fa-light fa-book-open, fa-light fa-books, fa-light fa-lightbulb, fa-light fa-magnifying-glass-chart, fa-light fa-chart-mixed, fa-light fa-flask, fa-light fa-microscope, fa-light fa-atom, fa-light fa-dna, fa-light fa-briefcase, fa-light fa-user-tie, fa-light fa-user-astronaut, fa-light fa-user-secret, fa-light fa-user-ninja, fa-light fa-users, fa-light fa-handshake, fa-light fa-comments, fa-light fa-bullhorn, fa-light fa-headset, fa-light fa-shield-check, fa-light fa-dragon, fa-light fa-unicorn, fa-light fa-cat, fa-light fa-dog, fa-light fa-rocket, fa-light fa-planet-ringed, fa-light fa-fire-flame-curved, fa-light fa-bolt, fa-light fa-leaf, fa-light fa-gem, fa-light fa-trophy. Any other valid Font Awesome 6 icon name is accepted too — always keep the "fa-light" weight. |
 
 #### `list-applications`
 
