@@ -1,7 +1,7 @@
 # Intents Reference
 
 > Auto-generated from application and service manifests.  
-> Generated on: 2026-07-10
+> Generated on: 2026-07-13
 
 ## Table of Contents
 
@@ -1127,6 +1127,7 @@ Sends a text message to a text-chat channel. You must provide EITHER a channelId
 | `channelId` | string | No | Target channel ID. Use this when you already know the channel (e.g. from a platform event). Takes precedence over userId. |
 | `userId` | string | No | Target user ID for a direct message. The service resolves the direct channel by calling channel:getDirectChannel under the hood. Ignored if channelId is also provided. |
 | `buttons` | object[] | No | Optional interactive buttons rendered below the message body. Pass a real JSON array (NOT a JSON-stringified array). Each entry MUST be an object with this exact NESTED shape: `{text: string, intent: {applicationId: string, action: string, params?: object}}`. Do NOT flatten `applicationId`/`action` onto the button itself — `intent` is a sub-object. `text` is the visible label. Clicking dispatches `intent` via Application.run on the recipient's client (use an `applicationId` + `action` the recipient's app exposes — see other service manifests for valid pairs). Entries that are malformed are repaired-or-dropped by the service and reported back in `buttonWarnings`; check that field on the response and use the canonical shape going forward. Example: `[{"text":"Open profile","intent":{"applicationId":"valuguru","action":"open-agent","params":{"agentId":"agent_xxx"}}}]`. |
+| `customParams` | object | No | Optional message customParams. Only the key `open-thread` is accepted (any other key is dropped by the service). Pass `{"open-thread": true}` ONLY when the recipient explicitly expects your outreach (e.g. you are responding to their team-member avatar click) — it force-opens the chat thread on their screen, which is invasive. |
 
 #### `message-owner`
 
@@ -1138,6 +1139,7 @@ Delivers a message authored by the AI agent itself (NOT by the logged-in user) i
 | `agentId` | string | Yes | The calling agent's own ID. Used to address the dedicated `userAIAgent:{userId}:{agentId}` channel so the message is authored by this agent. |
 | `text` | string | Yes | The message body to send. |
 | `buttons` | object[] | No | Optional interactive buttons rendered below the message body. Pass a real JSON array (NOT a JSON-stringified array). Each entry MUST be an object with this exact NESTED shape: `{text: string, intent: {applicationId: string, action: string, params?: object}}`. Do NOT flatten `applicationId`/`action` onto the button itself — `intent` is a sub-object. `text` is the visible label. Clicking dispatches `intent` via Application.run on the recipient's client (use an `applicationId` + `action` the recipient's app exposes — see other service manifests for valid pairs). Entries that are malformed are repaired-or-dropped by the service and reported back in `buttonWarnings`; check that field on the response and use the canonical shape going forward. Example: `[{"text":"Open profile","intent":{"applicationId":"valuguru","action":"open-agent","params":{"agentId":"agent_xxx"}}}]`. |
+| `customParams` | object | No | Optional message customParams. Only the key `open-thread` is accepted (any other key is dropped by the service). Pass `{"open-thread": true}` ONLY when the recipient explicitly expects your outreach (e.g. you are responding to their team-member avatar click) — it force-opens the chat thread on their screen, which is invasive. |
 
 ---
 
