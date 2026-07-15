@@ -1,7 +1,7 @@
 # Intents Reference
 
 > Auto-generated from application and service manifests.  
-> Generated on: 2026-07-13
+> Generated on: 2026-07-15
 
 ## Table of Contents
 
@@ -29,6 +29,7 @@
 
 - [Application Service (`Application`)](#application-service-application)
 - [Application Storage Service (`ApplicationStorage`)](#application-storage-service-applicationstorage)
+- [CBAC Service (`Cbac`)](#cbac-service-cbac)
 - [CMS Service (`CMS`)](#cms-service-cms)
 - [Community Service (`Community`)](#community-service-community)
 - [Data Provider Service (`DataProvider`)](#data-provider-service-dataprovider)
@@ -652,6 +653,48 @@ Deletes a resource from the calling application's storage.
 
 ---
 
+### CBAC Service (`Cbac`)
+
+Badge-based access control (CBAC). Manages policies that grant a permission on a target entity (room, community, or group) to users holding specific badges. Policy mutations require manage permission on the target.
+
+*Source: `src/Services/Cbac/CbacService.js`*
+
+#### `list-policies`
+
+Lists all CBAC policies configured for a target entity.
+
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `networkId` | string | Yes | ID of the network the target belongs to. |
+| `targetType` | string | Yes | Type of the target entity: "room", "community", or "group". |
+| `targetId` | string | Yes | ID of the target entity. |
+
+#### `create-policy`
+
+Creates a CBAC policy on a target entity. Valid grantedPermission values depend on targetType: room → room.view / room.comment / room.contribute / room.edit; community → community.join; group → group.join. Requires manage permission on the target.
+
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `networkId` | string | Yes | ID of the network the target belongs to. |
+| `targetType` | string | Yes | Type of the target entity: "room", "community", or "group". |
+| `targetId` | string | Yes | ID of the target entity. |
+| `badgeIds` | array | Yes | One or more badge IDs required to gain access; must not be empty. |
+| `badgeMatchMode` | string | Yes | How badges are evaluated: "any" (one badge suffices) or "all" (every badge required). |
+| `grantedPermission` | string | Yes | Permission granted when the badge requirement is met. Must be valid for the targetType (see intent description). |
+
+#### `delete-policy`
+
+Deletes a single CBAC policy by ID. Requires manage permission on the target.
+
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `policyId` | string | Yes | ID of the policy to delete. |
+| `networkId` | string | Yes | ID of the network the target belongs to. |
+| `targetType` | string | Yes | Type of the target entity: "room", "community", or "group". |
+| `targetId` | string | Yes | ID of the target entity. |
+
+---
+
 ### CMS Service (`CMS`)
 
 Content management service for uploading, searching, and deleting resources scoped to rooms, props, communities, channels, and directories.
@@ -885,6 +928,24 @@ Returns participants of a specific group. Supports search and cursor-based pagin
 | `query` | string | No | Search query to filter participants by name. |
 | `limit` | number | No | Maximum number of participants to return. Defaults to 20. |
 | `cursor` | string | No | Pagination cursor for fetching the next page of results. |
+
+#### `discover-groups`
+
+Returns groups the current user can join via CBAC — groups whose badge policy is satisfied by the badges the user holds. Each result includes the cbacPolicies that grant access. Supports search and cursor-based pagination.
+
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `query` | string | No | Search query to filter groups by name. |
+| `limit` | number | No | Maximum number of groups to return. Defaults to 20. |
+| `cursor` | string | No | Pagination cursor for fetching the next page of results. |
+
+#### `join-group`
+
+Joins the current user to a group via CBAC. The user must hold a badge that satisfies a badge policy on the target group (use discover-groups to find eligible groups first).
+
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `groupId` | string | Yes | The unique identifier of the group to join. |
 
 ---
 
