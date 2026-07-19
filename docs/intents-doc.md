@@ -1,7 +1,7 @@
 # Intents Reference
 
 > Auto-generated from application and service manifests.  
-> Generated on: 2026-07-17
+> Generated on: 2026-07-19
 
 ## Table of Contents
 
@@ -614,6 +614,18 @@ Issues a short-lived signed identity JWT for the calling mini-app. The target ap
 #### `close_all`
 
 Closes all currently loaded applications and clears all docks. Unlike the normal close flow, does not re-open the default application — the UI stays blank with no application displayed.
+
+*No parameters.*
+
+#### `expand-application`
+
+Expands the calling application to fill the dock by closing every other loaded application. The target application is inferred from the intent sender — no parameters needed. Mirrors the "Expand Application" default header action for iframe apps that render their own context menu (header: false).
+
+*No parameters.*
+
+#### `close-application`
+
+Closes the calling application (unloads it from its dock), then re-opens the default network application if nothing is left docked. The target application is inferred from the intent sender — no parameters needed. Mirrors the "Close Application" default header action for iframe apps that render their own context menu (header: false).
 
 *No parameters.*
 
