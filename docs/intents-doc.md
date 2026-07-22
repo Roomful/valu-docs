@@ -1,7 +1,7 @@
 # Intents Reference
 
 > Auto-generated from application and service manifests.  
-> Generated on: 2026-07-21
+> Generated on: 2026-07-22
 
 ## Table of Contents
 
@@ -22,6 +22,7 @@
 - [Resources Viewer (`preview`)](#resources-viewer-preview)
 - [Rooms (`rooms`)](#rooms-rooms)
 - [Social (`community`)](#social-community)
+- [Valu Games (`games`)](#valu-games-games)
 - [Valu Guru (`valuguru`)](#valu-guru-valuguru)
 - [Valu Puzzles (`puzzles`)](#valu-puzzles-puzzles)
 
@@ -522,6 +523,18 @@ Opens the community view and navigates to a specific post. Use communityId from 
 | `rootChannelId` | string | Yes | The top-level root channel id. Never a sub-channel id. |
 | `messageId` | string | Yes | The post id from AI context. |
 | `subChannelId` | string | No | The sub-channel id containing the post. Omit when the post is in the root channel itself. |
+
+---
+
+### Valu Games (`games`)
+
+Valu board games
+
+#### `open`
+
+Open the Valu Games app.
+
+*No parameters.*
 
 ---
 
