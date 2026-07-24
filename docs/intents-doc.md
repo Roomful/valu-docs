@@ -347,6 +347,7 @@ Navigate to and open a specific folder in the CMS by its folder ID
 | Parameter | Type | Required | Description |
 |-----------|------|----------|-------------|
 | `folderId` | string | Yes | The unique identifier of the folder to open |
+| `resourceId` | string | No | A resource inside that folder to open in the Edit side panel after navigating. |
 
 #### `preview-resource`
 
