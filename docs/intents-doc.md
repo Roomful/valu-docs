@@ -1,7 +1,7 @@
 # Intents Reference
 
 > Auto-generated from application and service manifests.  
-> Generated on: 2026-07-22
+> Generated on: 2026-07-24
 
 ## Table of Contents
 
@@ -68,11 +68,11 @@ Logout from system
 
 #### `open-calendar`
 
-Opens the calendar view filtered by a specific source type (room, group, user, or community event).
+Opens the calendar view, optionally filtered by a specific source type (all, room, group, user, or community event).
 
 | Parameter | Type | Required | Description |
 |-----------|------|----------|-------------|
-| `source` | string | Yes | The source type for the calendar filter. Must be one of: room, group, user, community. |
+| `source` | string | Yes | The source type for the calendar filter. Must be one of: all, room, group, user, community. Use "all" to show meetings from every source type. |
 | `id` | string | No | The unique identifier of the room, group, or user. |
 | `fullName` | string | No | The display name of the room, group, or user. |
 | `communityId` | string | No | The unique identifier of the community (used when source is community). |
