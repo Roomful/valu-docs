@@ -40,6 +40,7 @@
 - [HTTP Service (`Http`)](#http-service-http)
 - [Logging Service (`Logging`)](#logging-service-logging)
 - [Networks Service (`Networks`)](#networks-service-networks)
+- [Profile Service (`Profile`)](#profile-service-profile)
 - [Resource Service (`Resources`)](#resource-service-resources)
 - [Rooms Service (`Rooms`)](#rooms-service-rooms)
 - [Text Chat Service (`TextChat`)](#text-chat-service-textchat)
@@ -1042,6 +1043,32 @@ Network management service for retrieving information about the current network.
 Returns the id and name of the network the user is currently in. Call this to get the current networkId before making any room or network-related calls.
 
 *No parameters.*
+
+---
+
+### Profile Service (`Profile`)
+
+Read-only access to a user's public profile artifacts — Verus verifiable credentials and network badges — addressed by userId. No UI side effects.
+
+*Source: `src/Services/Profile/ProfileService.js`*
+
+#### `get-user-credentials`
+
+Returns the Verus verifiable credentials published on a user's profile, by their userId. These are the attestation claims of type "credential" shown in the profile Credentials view. Revoked credentials are returned only when the userId is the current user. Visibility is enforced by the backend against the current user.
+
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `userId` | string | Yes | The unique identifier of the user whose credentials to list. |
+| `status` | string | No | Optional claim status filter (e.g. "Verified And Persisted"). Omit to return credentials of all statuses the caller may see. |
+
+#### `get-user-badges`
+
+Returns the badges assigned to a user by their userId. Each badge includes badgeId, badgeName, badgeDescription, thumbnailId, and networkId. Visibility is enforced by the backend against the current user.
+
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `userId` | string | Yes | The unique identifier of the user whose badges to list. |
+| `networkId` | string | No | Network scope for the badges. Defaults to "all", which fetches badges from every network shared with the target user. |
 
 ---
 
