@@ -349,6 +349,14 @@ Navigate to and open a specific folder in the CMS by its folder ID
 | `folderId` | string | Yes | The unique identifier of the folder to open |
 | `resourceId` | string | No | A resource inside that folder to open in the Edit side panel after navigating. |
 
+#### `show-resource`
+
+Reveal a resource in the CMS file browser by its resource ID — navigates to the folder holding it (or to its section root when it is not in a folder), selects it and opens its Edit side panel. Use this when you only have a resource id and want to show the user where that file lives; use preview-resource instead to just view its contents.
+
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `resourceId` | string | Yes | The unique identifier of the resource to reveal |
+
 #### `preview-resource`
 
 Open a resource (file) in the CMS preview viewer by its resource ID
