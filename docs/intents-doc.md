@@ -550,6 +550,14 @@ Open the Valu Games app.
 
 ### Valu Guru (`valuguru`)
 
+#### `open`
+
+Opens the Valu Guru app on a chat with the built-in Valu Guru assistant, without sending anything. Resumes the most recent built-in-assistant conversation, or lands on the empty new-chat screen when there is none. Custom chatbot conversations are never resumed, and nothing is created on the server — a session appears only once a message is sent.
+
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `newChat` | boolean | No | When true, always lands on the empty new-chat screen instead of resuming the most recent Valu Guru conversation. |
+
 #### `start-session`
 
 Opens the Valu Guru app and starts a brand-new conversation session with an initial message. Always creates a new session regardless of existing ones.
