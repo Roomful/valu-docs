@@ -1,7 +1,7 @@
 # Intents Reference
 
 > Auto-generated from application and service manifests.  
-> Generated on: 2026-08-02
+> Generated on: 2026-08-03
 
 ## Table of Contents
 
@@ -466,6 +466,22 @@ Opens the resource viewer to preview a specific resource.
 ### Rooms (`rooms`)
 
 View and manage rooms
+
+#### `open`
+
+Opens the Rooms app on a chosen list. With no parameter the app simply opens on whatever it was last showing.
+
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `tab` | string | No | Which list to show. Defaults to the currently visible one. |
+
+#### `show-room`
+
+Opens the Rooms app on a specific room's detail view — info, members and settings.
+
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `roomId` | string | Yes | The unique identifier of the room to show. |
 
 #### `invite-to-room`
 
