@@ -1,7 +1,7 @@
 # Intents Reference
 
 > Auto-generated from application and service manifests.  
-> Generated on: 2026-08-07
+> Generated on: 2026-08-11
 
 ## Table of Contents
 
@@ -751,6 +751,23 @@ Deletes a single CBAC policy by ID. Requires manage permission on the target.
 | `networkId` | string | Yes | ID of the network the target belongs to. |
 | `targetType` | string | Yes | Type of the target entity: "room", "community", or "group". |
 | `targetId` | string | Yes | ID of the target entity. |
+
+#### `list-badges`
+
+Lists every badge visible to the current user — badges scoped to their networks plus global ones. Returns an array of `{networkId, badgeId, badgeName, badgeDescription, thumbnailId}`, where `networkId` is "all" for a global badge. Use this to resolve a badge name to the badgeId required by search-users-by-badge-id and the policy intents.
+
+*No parameters.*
+
+#### `search-users-by-badge-id`
+
+Lists the users holding a given badge, optionally filtered by a name query. The reverse of looking up which badges a single user holds. Call list-badges first to resolve a badge name to its badgeId. Returns `{users, total}` where `total` is the full match count across all pages — page through it with offset/size rather than assuming the first page is everything.
+
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `badgeId` | string | Yes | ID of the badge whose holders are returned. |
+| `query` | string | No | Search query to filter badge holders by name. Defaults to an empty string, which returns all holders. |
+| `offset` | number | No | Pagination offset. Defaults to 0. |
+| `size` | number | No | Number of results to return. Defaults to 10. |
 
 ---
 
