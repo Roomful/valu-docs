@@ -1,7 +1,7 @@
 # Intents Reference
 
 > Auto-generated from application and service manifests.  
-> Generated on: 2026-08-21
+> Generated on: 2026-08-24
 
 ## Table of Contents
 
@@ -1173,7 +1173,7 @@ Returns the network-allowed bot avatar collection (id, name, tags) from the shar
 
 ### Rooms Service (`Rooms`)
 
-Room management service for searching rooms, retrieving room details, and checking permissions.
+Room management service for searching rooms, browsing room templates, creating rooms from templates, retrieving room details, managing prop content, and checking permissions.
 
 *Source: `src/Applications/RoomsApplication/Services/RoomsService.js`*
 
@@ -1217,7 +1217,7 @@ Retrieves the current user permissions for a room (view, comment, contribute, ed
 
 #### `get-room-props`
 
-Lists all props (interactive objects) in a room. Returns prop objects with id, name, type, contentCount, and assetId.
+Lists all props (interactive objects) in a room. Returns prop objects with id, name, type (array of content types the prop can hold — empty means it cannot hold content), tags, contentCount, and assetId. Use tags to find a specific prop the user refers to (e.g. "logo", "team").
 
 | Parameter | Type | Required | Description |
 |-----------|------|----------|-------------|
@@ -1264,6 +1264,38 @@ Removes a user from a prop's team by deleting their invitation. Use list-prop-te
 | `roomId` | string | Yes | The room the prop belongs to. |
 | `propId` | string | Yes | The prop to remove the user from. |
 | `invitedUser` | string | Yes | User ID of the team member to remove. |
+
+#### `list-room-templates`
+
+Lists room templates available for creating new 3D rooms. Each template has an id, name, tags (e.g. "office", "gallery", "community"), price in cents (0 or missing = free), and subscriptionStatus. Supports text search and server-side tag filtering with pagination. Use this before create-room-from-template to find a template id.
+
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `query` | string | No | Search query to filter templates by name. |
+| `tags` | string[] | No | Filter templates by tags (server-side), e.g. ["community"]. |
+| `offset` | number | No | Pagination offset. Defaults to 0. |
+| `size` | number | No | Number of results to return. Defaults to 20. |
+
+#### `create-room-from-template`
+
+Creates a new 3D room in the current network from a room template and returns the new roomId. Only free templates can be created this way — paid templates require checkout in the Rooms app UI. Use list-room-templates first to find a template id and check it is free.
+
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `templateId` | string | Yes | The room template id (from list-room-templates). |
+| `roomName` | string | Yes | Name for the new room. |
+
+#### `paste-resources-into-prop`
+
+Places one or more existing CMS resources into a prop in a room. Resources are link-copied (the originals stay in their current folder) and added to the prop's content list. A prop holding multiple resources displays them as a slideshow, so pass several resourceIds to build a slideshow. The prop must support content — check via get-room-props that its type array is non-empty. Use service__CMS__resource_search to find resource ids first.
+
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `roomId` | string | Yes | The room the prop belongs to. |
+| `propId` | string | Yes | The prop to place the resources into. |
+| `resourceIds` | string[] | Yes | CMS resource ids to place into the prop, in display order. |
+| `appendToListEnd` | boolean | No | When true (default) new resources are appended to the end of the prop's content list; when false they are inserted at the front. |
+| `networkId` | string | No | Network ID the room belongs to. Defaults to the current network. |
 
 ---
 
