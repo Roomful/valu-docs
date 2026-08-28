@@ -1,7 +1,7 @@
 # Intents Reference
 
 > Auto-generated from application and service manifests.  
-> Generated on: 2026-08-25
+> Generated on: 2026-08-28
 
 ## Table of Contents
 
@@ -1217,7 +1217,7 @@ Retrieves the current user permissions for a room (view, comment, contribute, ed
 
 #### `get-room-props`
 
-Lists all props (interactive objects) in a room. Returns prop objects with id, name, type (array of content types the prop can hold — empty means it cannot hold content), tags, contentCount, and assetId. Use tags to find a specific prop the user refers to (e.g. "logo", "team").
+Lists all props (interactive objects) in a room. Returns prop objects with id, name (author-set display name), assetTitle (the asset's catalog name, e.g. "Gold Picture Frame" or "Presentation Board" — tells you what kind of object the prop is even when the author renamed it), type (array of content types the prop can hold — empty means it cannot hold content), thumbnailCount (number of visual display canvases — a picture frame has thumbnailCount > 0), isPresentationBoard (true = a live screen-share board, NEVER a target for pasted content; null = unknown), tags, contentCount, and assetId. Match the user's words against tags, name and assetTitle to find the prop they mean (e.g. "logo", "team", "the gold frame").
 
 | Parameter | Type | Required | Description |
 |-----------|------|----------|-------------|
@@ -1226,7 +1226,7 @@ Lists all props (interactive objects) in a room. Returns prop objects with id, n
 
 #### `get-prop`
 
-Returns details for a single prop by ID (name, type, contentCount, assetId) with no navigation or UI side effects. Use this to read prop data. Only use preview-prop when the user explicitly asks to show, open, or navigate to a prop.
+Returns details for a single prop by ID (name, assetTitle, type, thumbnailCount, isPresentationBoard, contentCount, assetId — same fields as get-room-props) with no navigation or UI side effects. Use this to read prop data. Only use preview-prop when the user explicitly asks to show, open, or navigate to a prop.
 
 | Parameter | Type | Required | Description |
 |-----------|------|----------|-------------|
@@ -1287,7 +1287,7 @@ Creates a new 3D room in the current network from a room template and returns th
 
 #### `paste-resources-into-prop`
 
-Places one or more existing CMS resources into a prop in a room. Resources are link-copied (the originals stay in their current folder) and added to the prop's content list. A prop holding multiple resources displays them as a slideshow, so pass several resourceIds to build a slideshow. The prop must support content — check via get-room-props that its type array is non-empty. Use service__CMS__resource_search to find resource ids first.
+Places one or more existing CMS resources into a prop in a room. Resources are link-copied (the originals stay in their current folder) and added to the prop's content list. A prop holding multiple resources displays them as a slideshow, so pass several resourceIds to build a slideshow. When several similar props are available (e.g. a row of picture frames), SPREAD the content across them — one call per prop with a contiguous, order-preserving share each — rather than stacking everything on a single prop, unless the user explicitly asked for one slideshow. The prop must support content — check via get-room-props that its type array is non-empty and isPresentationBoard is false: presentation (screen-share) boards are rejected, they are reserved for live screen sharing. Prefer props with thumbnailCount > 0 (picture frames / display canvases). Use service__CMS__resource_search to find resource ids first.
 
 | Parameter | Type | Required | Description |
 |-----------|------|----------|-------------|
