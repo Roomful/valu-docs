@@ -1,7 +1,7 @@
 # Intents Reference
 
 > Auto-generated from application and service manifests.  
-> Generated on: 2026-08-28
+> Generated on: 2026-08-31
 
 ## Table of Contents
 
@@ -1217,7 +1217,7 @@ Retrieves the current user permissions for a room (view, comment, contribute, ed
 
 #### `get-room-props`
 
-Lists all props (interactive objects) in a room. Returns prop objects with id, name (author-set display name), assetTitle (the asset's catalog name, e.g. "Gold Picture Frame" or "Presentation Board" — tells you what kind of object the prop is even when the author renamed it), type (array of content types the prop can hold — empty means it cannot hold content), thumbnailCount (number of visual display canvases — a picture frame has thumbnailCount > 0), isPresentationBoard (true = a live screen-share board, NEVER a target for pasted content; null = unknown), invokeType (Default/Container/Bookshelf/FileCabinet), tags, contentCount, and assetId. Match the user's words against tags, name and assetTitle to find the prop they mean (e.g. "logo", "team", "the gold frame").
+Lists all props (interactive objects) in a room. Returns prop objects with id, name (author-set display name), assetTitle (the asset's catalog name, e.g. "Gold Picture Frame" or "Presentation Board" — tells you what kind of object the prop is even when the author renamed it), type (array of content types the prop can hold — empty means it cannot hold content), thumbnailCount (number of visual display canvases — a picture frame has thumbnailCount > 0), isPresentationBoard (true = a live screen-share board, NEVER a target for pasted content; null = unknown), invokeType (Default/Container/Bookshelf/FileCabinet), tags, contentCount, and assetId. Match the user's words against tags, name and assetTitle to find the prop they mean (e.g. "logo", "team", "the gold frame"). Canonical section tags use a "c-" prefix (c-logo, c-team, c-products-service, c-history, c-video) — match case-insensitively ignoring that prefix ("history" -> c-history).
 
 | Parameter | Type | Required | Description |
 |-----------|------|----------|-------------|
