@@ -1179,7 +1179,7 @@ Room management service for searching rooms, browsing room templates, creating r
 
 #### `search-rooms`
 
-Searches all public/discoverable rooms in the current network using the explorer service. Returns rooms anyone can find and join, regardless of membership. Use this when the user wants to discover or browse rooms.
+Searches all public/discoverable rooms in the current network using the explorer service. Returns rooms anyone can find and join, regardless of membership. Use this when the user wants to discover or browse rooms. Every room in the result carries a ready-made entity link in its `tag` field (`@[room:networkId/roomId|Name]`) plus the resolved `networkId` — paste that `tag` verbatim when linking to the room and NEVER assemble one from ids yourself.
 
 | Parameter | Type | Required | Description |
 |-----------|------|----------|-------------|
@@ -1189,7 +1189,7 @@ Searches all public/discoverable rooms in the current network using the explorer
 
 #### `search-my-rooms`
 
-Searches rooms belonging to the current user within the current network — their joined rooms, favorites, or pending invitations. Use this when the user asks about their own rooms.
+Searches rooms belonging to the current user within the current network — their joined rooms, favorites, or pending invitations. Use this when the user asks about their own rooms. Every room in the result carries a ready-made entity link in its `tag` field (`@[room:networkId/roomId|Name]`) plus the resolved `networkId` — paste that `tag` verbatim when linking to the room and NEVER assemble one from ids yourself.
 
 | Parameter | Type | Required | Description |
 |-----------|------|----------|-------------|
@@ -1217,7 +1217,7 @@ Retrieves the current user permissions for a room (view, comment, contribute, ed
 
 #### `get-room-props`
 
-Lists all props (interactive objects) in a room. Returns prop objects with id, name (author-set display name), assetTitle (the asset's catalog name, e.g. "Gold Picture Frame" or "Presentation Board" — tells you what kind of object the prop is even when the author renamed it), type (array of content types the prop can hold — empty means it cannot hold content), thumbnailCount (number of visual display canvases — a picture frame has thumbnailCount > 0), isPresentationBoard (true = a live screen-share board, NEVER a target for pasted content; null = unknown), invokeType (Default/Container/Bookshelf/FileCabinet), tags, contentCount, and assetId. Match the user's words against tags, name and assetTitle to find the prop they mean (e.g. "logo", "team", "the gold frame"). Canonical section tags use a "c-" prefix (c-logo, c-team, c-products-service, c-history, c-video) — match case-insensitively ignoring that prefix ("history" -> c-history).
+Lists all props (interactive objects) in a room. Returns prop objects with id, name (author-set display name), assetTitle (the asset's catalog name, e.g. "Gold Picture Frame" or "Presentation Board" — tells you what kind of object the prop is even when the author renamed it), type (array of content types the prop can hold — empty means it cannot hold content), thumbnailCount (number of visual display canvases — a picture frame has thumbnailCount > 0), isPresentationBoard (true = a live screen-share board, NEVER a target for pasted content; null = unknown), invokeType (Default/Container/Bookshelf/FileCabinet), tags, contentCount, assetId, and `tag` — a ready-made entity link for the prop (`@[prop:networkId/roomId/propId|Name]`) that you paste verbatim when referring to it, never assembling one from ids yourself. Match the user's words against tags, name and assetTitle to find the prop they mean (e.g. "logo", "team", "the gold frame"). Canonical section tags use a "c-" prefix (c-logo, c-team, c-products-service, c-history, c-video) — match case-insensitively ignoring that prefix ("history" -> c-history).
 
 | Parameter | Type | Required | Description |
 |-----------|------|----------|-------------|
@@ -1226,7 +1226,7 @@ Lists all props (interactive objects) in a room. Returns prop objects with id, n
 
 #### `get-prop`
 
-Returns details for a single prop by ID (name, assetTitle, type, thumbnailCount, isPresentationBoard, contentCount, assetId — same fields as get-room-props) with no navigation or UI side effects. Use this to read prop data. Only use preview-prop when the user explicitly asks to show, open, or navigate to a prop.
+Returns details for a single prop by ID (name, assetTitle, type, thumbnailCount, isPresentationBoard, contentCount, assetId, and the ready-made entity link `tag` — same fields as get-room-props) with no navigation or UI side effects. Use this to read prop data. Only use preview-prop when the user explicitly asks to show, open, or navigate to a prop.
 
 | Parameter | Type | Required | Description |
 |-----------|------|----------|-------------|
@@ -1278,7 +1278,7 @@ Lists room templates available for creating new 3D rooms. Each template has an i
 
 #### `create-room-from-template`
 
-Creates a new 3D room in the current network from a room template and returns the new roomId. Only free templates can be created this way — paid templates require checkout in the Rooms app UI. Use list-room-templates first to find a template id and check it is free.
+Creates a new 3D room in the current network from a room template. Returns { roomId, name, networkId, tag } for the NEW room. Creating the room and linking to it are two separate steps: to link, paste the returned `tag` (`@[room:networkId/roomId|Name]`) VERBATIM — never rebuild it from ids, never reuse a roomId from an earlier call or a template id, and never guess the networkId. Only free templates can be created this way — paid templates require checkout in the Rooms app UI. Use list-room-templates first to find a template id and check it is free.
 
 | Parameter | Type | Required | Description |
 |-----------|------|----------|-------------|
