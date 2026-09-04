@@ -1,7 +1,7 @@
 # Intents Reference
 
 > Auto-generated from application and service manifests.  
-> Generated on: 2026-09-03
+> Generated on: 2026-09-04
 
 ## Table of Contents
 
@@ -1278,13 +1278,13 @@ Lists the room templates the AI is allowed to build from: ONLY templates tagged 
 
 #### `create-room-from-template`
 
-Creates a new 3D room in the current network from a room template — FREE or PAID. Pass the template's `price` exactly as list-room-templates returned it (0 for free). For a paid template the room is created immediately with a one-time-payment plan and the platform keeps it only if the user completes the purchase within 15 minutes; this tool never pays anything. Returns { roomId, name, networkId, tag, price, isFree, paymentRequired } for the NEW room plus, when paymentRequired is true, paymentWindowMinutes (15) and paymentInstructions. When paymentRequired is true you MUST tell the user right away: the price, that the room is temporary until it is bought within 15 minutes, and how to pay (Valu web app -> Rooms -> open the new room -> "Pay for Room"); never claim it is paid. Creating the room and linking to it are two separate steps: to link, paste the returned `tag` (`@[room:networkId/roomId|Name]`) VERBATIM — never rebuild it from ids, never reuse a roomId from an earlier call or a template id, and never guess the networkId. Use list-room-templates first to find the template id and its price.
+Creates a new 3D room in the current network from a room template — FREE or PAID. The tool looks the template up in the AI-approved list itself and uses the listed price (pass `price` too when you have it; it is the fallback if the lookup fails). For a paid template the room is created immediately with a one-time-payment plan and the platform keeps it only if the user completes the purchase within 15 minutes; this tool never pays anything. Returns { roomId, name, networkId, tag, price, isFree, paymentRequired } for the NEW room plus, when paymentRequired is true, paymentWindowMinutes (15) and paymentInstructions. When paymentRequired is true you MUST tell the user right away: the price, that the room is temporary until it is bought within 15 minutes, and how to pay (Valu web app -> Rooms -> open the new room -> "Pay for Room"); never claim it is paid. Creating the room and linking to it are two separate steps: to link, paste the returned `tag` (`@[room:networkId/roomId|Name]`) VERBATIM — never rebuild it from ids, never reuse a roomId from an earlier call or a template id, and never guess the networkId. Use list-room-templates first to find the template id and its price.
 
 | Parameter | Type | Required | Description |
 |-----------|------|----------|-------------|
 | `templateId` | string | Yes | The room template id (from list-room-templates). |
 | `roomName` | string | Yes | Name for the new room. |
-| `price` | number | Yes | The template's price in USD exactly as list-room-templates returned it (0 = free). A value above 0 creates a PAID room that the user must purchase within 15 minutes to keep. |
+| `price` | number | No | The template's price in USD as list-room-templates returned it (0 = free). Optional: the tool resolves the price from the approved list itself and only falls back to this value when the template cannot be found there. A price above 0 creates a PAID room that the user must purchase within 15 minutes to keep. |
 
 #### `paste-resources-into-prop`
 
