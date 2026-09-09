@@ -1,7 +1,7 @@
 # Intents Reference
 
 > Auto-generated from application and service manifests.  
-> Generated on: 2026-09-04
+> Generated on: 2026-09-09
 
 ## Table of Contents
 
@@ -22,6 +22,7 @@
 - [Resources Viewer (`preview`)](#resources-viewer-preview)
 - [Rooms (`rooms`)](#rooms-rooms)
 - [Social (`community`)](#social-community)
+- [User Card (`user-card`)](#user-card-user-card)
 - [Valu Games (`games`)](#valu-games-games)
 - [Valu Guru (`valuguru`)](#valu-guru-valuguru)
 - [Valu Puzzles (`puzzles`)](#valu-puzzles-puzzles)
@@ -549,6 +550,22 @@ Opens the community view and navigates to a specific post. Use communityId from 
 | `rootChannelId` | string | Yes | The top-level root channel id. Never a sub-channel id. |
 | `messageId` | string | Yes | The post id from AI context. |
 | `subChannelId` | string | No | The sub-channel id containing the post. Omit when the post is in the root channel itself. |
+
+---
+
+### User Card (`user-card`)
+
+Contextual profile card shown when tapping a user avatar
+
+#### `show`
+
+Shows the contextual profile card for a user.
+
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `userId` | string | Yes | The unique identifier of the user whose card to show. |
+| `anchor` | object | No | Viewport rect {left, top, right, bottom, width, height} of the tapped avatar, used to position the card in web. Ignored by native hosts, which anchor the card their own way. Omitted, the card is centred. |
+| `hostApplicationId` | string | No | The application the card is opened from, and so the view a native host should present it above (e.g. "textchat"). Absent when the caller could not name one — present over the topmost view in that case. |
 
 ---
 
