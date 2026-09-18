@@ -399,6 +399,14 @@ Open and display the specified community channel
 
 Sell in Valu: list products and bundles, choose where they sell, and moderate a network's commerce
 
+#### `open-section`
+
+Open the Merchant Console on one of its tabs. The tab becomes part of the address, so the place it opens on can be linked to and comes back on a reload. Bundles is offered only to a seller who has one, and Moderation only to a network admin.
+
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `section` | string | Yes | Which tab to open: overview, products, bundles or moderation. |
+
 #### `open-products`
 
 Open the seller's product list.
@@ -455,6 +463,14 @@ Navigate the camera to a specific prop in a room, opening the Metaverse view. ne
 ### My Cart (`cart`)
 
 Everything you added in any Valu app, in one cart, paid for with one QR scan
+
+#### `open-section`
+
+Open My Cart on one of its tabs. The tab becomes part of the address, so the place it opens on can be linked to and comes back on a reload.
+
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `section` | string | Yes | Which tab to open: discover, cart or orders. |
 
 #### `open-cart`
 
@@ -979,6 +995,12 @@ Open My Cart for the user, scoped to your app's items.
 #### `open-purchases`
 
 Open the user's order history in My Cart.
+
+*No parameters.*
+
+#### `open-products`
+
+Open the seller's own products in the Merchant Console — the seller's side of `open-cart`. Use it after `create-product`, or for a "My products" link: it shows everything they sell across every app, not just yours, and whether they may sell at all is the platform's decision, not your app's.
 
 *No parameters.*
 
