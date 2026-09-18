@@ -1,7 +1,7 @@
 # Intents Reference
 
 > Auto-generated from application and service manifests.  
-> Generated on: 2026-09-16
+> Generated on: 2026-09-18
 
 ## Table of Contents
 
@@ -17,7 +17,9 @@
 - [Groups (`groups`)](#groups-groups)
 - [LLM Debug (`iframe_llm_debug`)](#llm-debug-iframe-llm-debug)
 - [Media (`cms`)](#media-cms)
+- [Merchant Console (`merchant`)](#merchant-console-merchant)
 - [Metaverse (`metaverse`)](#metaverse-metaverse)
+- [My Cart (`cart`)](#my-cart-cart)
 - [Profile (`profile`)](#profile-profile)
 - [Resources Viewer (`preview`)](#resources-viewer-preview)
 - [Rooms (`rooms`)](#rooms-rooms)
@@ -33,6 +35,7 @@
 - [Application Storage Service (`ApplicationStorage`)](#application-storage-service-applicationstorage)
 - [CBAC Service (`Cbac`)](#cbac-service-cbac)
 - [CMS Service (`CMS`)](#cms-service-cms)
+- [Commerce (`Commerce`)](#commerce-commerce)
 - [Community Service (`Community`)](#community-service-community)
 - [Data Provider Service (`DataProvider`)](#data-provider-service-dataprovider)
 - [Developer Service (`Developer`)](#developer-service-developer)
@@ -392,6 +395,32 @@ Open and display the specified community channel
 
 ---
 
+### Merchant Console (`merchant`)
+
+Sell in Valu: list products and bundles, choose where they sell, and moderate a network's commerce
+
+#### `open-products`
+
+Open the seller's product list.
+
+*No parameters.*
+
+#### `open-product`
+
+Open one of the seller's own products for editing.
+
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `productId` | string | Yes | the product to open |
+
+#### `open-moderation`
+
+Open the moderation tab for the current network: who may sell here, what content is allowed, and the sellers waiting for a decision. Network admins only.
+
+*No parameters.*
+
+---
+
 ### Metaverse (`metaverse`)
 
 #### `set-route`
@@ -420,6 +449,52 @@ Navigate the camera to a specific prop in a room, opening the Metaverse view. ne
 | `networkId` | string | Yes | The network the room belongs to. Use the networkId from context. |
 | `roomId` | string | Yes | The ID of the room containing the prop. |
 | `propId` | string | Yes | The ID of the prop to navigate to. |
+
+---
+
+### My Cart (`cart`)
+
+Everything you added in any Valu app, in one cart, paid for with one QR scan
+
+#### `open-cart`
+
+Open the cart. Pass an app id to show only that app's items and check them out on their own.
+
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `appId` | string | No | show only the items added from this app |
+
+#### `open-orders`
+
+Open the order history — every purchase made across Valu apps, with its receipt.
+
+*No parameters.*
+
+#### `open-order`
+
+Open one order and show its receipt.
+
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `orderId` | string | Yes | the order to show |
+
+#### `open-product`
+
+Open a product's page — what it is, what it is made of, what makes up its price, and whether this buyer can buy it.
+
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `productId` | string | Yes | the product to show |
+
+#### `add-to-cart`
+
+Add a product to the cart and open it. The server re-checks that the product can be bought in this network before accepting it.
+
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `productId` | string | Yes | the product to add |
+| `appId` | string | No | the app the product is being bought from |
+| `qty` | number | No | how many, at least 1 |
 
 ---
 
@@ -836,6 +911,64 @@ Deletes a resource or removes it from a prop or post.
 | `postId` | string | No | The post to remove the resource from (removes association, does not delete the resource). |
 | `roomId` | string | No | The room the resource belongs to. |
 | `propId` | string | No | The prop to remove the resource from (removes association, does not delete the resource). |
+
+---
+
+### Commerce (`Commerce`)
+
+Products, cart and purchases shared across apps. An app lists its own goods and adds them to the one cart the user checks out with a single QR scan. Prices, totals and payouts are decided server-side — this surface carries ids and quantities only — and paying is never an action here: the buyer scans the code themselves.
+
+*Source: `src/Services/Commerce/CommerceService.js`*
+
+#### `list-products`
+
+Search the products YOUR app lists that are available in the user's current network. Products the network or its admins have refused are simply absent from the answer.
+
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `query` | string | No | free-text search over the product title |
+| `category` | string | No | one of the categories your app declares |
+| `attributes` | object | No | app-defined facets to filter by, e.g. {"subject": "Mathematics"} |
+| `sort` | string | No | newest \| popular \| priceAsc \| priceDesc \| rating |
+| `limit` | number | No | page size, up to 100 (default 24) |
+| `offset` | number | No | where the page starts |
+
+#### `get-product`
+
+One product with its price, its parts when it is a bundle, its store, its reviews and whether the current user already owns it.
+
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `productId` | string | Yes | the product to read |
+
+#### `add-to-cart`
+
+Put a product in the user's cart, credited to your app. The server re-checks that it can be bought here before accepting it, so a refusal comes back with a code to show.
+
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `productId` | string | Yes | the product to add |
+| `qty` | number | No | how many, at least 1 (default 1) |
+
+#### `check-entitlements`
+
+Which of these products the current user owns. This is how an app unlocks a ticket, a seat or an in-app good it sold through the shared cart.
+
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `productIds` | array | Yes | the product ids to check |
+
+#### `open-cart`
+
+Open My Cart for the user, scoped to your app's items.
+
+*No parameters.*
+
+#### `open-purchases`
+
+Open the user's order history in My Cart.
+
+*No parameters.*
 
 ---
 
