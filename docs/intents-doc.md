@@ -958,6 +958,18 @@ Which of these products the current user owns. This is how an app unlocks a tick
 |-----------|------|----------|-------------|
 | `productIds` | array | Yes | the product ids to check |
 
+#### `get-cart`
+
+Reads the user's cart — every item in it, from every app, as the buyer will check it out. Returns `{items, count}` where `count` excludes anything saved for later. Use it to show a badge, a summary, or to tell whether something this app sells is already in there. Read-only: change the cart with `add-to-cart`, or send the user to it with `open-cart`.
+
+*No parameters.*
+
+#### `create-product`
+
+Opens the platform's own 'list something for sale' form in a modal and BLOCKS until the seller creates a product or cancels. Returns `{success: true, product}` or `{success: false, product: null, code: 'cancelled'}`. Use this instead of building a product form: it is the Merchant Console's own, so the cover, price, content tree and publishing rules stay in one place, and what it creates is already in the seller's catalogue. Opening a store first (which needs a verified Verus identity) is handled inside.
+
+*No parameters.*
+
 #### `open-cart`
 
 Open My Cart for the user, scoped to your app's items.
