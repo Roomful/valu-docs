@@ -1,7 +1,7 @@
 # Intents Reference
 
 > Auto-generated from application and service manifests.  
-> Generated on: 2026-09-18
+> Generated on: 2026-09-22
 
 ## Table of Contents
 
@@ -942,8 +942,9 @@ Search the products YOUR app lists that are available in the user's current netw
 
 | Parameter | Type | Required | Description |
 |-----------|------|----------|-------------|
-| `query` | string | No | free-text search over the product title |
-| `category` | string | No | one of the categories your app declares |
+| `query` | string | No | free-text search over the product title, or a whole tag |
+| `category` | string | No | one of the platform's category ids — see list-categories |
+| `tag` | string | No | one tag, matched exactly (case and spacing do not matter) |
 | `attributes` | object | No | app-defined facets to filter by, e.g. {"subject": "Mathematics"} |
 | `sort` | string | No | newest \| popular \| priceAsc \| priceDesc \| rating |
 | `limit` | number | No | page size, up to 100 (default 24) |
@@ -956,6 +957,12 @@ One product with its price, its parts when it is a bundle, its store, its review
 | Parameter | Type | Required | Description |
 |-----------|------|----------|-------------|
 | `productId` | string | Yes | the product to read |
+
+#### `list-categories`
+
+The platform's product categories as `{categories: [{id, label}]}`. Every product is filed under exactly one; pass an `id` to list-products as `category`, and show the `label`.
+
+*No parameters.*
 
 #### `add-to-cart`
 
