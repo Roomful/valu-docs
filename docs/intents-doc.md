@@ -989,9 +989,19 @@ Reads the user's cart — every item in it, from every app, as the buyer will ch
 
 #### `create-product`
 
-Opens the platform's own 'list something for sale' form in a modal and BLOCKS until the seller creates a product or cancels. Returns `{success: true, product}` or `{success: false, product: null, code: 'cancelled'}`. Use this instead of building a product form: it is the Merchant Console's own, so the cover, price, content tree and publishing rules stay in one place, and what it creates is already in the seller's catalogue. Opening a store first (which needs a verified Verus identity) is handled inside.
+Create a product for the seller, as a DRAFT. Two ways in. With no params it opens the platform's own 'list something for sale' form in a modal and BLOCKS until the seller creates a product or cancels. With a `title` it creates the draft directly from the fields given — name, description, price, category, tags, cover and content — without a form: use this when you already have the resource ids (a generated cover, files found in Media). Either way returns `{success: true, product}` (or `{success: false, product: null, code}`; `cancelled` when the seller backed out of the form), and the product is already in the seller's catalogue. It is NEVER published here: publishing decides money and networks, and stays with the seller in the Merchant Console. Opening a store first (a verified Verus identity) is handled inside.
 
-*No parameters.*
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `title` | string | No | the product's name; giving one creates the draft directly instead of opening the form |
+| `description` | string | No | what a buyer reads before paying |
+| `priceAmount` | number | No | the price; 0 or omitted is a free product |
+| `priceCurrency` | string | No | VRSC (default) or USD |
+| `category` | string | No | one of the platform's category ids — see list-categories; required before the seller can publish |
+| `tags` | array | No | up to 10 tags of up to 24 characters; normalised (lowercase, trimmed) |
+| `imageResourceId` | string | No | the cover: a resource id in the seller's own Media, e.g. one you generated |
+| `items` | array | No | the content a buyer receives: resource ids ("res_1"), named files ({resourceId, title}), folders ({folder: "Unit 1", items: […]}) or other products ({productId}) for a bundle |
+| `stock` | number | No | how many may be sold; omit for unlimited |
 
 #### `open-cart`
 
