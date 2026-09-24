@@ -1,7 +1,7 @@
 # Intents Reference
 
 > Auto-generated from application and service manifests.  
-> Generated on: 2026-09-23
+> Generated on: 2026-09-24
 
 ## Table of Contents
 
@@ -995,13 +995,48 @@ Create a product for the seller, as a DRAFT. Two ways in. With no params it open
 |-----------|------|----------|-------------|
 | `title` | string | No | the product's name; giving one creates the draft directly instead of opening the form |
 | `description` | string | No | what a buyer reads before paying |
-| `priceAmount` | number | No | the price; 0 or omitted is a free product |
+| `priceAmount` | number | No | the price; 0 or omitted is a free product. When items include other products, this is the price ON TOP of theirs |
 | `priceCurrency` | string | No | VRSC (default) or USD |
 | `category` | string | No | one of the platform's category ids — see list-categories; required before the seller can publish |
 | `tags` | array | No | up to 10 tags of up to 24 characters; normalised (lowercase, trimmed) |
 | `imageResourceId` | string | No | the cover: a resource id in the seller's own Media, e.g. one you generated |
 | `items` | array | No | the content a buyer receives: resource ids ("res_1"), named files ({resourceId, title}), folders ({folder: "Unit 1", items: […]}) or other products ({productId}) for a bundle |
 | `stock` | number | No | how many may be sold; omit for unlimited |
+
+#### `list-my-products`
+
+List the SELLER's own products in their store — drafts, unlisted, live and archived — unlike list-products, which is the buyer's shelf and never shows drafts. Use it to find the productId to edit. Each product carries `editable`: true only for a draft (never published, or unlisted by the seller). Returns `{hasStore, products}`.
+
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `status` | string | No | only products in this state |
+| `limit` | number | No | how many to return |
+
+#### `get-my-product`
+
+One of the seller's own products with its content, in exactly the shape update-product takes: `{product, items}`. Read it before changing the content — `items` in update-product REPLACES the whole tree, so edit this list and send it back rather than sending only the new files.
+
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `productId` | string | Yes | the product, from list-my-products |
+
+#### `update-product`
+
+Edit one of the seller's own DRAFT products — one never published, or one the seller unlisted. A live or archived product is refused with code `not_editable` (a live one must be unlisted by the seller in the Merchant Console first). Only the fields given change. `items` REPLACES the content: call get-my-product first and send back the edited list; an empty list is refused. Never publishes. Returns `{success: true, product}` or `{success: false, code, error}`.
+
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `productId` | string | Yes | the draft to edit, from list-my-products |
+| `title` | string | No | the product's name |
+| `description` | string | No | what a buyer reads before paying; an empty string clears it |
+| `priceAmount` | number | No | the price; 0 makes it free. On a product that includes other products this is the price ON TOP of theirs (a buyer pays the included products plus this) |
+| `priceCurrency` | string | No | VRSC or USD |
+| `stock` | number | No | how many may be sold (the quantity on sale) |
+| `unlimitedStock` | boolean | No | true removes the quantity limit |
+| `category` | string | No | one of the platform's category ids — see list-categories; an empty string clears it |
+| `tags` | array | No | the full tag list (replaces the current one): up to 10 tags of up to 24 characters |
+| `imageResourceId` | string | No | the cover: a resource id in the seller's own Media |
+| `items` | array | No | the WHOLE new content: resource ids ("res_1"), named files ({resourceId, title}), folders ({folder: "Unit 1", items: […]}) or other products ({productId}) for a bundle |
 
 #### `open-cart`
 
