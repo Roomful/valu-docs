@@ -1,7 +1,7 @@
 # Intents Reference
 
 > Auto-generated from application and service manifests.  
-> Generated on: 2026-09-30
+> Generated on: 2026-10-01
 
 ## Table of Contents
 
@@ -46,6 +46,7 @@
 - [Networks Service (`Networks`)](#networks-service-networks)
 - [Profile Service (`Profile`)](#profile-service-profile)
 - [Resource Service (`Resources`)](#resource-service-resources)
+- [Room Points Service (`RoomPoints`)](#room-points-service-roompoints)
 - [Rooms Service (`Rooms`)](#rooms-service-rooms)
 - [Text Chat Service (`TextChat`)](#text-chat-service-textchat)
 - [Time Service (`Time`)](#time-service-time)
@@ -1404,6 +1405,72 @@ Returns the network-allowed bot avatar collection (id, name, tags) from the shar
 | Parameter | Type | Required | Description |
 |-----------|------|----------|-------------|
 | `limit` | number | No | Max avatars to return. Defaults to 50. |
+
+---
+
+### Room Points Service (`RoomPoints`)
+
+GoTo points of a room (server name "cameraPosition"): list them, save or delete one directly, or open the point editor and let the user do it. Editing points requires the room's edit permission. Position and rotation are metres and EULER DEGREES in the room's own space — they cannot be computed from outside the 3D scene, so prefer create-point / edit-point (which receive the live camera pose from Unity) over save-point unless you are re-using a pose you already read.
+
+*Source: `src/Services/RoomPoints/RoomPointsService.js`*
+
+#### `list-room-points`
+
+Returns every saved GoTo point of a room, in server order: {status: "ok", points}. Each point carries id, name, position {x,y,z}, rotation {x,y,z,w} (EULER DEGREES, w is always 0 — NOT a quaternion), cameraMode (0 = do not change, 1 = fly, 2 = third person) and the server timestamps. A room with no saved points returns an empty list — the "Home" point Unity shows in that case exists only in its memory.
+
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `roomId` | string | Yes | The room whose points to list. |
+| `networkId` | string | No | Network the room belongs to. Defaults to the current network. |
+
+#### `create-room-point`
+
+Opens the point editor for a NEW point and BLOCKS until the user saves or cancels. Needs a pose to save the point at: pass camera (the live 3D camera pose) or a point to copy the pose from — the web layer cannot read the camera itself. Resolves {status: "ok", point, persisted, savePreview} once the point is written, or {status: "cancelled"} / {status: "error", message}.
+
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `roomId` | string | Yes | The room the point belongs to. |
+| `camera` | object | No | The pose the point is saved at: {position: {x,y,z}, rotation: {x,y,z,w}} with the rotation in EULER DEGREES. Required unless point carries a pose. |
+| `point` | object | No | A cameraPosition to pre-fill the form with (name, camera mode, pose). Its id is ignored for a create. |
+| `name` | string | No | Pre-fills the point name. Wins over the name the point carried. |
+| `cameraMode` | number | No | Pre-fills the camera mode: 0 — do not change, 1 — free fly, 2 — third person. |
+| `savePreview` | boolean | No | Pre-fills the "Make preview" toggle. Defaults to true. The screenshot and parallax capture themselves are done by the 3D scene, not here. |
+| `persist` | boolean | No | Whether this service writes the point to the server. Defaults to true; pass false to use the editor as pure UI and save the returned point yourself. |
+| `networkId` | string | No | Network the room belongs to. Defaults to the current network. |
+
+#### `edit-room-point`
+
+Opens the point editor for an EXISTING point and BLOCKS until the user saves, deletes or cancels. Resolves {status: "ok", point, persisted, savePreview}, {status: "deleted", point: {id}, persisted}, {status: "cancelled"} or {status: "error", message}. A point whose id is empty is treated as a create.
+
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `roomId` | string | Yes | The room the point belongs to. |
+| `point` | object | Yes | The point being edited, in the cameraPosition shape list-points returns. |
+| `camera` | object | No | The live 3D camera pose, {position: {x,y,z}, rotation: {x,y,z,w}} in EULER DEGREES. When present the editor offers to move the point here, ticked by default. |
+| `deletable` | boolean | No | Whether the editor may offer Delete. Defaults to false — a room should keep at least one point. |
+| `name` | string | No | Pre-fills the point name. Wins over the name the point carried. |
+| `cameraMode` | number | No | Pre-fills the camera mode: 0 — do not change, 1 — free fly, 2 — third person. |
+| `savePreview` | boolean | No | Pre-fills the "Make preview" toggle. Defaults to true. |
+| `persist` | boolean | No | Whether this service writes the change to the server. Defaults to true. |
+| `networkId` | string | No | Network the room belongs to. Defaults to the current network. |
+
+#### `save-room-point`
+
+Writes a point WITHOUT opening any UI: creates it when point.id is empty or missing, otherwise overwrites the saved point with that id. An update REPLACES the whole point, so send a complete one (read it with list-room-points first) — fields left out are not kept. Returns {status: "ok", point} with the server copy, whose id is the one to keep after a create.
+
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `roomId` | string | Yes | The room the point belongs to. |
+| `point` | object | Yes | The complete point: {id?, name, position {x,y,z}, rotation {x,y,z,w} in EULER DEGREES, cameraMode}. |
+
+#### `delete-room-point`
+
+Deletes one saved point by id. Returns {status: "ok"}. The point parallax preview resource is cleaned up by the 3D scene, not here.
+
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `roomId` | string | Yes | The room the point belongs to. |
+| `pointId` | string | Yes | Id of the point to delete. |
 
 ---
 
