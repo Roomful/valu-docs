@@ -402,11 +402,11 @@ Sell in Valu: list products and bundles, choose where they sell, and moderate a 
 
 #### `open-section`
 
-Open the Merchant Console on one of its tabs. The tab becomes part of the address, so the place it opens on can be linked to and comes back on a reload. Bundles is offered only to a seller who has one, and Moderation only to a network admin.
+Open the Merchant Console on one of its tabs. The tab becomes part of the address, so the place it opens on can be linked to and comes back on a reload. Home is the setup checklist until the store can sell, then the overview. Promotions, Analytics and Store need a store; Moderation is for network admins. Bundles opens Products filtered to bundles; the old names overview and api-access still work (Home, Store).
 
 | Parameter | Type | Required | Description |
 |-----------|------|----------|-------------|
-| `section` | string | Yes | Which tab to open: overview, products, bundles or moderation. |
+| `section` | string | Yes | Which tab to open: home, products, bundles, promotions, analytics, store or moderation. |
 
 #### `open-products`
 
