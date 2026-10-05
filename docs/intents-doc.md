@@ -1,7 +1,7 @@
 # Intents Reference
 
 > Auto-generated from application and service manifests.  
-> Generated on: 2026-10-01
+> Generated on: 2026-10-05
 
 ## Table of Contents
 
@@ -19,6 +19,7 @@
 - [Media (`cms`)](#media-cms)
 - [Merchant Console (`merchant`)](#merchant-console-merchant)
 - [Metaverse (`metaverse`)](#metaverse-metaverse)
+- [Metaverse 2D (`hubs`)](#metaverse-2d-hubs)
 - [My Cart (`cart`)](#my-cart-cart)
 - [Profile (`profile`)](#profile-profile)
 - [Resources Viewer (`preview`)](#resources-viewer-preview)
@@ -458,6 +459,81 @@ Navigate the camera to a specific prop in a room, opening the Metaverse view. ne
 | `networkId` | string | Yes | The network the room belongs to. Use the networkId from context. |
 | `roomId` | string | Yes | The ID of the room containing the prop. |
 | `propId` | string | Yes | The ID of the prop to navigate to. |
+
+---
+
+### Metaverse 2D (`hubs`)
+
+See who is in a room hub, join or switch hubs, and create a private hub
+
+#### `open`
+
+Opens the Metaverse 2D app (the 2D room maps and their hubs), optionally preselecting a room. Joining a hub stays a user action.
+
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `roomId` | string | No | Room to preselect in the room picker. |
+
+#### `enter-room`
+
+Opens the Metaverse 2D app on a room and joins that room's public hub, as picking the room there does (Rooms → Room Info → Go in 2D, the user card → Go in 2D).
+
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `roomId` | string | Yes | The room to enter. Metaverse 2D checks that the user may join it. |
+| `hubId` | string | No | A hub of that room to switch to once its public hub is joined, when it is still there and has room (the user card's location). |
+
+#### `agent-enter-room`
+
+Brings your agent into a room's hub as its own character: you enter that room in Metaverse 2D (its public hub, or your group's hub in group mode) and the agent appears a metre beside you. Needs the same join rights as you. Use find-people first to choose a room.
+
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `roomId` | string | Yes | The room to enter. |
+
+#### `agent-people`
+
+Lists who is in the hub with the agent: userId, name, whether they are your friend or connection, whether they are in 3D, and how many metres they are from the agent. Includes you (isYou).
+
+*No parameters.*
+
+#### `agent-walk-to`
+
+Walks the agent on the room's 2D map, around walls and props: to a person (stopping 1.5 m short, by userId from agent-people) or to a point (x, z in metres). Returns at once with the distance and seconds the walk takes; check agent-status.
+
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `userId` | string | No | Walk to this person (from agent-people). |
+| `x` | number | No | Or walk to this point: x in metres. |
+| `z` | number | No | And z in metres. |
+
+#### `agent-say`
+
+The agent says a short text in a speech bubble over its character, seen by everyone on the web map of that hub (not by people in 3D yet). At most 140 characters, at most once a second. It speaks in your name, labelled as your agent: keep it friendly and brief.
+
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `text` | string | Yes | What to say, up to 140 characters. |
+
+#### `agent-status`
+
+The agent's state in Metaverse 2D: whether it is in a hub, its room and hub, its position, and whether it is still walking.
+
+*No parameters.*
+
+#### `agent-leave`
+
+Takes the agent out of the hub.
+
+*No parameters.*
+
+#### `find-people`
+
+Counts the people in each hub of some rooms in this network (default: the room on the map and its linked rooms, at most 9). Needs you to be in a hub. Use it to choose where the agent goes.
+
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `roomIds` | string[] | No | The rooms to look into. |
 
 ---
 
