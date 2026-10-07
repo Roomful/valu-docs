@@ -1,7 +1,7 @@
 # Intents Reference
 
 > Auto-generated from application and service manifests.  
-> Generated on: 2026-10-05
+> Generated on: 2026-10-07
 
 ## Table of Contents
 
@@ -103,6 +103,15 @@ Connects to a specific meeting by room, prop, group, or user and manages video c
 | `userId` | string | No | The unique identifier of the user to connect to. |
 | `withLocalTracks` | boolean | No | If true, view shared screens or presenter content without joining the video chat. |
 | `autoConnectToVideochat` | boolean | No | If true, automatically join the video chat after connecting. |
+
+#### `leave-meeting`
+
+Leaves the current call only when it is the given prop's call (roomId + propId); otherwise does nothing. Returns {left: boolean}. Used by Metaverse 2D video chat zones.
+
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `roomId` | string | Yes | The room of the prop whose call to leave. |
+| `propId` | string | Yes | The prop whose call to leave; any other call is left as it is. |
 
 #### `open-source-picker`
 
