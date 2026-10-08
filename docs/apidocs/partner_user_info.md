@@ -20,7 +20,7 @@
 
 **Path:** /api/v0/partnerRpc/userInfo.getUserInfo
 
-**Description:** Exchanges a short-lived identity token (obtained by the miniapp's client via appManifest:getIdentityToken) for user profile fields. The caller authenticates as the miniapp using the standard partnerRpc bearer (Authorization: Bearer <partner JWT>, HS256, iss=clientId). The identity token's audience must match that authenticated clientId, so a token issued for one miniapp cannot be redeemed by another. Response fields are gated by the caller's granted scopes: "email" is only populated if the authenticated client holds that scope.
+**Description:** Exchanges a short-lived identity token (obtained by the miniapp's client via appManifest:getIdentityToken) for user profile fields. The caller authenticates as the miniapp using the standard partnerRpc bearer (Authorization: Bearer {partner JWT}, HS256, iss=clientId). The identity token's audience must match that authenticated clientId, so a token issued for one miniapp cannot be redeemed by another. Response fields are gated by the caller's granted scopes: "email" is only populated if the authenticated client holds that scope.
 
 **Request:** 
 
