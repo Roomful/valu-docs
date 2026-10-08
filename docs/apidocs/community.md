@@ -13,11 +13,27 @@ Community API handles communities and community channels (posts and discussions)
 | [community:createCommunity](#create-community) | websocket | Create community |
 | [community:deleteCommunity](#delete-community) | websocket | Delete community |
 | [community:updateCommunity](#update-community) | websocket | Update community |
-| [community:searchOpenCommunities](#search-open-communities) | websocket | Search open communities |
-| [community:searchUserCommunities](#search-user-communities) | websocket | Search user communities |
+| [community:searchCommunities](#search-communities) | websocket | Search communities |
+| [community:searchCommunitiesForCMS](#search-communities-for-cms) | websocket | Search communities for cMS |
+| ~~[community:searchOpenCommunities](#search-open-communities)~~ | websocket | Search open communities |
+| ~~[community:searchUserCommunities](#search-user-communities)~~ | websocket | Search user communities |
 | [community:getInfoAndSubscribe](#get-community-info-and-subscribe) | websocket | Get community info and subscribe |
 | [community:joinCommunity](#join-community) | websocket | Join community |
+| [community:leaveCommunity](#leave-community) | websocket | Leave community |
 | [community:inviteToCommunity](#invite-to-community) | websocket | Invite to community |
+| [community:cancelCommunityInvitationRequest](#cancel-community-invitation-request) | websocket | Cancel community invitation request |
+| [community:updateCommunityParticipant](#update-community-participant) | websocket | Update community participant |
+| [community:deleteCommunityParticipant](#delete-community-participant) | websocket | Delete community participant |
+| [community:transferCommunityOwnership](#transfer-community-ownership) | websocket | Transfer community ownership |
+| [community:searchCommunityParticipants](#search-community-participants) | websocket | Search community participants |
+| [community:searchPendingCommunityParticipants](#search-pending-community-participants) | websocket | Search pending community participants |
+| [community:requestCommunityJoin](#request-community-join) | websocket | Request community join |
+| [community:cancelCommunityJoinRequest](#cancel-community-join-request) | websocket | Cancel community join request |
+| [community:acceptCommunityJoinRequest](#accept-community-join-request) | websocket | Accept community join request |
+| [community:declineCommunityJoinRequest](#decline-community-join-request) | websocket | Decline community join request |
+| [community:searchPendingCommunityJoinRequests](#search-pending-community-join-requests) | websocket | Search pending community join requests |
+| [community:pinCommunity](#pin-community) | websocket | Pin community |
+| [community:unpinCommunity](#unpin-community) | websocket | Unpin community |
 | [community:createCommunityChannel](#create-community-channel) | websocket | Create community channel |
 | [community:deleteCommunityChannel](#delete-community-channel) | websocket | Delete community channel |
 | [community:updateCommunityChannel](#update-community-channel) | websocket | Update community channel |
@@ -55,8 +71,11 @@ Community API handles communities and community channels (posts and discussions)
 {
     "data": {
         "communityTitle": string
+        "description": string
+        "color": string
         "communitySettings": {
             "joinPolicy": string <span color="#1b1ef7"> // OpenForAll / ByInvitation</span>
+            "isDiscoverable": bool
         }
         "thumbnailId": string <span color="#1b1ef7"> // must be pre-uploaded using upload session</span>
         "createEventsChannel": bool <span color="#1b1ef7"> // if true, automatically creates events channel for community</span>
@@ -74,12 +93,23 @@ Community API handles communities and community channels (posts and discussions)
             "communityId": string
             "created": timestamp
             "networkId": string
+            "ownerId": string
             "thumbnailId": string
             "communityTitle": string
+            "description": string
+            "color": string
             "communitySettings": {
                 "joinPolicy": string <span color="#1b1ef7"> // OpenForAll / ByInvitation</span>
+                "isDiscoverable": bool
             }
-            "channelCounter": int
+            "channelCounter": int <span color="#1b1ef7"> // total amount of channels in a community</span>
+            "participantCount": int <span color="#1b1ef7"> // total amount of participants in a community</span>
+            "cbacPolicies": [{ <span color="#1b1ef7"> // present only when the community has CBAC configured</span>
+                "policyId": string
+                "badgeIds": [ string ]
+                "badgeMatchMode": string
+                "grantedPermission": string
+            }]
         }
     }
     "error": { "status": bool, "code": int, "message": string }
@@ -132,8 +162,11 @@ Community API handles communities and community channels (posts and discussions)
     "data": {
         "communityId": string
         "communityTitle": string
+        "description": string
+        "color": string
         "communitySettings": {
             "joinPolicy": string <span color="#1b1ef7"> // OpenForAll / ByInvitation</span>
+            "isDiscoverable": bool
         }
         "thumbnailId": string <span color="#1b1ef7"> // must be pre-uploaded using upload session</span>
     }
@@ -151,6 +184,130 @@ Community API handles communities and community channels (posts and discussions)
 
 <br>
 
+<a name="search-communities"></a>
+
+### Search communities
+
+**Method:** websocket
+
+**Endpoint:** community:searchCommunities
+
+**Request:** 
+
+<pre>
+{
+    "data": {
+        "query": string <span color="#1b1ef7"> // search query</span>
+        "filter": string <span color="#1b1ef7"> // discoverable / discoverableNoJoined / open / joined / pinned / recent / recentNoPinned (default: discoverable)</span>
+        "cursor": string <span color="#1b1ef7"> // pagination cursor</span>
+        "limit": int <span color="#1b1ef7"> // max number of communities to return (1-100)</span>
+    }
+    "event": { "id": string, "date": timestamp }
+}
+</pre>
+
+**Response:** 
+
+<pre>
+{
+    "data": {
+        "communities": [{
+            "communityId": string
+            "created": timestamp
+            "networkId": string
+            "ownerId": string
+            "thumbnailId": string
+            "communityTitle": string
+            "description": string
+            "color": string
+            "communitySettings": {
+                "joinPolicy": string <span color="#1b1ef7"> // OpenForAll / ByInvitation</span>
+                "isDiscoverable": bool
+            }
+            "channelCounter": int <span color="#1b1ef7"> // total amount of channels in a community</span>
+            "participantCount": int <span color="#1b1ef7"> // total amount of participants in a community</span>
+            "cbacPolicies": [{ <span color="#1b1ef7"> // present only when the community has CBAC configured</span>
+                "policyId": string
+                "badgeIds": [ string ]
+                "badgeMatchMode": string
+                "grantedPermission": string
+            }]
+            "joinStatus": string <span color="#1b1ef7"> // none / joined / requestPending / invited</span>
+        }]
+        "nextCursor": string <span color="#1b1ef7"> // pagination cursor for next page, empty if no more pages</span>
+        "total": int <span color="#1b1ef7"> // total communities matching the search query and filter</span>
+    }
+    "error": { "status": bool, "code": int, "message": string }
+}
+</pre>
+
+<br>
+
+<a name="search-communities-for-cms"></a>
+
+### Search communities for cMS
+
+**Method:** websocket
+
+**Endpoint:** community:searchCommunitiesForCMS
+
+**Description:** Same as community:searchCommunities, but additionally returns indexation state (filled by RAG) of each returned community's community:{communityId} belonging, keyed by communityId.
+
+**Request:** 
+
+<pre>
+{
+    "data": {
+        "query": string <span color="#1b1ef7"> // search query</span>
+        "filter": string <span color="#1b1ef7"> // discoverable / discoverableNoJoined / open / joined / pinned / recent / recentNoPinned (default: discoverable)</span>
+        "cursor": string <span color="#1b1ef7"> // pagination cursor</span>
+        "limit": int <span color="#1b1ef7"> // max number of communities to return (1-100)</span>
+    }
+    "event": { "id": string, "date": timestamp }
+}
+</pre>
+
+**Response:** 
+
+<pre>
+{
+    "data": {
+        "communities": [{
+            "communityId": string
+            "created": timestamp
+            "networkId": string
+            "ownerId": string
+            "thumbnailId": string
+            "communityTitle": string
+            "description": string
+            "color": string
+            "communitySettings": {
+                "joinPolicy": string <span color="#1b1ef7"> // OpenForAll / ByInvitation</span>
+                "isDiscoverable": bool
+            }
+            "channelCounter": int <span color="#1b1ef7"> // total amount of channels in a community</span>
+            "participantCount": int <span color="#1b1ef7"> // total amount of participants in a community</span>
+            "cbacPolicies": [{ <span color="#1b1ef7"> // present only when the community has CBAC configured</span>
+                "policyId": string
+                "badgeIds": [ string ]
+                "badgeMatchMode": string
+                "grantedPermission": string
+            }]
+            "joinStatus": string <span color="#1b1ef7"> // none / joined / requestPending / invited</span>
+        }]
+        "nextCursor": string <span color="#1b1ef7"> // pagination cursor for next page, empty if no more pages</span>
+        "total": int <span color="#1b1ef7"> // total communities matching the search query and filter</span>
+        "indexStates": map[string]{ <span color="#1b1ef7"> // maps communityId to indexation state of its community:{communityId} belonging</span>
+            "belongingKey": string
+            "state": map[string]{ custom structure }
+        }
+    }
+    "error": { "status": bool, "code": int, "message": string }
+}
+</pre>
+
+<br>
+
 <a name="search-open-communities"></a>
 
 ### Search open communities
@@ -158,6 +315,8 @@ Community API handles communities and community channels (posts and discussions)
 **Method:** websocket
 
 **Endpoint:** community:searchOpenCommunities
+
+**<span color="red">DEPRECATED</span>** 
 
 **Request:** 
 
@@ -181,12 +340,23 @@ Community API handles communities and community channels (posts and discussions)
             "communityId": string
             "created": timestamp
             "networkId": string
+            "ownerId": string
             "thumbnailId": string
             "communityTitle": string
+            "description": string
+            "color": string
             "communitySettings": {
                 "joinPolicy": string <span color="#1b1ef7"> // OpenForAll / ByInvitation</span>
+                "isDiscoverable": bool
             }
-            "channelCounter": int
+            "channelCounter": int <span color="#1b1ef7"> // total amount of channels in a community</span>
+            "participantCount": int <span color="#1b1ef7"> // total amount of participants in a community</span>
+            "cbacPolicies": [{ <span color="#1b1ef7"> // present only when the community has CBAC configured</span>
+                "policyId": string
+                "badgeIds": [ string ]
+                "badgeMatchMode": string
+                "grantedPermission": string
+            }]
         }]
         "hasNext": bool <span color="#1b1ef7"> // there are more communities to fetch</span>
     }
@@ -204,6 +374,8 @@ Community API handles communities and community channels (posts and discussions)
 
 **Endpoint:** community:searchUserCommunities
 
+**<span color="red">DEPRECATED</span>** 
+
 **Request:** 
 
 <pre>
@@ -226,12 +398,23 @@ Community API handles communities and community channels (posts and discussions)
             "communityId": string
             "created": timestamp
             "networkId": string
+            "ownerId": string
             "thumbnailId": string
             "communityTitle": string
+            "description": string
+            "color": string
             "communitySettings": {
                 "joinPolicy": string <span color="#1b1ef7"> // OpenForAll / ByInvitation</span>
+                "isDiscoverable": bool
             }
-            "channelCounter": int
+            "channelCounter": int <span color="#1b1ef7"> // total amount of channels in a community</span>
+            "participantCount": int <span color="#1b1ef7"> // total amount of participants in a community</span>
+            "cbacPolicies": [{ <span color="#1b1ef7"> // present only when the community has CBAC configured</span>
+                "policyId": string
+                "badgeIds": [ string ]
+                "badgeMatchMode": string
+                "grantedPermission": string
+            }]
         }]
         "hasNext": bool <span color="#1b1ef7"> // there are more communities to fetch</span>
     }
@@ -271,14 +454,25 @@ Community API handles communities and community channels (posts and discussions)
             "communityId": string
             "created": timestamp
             "networkId": string
+            "ownerId": string
             "thumbnailId": string
             "communityTitle": string
+            "description": string
+            "color": string
             "communitySettings": {
                 "joinPolicy": string <span color="#1b1ef7"> // OpenForAll / ByInvitation</span>
+                "isDiscoverable": bool
             }
-            "channelCounter": int
+            "channelCounter": int <span color="#1b1ef7"> // total amount of channels in a community</span>
+            "participantCount": int <span color="#1b1ef7"> // total amount of participants in a community</span>
+            "cbacPolicies": [{ <span color="#1b1ef7"> // present only when the community has CBAC configured</span>
+                "policyId": string
+                "badgeIds": [ string ]
+                "badgeMatchMode": string
+                "grantedPermission": string
+            }]
         }
-        "communityRole": string <span color="#1b1ef7"> // Admin / Participant</span>
+        "communityRole": string <span color="#1b1ef7"> // Admin / Moderator / Participant</span>
     }
     "error": { "status": bool, "code": int, "message": string }
 }
@@ -293,6 +487,35 @@ Community API handles communities and community channels (posts and discussions)
 **Method:** websocket
 
 **Endpoint:** community:joinCommunity
+
+**Request:** 
+
+<pre>
+{
+    "data": {
+        "communityId": string
+    }
+    "event": { "id": string, "date": timestamp }
+}
+</pre>
+
+**Response:** 
+
+<pre>
+{
+    "error": { "status": bool, "code": int, "message": string }
+}
+</pre>
+
+<br>
+
+<a name="leave-community"></a>
+
+### Leave community
+
+**Method:** websocket
+
+**Endpoint:** community:leaveCommunity
 
 **Request:** 
 
@@ -330,6 +553,437 @@ Community API handles communities and community channels (posts and discussions)
     "data": {
         "targetUserId": string
         "communityId": string
+        "communityRole": string <span color="#1b1ef7"> // Admin / Moderator / Participant, defaults to Participant</span>
+    }
+    "event": { "id": string, "date": timestamp }
+}
+</pre>
+
+**Response:** 
+
+<pre>
+{
+    "error": { "status": bool, "code": int, "message": string }
+}
+</pre>
+
+<br>
+
+<a name="cancel-community-invitation-request"></a>
+
+### Cancel community invitation request
+
+**Method:** websocket
+
+**Endpoint:** community:cancelCommunityInvitationRequest
+
+**Request:** 
+
+<pre>
+{
+    "data": {
+        "userId": string
+        "communityId": string
+    }
+    "event": { "id": string, "date": timestamp }
+}
+</pre>
+
+**Response:** 
+
+<pre>
+{
+    "error": { "status": bool, "code": int, "message": string }
+}
+</pre>
+
+<br>
+
+<a name="update-community-participant"></a>
+
+### Update community participant
+
+**Method:** websocket
+
+**Endpoint:** community:updateCommunityParticipant
+
+**Request:** 
+
+<pre>
+{
+    "data": {
+        "communityId": string
+        "userId": string
+        "communityRole": string <span color="#1b1ef7"> // Admin / Moderator / Participant</span>
+    }
+    "event": { "id": string, "date": timestamp }
+}
+</pre>
+
+**Response:** 
+
+<pre>
+{
+    "error": { "status": bool, "code": int, "message": string }
+}
+</pre>
+
+<br>
+
+<a name="delete-community-participant"></a>
+
+### Delete community participant
+
+**Method:** websocket
+
+**Endpoint:** community:deleteCommunityParticipant
+
+**Request:** 
+
+<pre>
+{
+    "data": {
+        "communityId": string
+        "userId": string
+    }
+    "event": { "id": string, "date": timestamp }
+}
+</pre>
+
+**Response:** 
+
+<pre>
+{
+    "error": { "status": bool, "code": int, "message": string }
+}
+</pre>
+
+<br>
+
+<a name="transfer-community-ownership"></a>
+
+### Transfer community ownership
+
+**Method:** websocket
+
+**Endpoint:** community:transferCommunityOwnership
+
+**Request:** 
+
+<pre>
+{
+    "data": {
+        "communityId": string
+        "newOwnerId": string <span color="#1b1ef7"> // userId of the existing community participant who will become the new owner</span>
+    }
+    "event": { "id": string, "date": timestamp }
+}
+</pre>
+
+**Response:** 
+
+<pre>
+{
+    "error": { "status": bool, "code": int, "message": string }
+}
+</pre>
+
+<br>
+
+<a name="search-community-participants"></a>
+
+### Search community participants
+
+**Method:** websocket
+
+**Endpoint:** community:searchCommunityParticipants
+
+**Request:** 
+
+<pre>
+{
+    "data": {
+        "communityId": string
+        "roleFilter": string <span color="#1b1ef7"> // Admin / Moderator / Participant (default: all roles)</span>
+        "query": string <span color="#1b1ef7"> // search query</span>
+        "cursor": string <span color="#1b1ef7"> // pagination cursor, skip previous search results</span>
+        "limit": int <span color="#1b1ef7"> // maximum amount to return</span>
+    }
+    "event": { "id": string, "date": timestamp }
+}
+</pre>
+
+**Response:** 
+
+<pre>
+{
+    "data": {
+        "users": [{
+            "id": string
+            "firstName": string
+            "lastName": string
+            "privacyMode": int <span color="#1b1ef7"> // 0 - Default, 1 - Incognito</span>
+            "avatar": string
+            "avatar3D": { <span color="#1b1ef7"> // field is not returned if empty</span>
+                "assetId": string
+                "assetSkins": map[string]string <span color="#1b1ef7"> // map of selected skins per variants</span>
+                "avatarResourceId": string <span color="#1b1ef7"> // resource id (in case of avatar uploaded to user3DAvatar belonging)</span>
+                "avatarUrl": string <span color="#1b1ef7"> // url to gbl file (Ready Player Me)</span>
+                "avatarUserId": string <span color="#1b1ef7"> // user id for session recovery (Ready Player Me)</span>
+            }
+            "companyName": string <span color="#1b1ef7"> // name of company that user represents</span>
+            "companyTitle": string <span color="#1b1ef7"> // user title in the company</span>
+            "communityRole": string <span color="#1b1ef7"> // Admin / Moderator / Participant</span>
+            "isOwner": bool <span color="#1b1ef7"> // true if this participant is the current community owner</span>
+            "joined": timestamp <span color="#1b1ef7"> // when the user joined the community (zero if not a member)</span>
+        }]
+        "total": int <span color="#1b1ef7"> // total participants matching the role filter</span>
+        "cursor": string <span color="#1b1ef7"> // pagination cursor, use for fetching next page</span>
+        "hasMore": bool <span color="#1b1ef7"> // indication if there are more items available for search</span>
+    }
+    "error": { "status": bool, "code": int, "message": string }
+}
+</pre>
+
+<br>
+
+<a name="search-pending-community-participants"></a>
+
+### Search pending community participants
+
+**Method:** websocket
+
+**Endpoint:** community:searchPendingCommunityParticipants
+
+**Request:** 
+
+<pre>
+{
+    "data": {
+        "communityId": string
+        "query": string <span color="#1b1ef7"> // search query</span>
+        "cursor": string <span color="#1b1ef7"> // pagination cursor, skip previous search results</span>
+        "limit": int <span color="#1b1ef7"> // maximum amount to return</span>
+    }
+    "event": { "id": string, "date": timestamp }
+}
+</pre>
+
+**Response:** 
+
+<pre>
+{
+    "data": {
+        "users": [{ <a href="#user-simple">user simple structure</a> }]
+        "total": int <span color="#1b1ef7"> // total search result count</span>
+        "cursor": string <span color="#1b1ef7"> // pagination cursor, use for fetching next page</span>
+        "hasMore": bool <span color="#1b1ef7"> // indication if there are more items available for search</span>
+    }
+    "error": { "status": bool, "code": int, "message": string }
+}
+</pre>
+
+<br>
+
+<a name="request-community-join"></a>
+
+### Request community join
+
+**Method:** websocket
+
+**Endpoint:** community:requestCommunityJoin
+
+**Request:** 
+
+<pre>
+{
+    "data": {
+        "communityId": string
+    }
+    "event": { "id": string, "date": timestamp }
+}
+</pre>
+
+**Response:** 
+
+<pre>
+{
+    "error": { "status": bool, "code": int, "message": string }
+}
+</pre>
+
+<br>
+
+<a name="cancel-community-join-request"></a>
+
+### Cancel community join request
+
+**Method:** websocket
+
+**Endpoint:** community:cancelCommunityJoinRequest
+
+**Request:** 
+
+<pre>
+{
+    "data": {
+        "communityId": string
+    }
+    "event": { "id": string, "date": timestamp }
+}
+</pre>
+
+**Response:** 
+
+<pre>
+{
+    "error": { "status": bool, "code": int, "message": string }
+}
+</pre>
+
+<br>
+
+<a name="accept-community-join-request"></a>
+
+### Accept community join request
+
+**Method:** websocket
+
+**Endpoint:** community:acceptCommunityJoinRequest
+
+**Request:** 
+
+<pre>
+{
+    "data": {
+        "userId": string <span color="#1b1ef7"> // user who requested to join</span>
+        "communityId": string
+    }
+    "event": { "id": string, "date": timestamp }
+}
+</pre>
+
+**Response:** 
+
+<pre>
+{
+    "error": { "status": bool, "code": int, "message": string }
+}
+</pre>
+
+<br>
+
+<a name="decline-community-join-request"></a>
+
+### Decline community join request
+
+**Method:** websocket
+
+**Endpoint:** community:declineCommunityJoinRequest
+
+**Request:** 
+
+<pre>
+{
+    "data": {
+        "userId": string <span color="#1b1ef7"> // user who requested to join</span>
+        "communityId": string
+    }
+    "event": { "id": string, "date": timestamp }
+}
+</pre>
+
+**Response:** 
+
+<pre>
+{
+    "error": { "status": bool, "code": int, "message": string }
+}
+</pre>
+
+<br>
+
+<a name="search-pending-community-join-requests"></a>
+
+### Search pending community join requests
+
+**Method:** websocket
+
+**Endpoint:** community:searchPendingCommunityJoinRequests
+
+**Request:** 
+
+<pre>
+{
+    "data": {
+        "communityId": string
+        "query": string <span color="#1b1ef7"> // search query</span>
+        "cursor": string <span color="#1b1ef7"> // pagination cursor, skip previous search results</span>
+        "limit": int <span color="#1b1ef7"> // maximum amount to return</span>
+    }
+    "event": { "id": string, "date": timestamp }
+}
+</pre>
+
+**Response:** 
+
+<pre>
+{
+    "data": {
+        "users": [{ <a href="#user-simple">user simple structure</a> }]
+        "total": int <span color="#1b1ef7"> // total search result count</span>
+        "cursor": string <span color="#1b1ef7"> // pagination cursor, use for fetching next page</span>
+        "hasMore": bool <span color="#1b1ef7"> // indication if there are more items available for search</span>
+    }
+    "error": { "status": bool, "code": int, "message": string }
+}
+</pre>
+
+<br>
+
+<a name="pin-community"></a>
+
+### Pin community
+
+**Method:** websocket
+
+**Endpoint:** community:pinCommunity
+
+**Request:** 
+
+<pre>
+{
+    "data": {
+        "communityId": string
+    }
+    "event": { "id": string, "date": timestamp }
+}
+</pre>
+
+**Response:** 
+
+<pre>
+{
+    "error": { "status": bool, "code": int, "message": string }
+}
+</pre>
+
+<br>
+
+<a name="unpin-community"></a>
+
+### Unpin community
+
+**Method:** websocket
+
+**Endpoint:** community:unpinCommunity
+
+**Request:** 
+
+<pre>
+{
+    "data": {
+        "communityId": string
     }
     "event": { "id": string, "date": timestamp }
 }
@@ -363,7 +1017,7 @@ Community API handles communities and community channels (posts and discussions)
         "contentDirectoryId": string <span color="#1b1ef7"> // content directory id for the channel, attachments will belong there</span>
         "settings": {
             "beneficiaryVerus": string <span color="#1b1ef7"> // identity name to receive donations</span>
-            "writePolicy": string <span color="#1b1ef7"> // who can post (All/Admin)</span>
+            "writePolicy": string <span color="#1b1ef7"> // who can post (All/Admin/Moderator)</span>
             "joinPolicy": string <span color="#1b1ef7"> // who can join (OpenForAll)</span>
         }
     }
@@ -404,10 +1058,13 @@ Community API handles communities and community channels (posts and discussions)
             }
             "isHighAlert": bool <span color="#1b1ef7"> // is channel set on high alert</span>
             "isPinned": bool <span color="#1b1ef7"> // indicates if the channel was pinned by the user</span>
+            "spawnUnreadCount": int <span color="#1b1ef7"> // count of unread AI agent spawned channels from this direct channel / not returned if empty</span>
+            "spawnParentId": string <span color="#1b1ef7"> // parent channel id for spawned channel / not returned if empty</span>
+            "spawnLastMessageTs": timestamp <span color="#1b1ef7"> // timestamp of last message in spawned channels</span>
         }
         "settings": { <span color="#1b1ef7"> // community channel settings</span>
             "beneficiaryVerus": string <span color="#1b1ef7"> // identity name to receive donations</span>
-            "writePolicy": string <span color="#1b1ef7"> // who can post (All/Admin)</span>
+            "writePolicy": string <span color="#1b1ef7"> // who can post (All/Admin/Moderator)</span>
             "joinPolicy": string <span color="#1b1ef7"> // who can join (OpenForAll)</span>
         }
     }
@@ -465,7 +1122,7 @@ Community API handles communities and community channels (posts and discussions)
         "title": string
         "settings": {
             "beneficiaryVerus": string <span color="#1b1ef7"> // identity name to receive donations</span>
-            "writePolicy": string <span color="#1b1ef7"> // who can post (All/Admin)</span>
+            "writePolicy": string <span color="#1b1ef7"> // who can post (All/Admin/Moderator)</span>
             "joinPolicy": string <span color="#1b1ef7"> // who can join (OpenForAll)</span>
         }
     }
@@ -538,6 +1195,9 @@ Community API handles communities and community channels (posts and discussions)
             }
             "isHighAlert": bool <span color="#1b1ef7"> // is channel set on high alert</span>
             "isPinned": bool <span color="#1b1ef7"> // indicates if the channel was pinned by the user</span>
+            "spawnUnreadCount": int <span color="#1b1ef7"> // count of unread AI agent spawned channels from this direct channel / not returned if empty</span>
+            "spawnParentId": string <span color="#1b1ef7"> // parent channel id for spawned channel / not returned if empty</span>
+            "spawnLastMessageTs": timestamp <span color="#1b1ef7"> // timestamp of last message in spawned channels</span>
         }]
         "total": int <span color="#1b1ef7"> // total amount of channels</span>
         "hasNext": bool <span color="#1b1ef7"> // there are more channels to fetch</span>
@@ -603,13 +1263,16 @@ Community API handles communities and community channels (posts and discussions)
             }
             "isHighAlert": bool <span color="#1b1ef7"> // is channel set on high alert</span>
             "isPinned": bool <span color="#1b1ef7"> // indicates if the channel was pinned by the user</span>
+            "spawnUnreadCount": int <span color="#1b1ef7"> // count of unread AI agent spawned channels from this direct channel / not returned if empty</span>
+            "spawnParentId": string <span color="#1b1ef7"> // parent channel id for spawned channel / not returned if empty</span>
+            "spawnLastMessageTs": timestamp <span color="#1b1ef7"> // timestamp of last message in spawned channels</span>
         }
         "settings": { <span color="#1b1ef7"> // community channel settings</span>
             "beneficiaryVerus": string <span color="#1b1ef7"> // identity name to receive donations</span>
-            "writePolicy": string <span color="#1b1ef7"> // who can post (All/Admin)</span>
+            "writePolicy": string <span color="#1b1ef7"> // who can post (All/Admin/Moderator)</span>
             "joinPolicy": string <span color="#1b1ef7"> // who can join (OpenForAll)</span>
         }
-        "communityRole": string <span color="#1b1ef7"> // Admin / Participant</span>
+        "communityRole": string <span color="#1b1ef7"> // Admin / Moderator / Participant</span>
     }
     "error": { "status": bool, "code": int, "message": string }
 }
@@ -654,6 +1317,7 @@ Community API handles communities and community channels (posts and discussions)
             "bucketId": string
             "messageId": string
             "authorId": string
+            "agentId": string
             "networkId": string
             "created": timestamp
             "updated": timestamp
@@ -668,6 +1332,7 @@ Community API handles communities and community channels (posts and discussions)
                 "fileSize": int
                 "contentType": string
                 "durationFloat": float
+                "updated": timestamp
                 "encryptionVersion": string <span color="#1b1ef7"> // encryption version, like 'verus.v1'</span>
                 "encryptionEpoch": int <span color="#1b1ef7"> // epoch defines key bundle that was used for encryption</span>
                 "encryptionEpk": string <span color="#1b1ef7"> // ephemeral public key that should be used to decrypt cypher data</span>
@@ -685,6 +1350,7 @@ Community API handles communities and community channels (posts and discussions)
                     "fileSize": int
                     "contentType": string
                     "durationFloat": float
+                    "updated": timestamp
                     "encryptionVersion": string <span color="#1b1ef7"> // encryption version, like 'verus.v1'</span>
                     "encryptionEpoch": int <span color="#1b1ef7"> // epoch defines key bundle that was used for encryption</span>
                     "encryptionEpk": string <span color="#1b1ef7"> // ephemeral public key that should be used to decrypt cypher data</span>
@@ -706,6 +1372,7 @@ Community API handles communities and community channels (posts and discussions)
                     "fileSize": int
                     "contentType": string
                     "durationFloat": float
+                    "updated": timestamp
                     "encryptionVersion": string <span color="#1b1ef7"> // encryption version, like 'verus.v1'</span>
                     "encryptionEpoch": int <span color="#1b1ef7"> // epoch defines key bundle that was used for encryption</span>
                     "encryptionEpk": string <span color="#1b1ef7"> // ephemeral public key that should be used to decrypt cypher data</span>
@@ -717,6 +1384,7 @@ Community API handles communities and community channels (posts and discussions)
             "subChannelPath": string
             "subChannelTitles": [ string ]
             "options": [ string ]
+            "customParams": map[string]{ custom structure }
             "reactions": {
                 "counters": [{ <span color="#1b1ef7"> // counter per reaction, in descending order</span>
                     "emoji": string
@@ -855,7 +1523,7 @@ Community API handles communities and community channels (posts and discussions)
         "beforeMessageId": string <span color="#1b1ef7"> // deprecated. pagination cursor, get messages before this message id</span>
         "afterMessageId": string <span color="#1b1ef7"> // deprecated. pagination cursor, get messages after this message id</span>
         "messageId": string <span color="#1b1ef7"> // pagination cursor, skip to start from the beginning</span>
-        "direction": string <span color="#1b1ef7"> // pagination direction: before (default), after, bilateral</span>
+        "direction": string <span color="#1b1ef7"> // pagination direction: before (default), after, bilateral (both before and after), single (single message)</span>
         "limit": int <span color="#1b1ef7"> // max number of messages to return (1-100)</span>
     }
     "event": { "id": string, "date": timestamp }
@@ -872,6 +1540,7 @@ Community API handles communities and community channels (posts and discussions)
             "bucketId": string
             "messageId": string
             "authorId": string
+            "agentId": string
             "networkId": string
             "created": timestamp
             "updated": timestamp
@@ -886,6 +1555,7 @@ Community API handles communities and community channels (posts and discussions)
                 "fileSize": int
                 "contentType": string
                 "durationFloat": float
+                "updated": timestamp
                 "encryptionVersion": string <span color="#1b1ef7"> // encryption version, like 'verus.v1'</span>
                 "encryptionEpoch": int <span color="#1b1ef7"> // epoch defines key bundle that was used for encryption</span>
                 "encryptionEpk": string <span color="#1b1ef7"> // ephemeral public key that should be used to decrypt cypher data</span>
@@ -903,6 +1573,7 @@ Community API handles communities and community channels (posts and discussions)
                     "fileSize": int
                     "contentType": string
                     "durationFloat": float
+                    "updated": timestamp
                     "encryptionVersion": string <span color="#1b1ef7"> // encryption version, like 'verus.v1'</span>
                     "encryptionEpoch": int <span color="#1b1ef7"> // epoch defines key bundle that was used for encryption</span>
                     "encryptionEpk": string <span color="#1b1ef7"> // ephemeral public key that should be used to decrypt cypher data</span>
@@ -924,6 +1595,7 @@ Community API handles communities and community channels (posts and discussions)
                     "fileSize": int
                     "contentType": string
                     "durationFloat": float
+                    "updated": timestamp
                     "encryptionVersion": string <span color="#1b1ef7"> // encryption version, like 'verus.v1'</span>
                     "encryptionEpoch": int <span color="#1b1ef7"> // epoch defines key bundle that was used for encryption</span>
                     "encryptionEpk": string <span color="#1b1ef7"> // ephemeral public key that should be used to decrypt cypher data</span>
@@ -935,6 +1607,7 @@ Community API handles communities and community channels (posts and discussions)
             "subChannelPath": string
             "subChannelTitles": [ string ]
             "options": [ string ]
+            "customParams": map[string]{ custom structure }
             "reactions": {
                 "counters": [{ <span color="#1b1ef7"> // counter per reaction, in descending order</span>
                     "emoji": string
@@ -1005,7 +1678,7 @@ Community API handles communities and community channels (posts and discussions)
         "beforeMessageId": string <span color="#1b1ef7"> // deprecated. pagination cursor, get messages before this message id</span>
         "afterMessageId": string <span color="#1b1ef7"> // deprecated. pagination cursor, get messages after this message id</span>
         "messageId": string <span color="#1b1ef7"> // pagination cursor, skip to start from the beginning</span>
-        "direction": string <span color="#1b1ef7"> // pagination direction: before (default), after, bilateral</span>
+        "direction": string <span color="#1b1ef7"> // pagination direction: before (default), after, bilateral (both before and after), single (single message)</span>
         "limit": int <span color="#1b1ef7"> // max number of messages to return (1-100)</span>
     }
     "event": { "id": string, "date": timestamp }
@@ -1022,6 +1695,7 @@ Community API handles communities and community channels (posts and discussions)
             "bucketId": string
             "messageId": string
             "authorId": string
+            "agentId": string
             "networkId": string
             "created": timestamp
             "updated": timestamp
@@ -1036,6 +1710,7 @@ Community API handles communities and community channels (posts and discussions)
                 "fileSize": int
                 "contentType": string
                 "durationFloat": float
+                "updated": timestamp
                 "encryptionVersion": string <span color="#1b1ef7"> // encryption version, like 'verus.v1'</span>
                 "encryptionEpoch": int <span color="#1b1ef7"> // epoch defines key bundle that was used for encryption</span>
                 "encryptionEpk": string <span color="#1b1ef7"> // ephemeral public key that should be used to decrypt cypher data</span>
@@ -1053,6 +1728,7 @@ Community API handles communities and community channels (posts and discussions)
                     "fileSize": int
                     "contentType": string
                     "durationFloat": float
+                    "updated": timestamp
                     "encryptionVersion": string <span color="#1b1ef7"> // encryption version, like 'verus.v1'</span>
                     "encryptionEpoch": int <span color="#1b1ef7"> // epoch defines key bundle that was used for encryption</span>
                     "encryptionEpk": string <span color="#1b1ef7"> // ephemeral public key that should be used to decrypt cypher data</span>
@@ -1074,6 +1750,7 @@ Community API handles communities and community channels (posts and discussions)
                     "fileSize": int
                     "contentType": string
                     "durationFloat": float
+                    "updated": timestamp
                     "encryptionVersion": string <span color="#1b1ef7"> // encryption version, like 'verus.v1'</span>
                     "encryptionEpoch": int <span color="#1b1ef7"> // epoch defines key bundle that was used for encryption</span>
                     "encryptionEpk": string <span color="#1b1ef7"> // ephemeral public key that should be used to decrypt cypher data</span>
@@ -1085,6 +1762,7 @@ Community API handles communities and community channels (posts and discussions)
             "subChannelPath": string
             "subChannelTitles": [ string ]
             "options": [ string ]
+            "customParams": map[string]{ custom structure }
             "reactions": {
                 "counters": [{ <span color="#1b1ef7"> // counter per reaction, in descending order</span>
                     "emoji": string
@@ -1155,7 +1833,7 @@ Community API handles communities and community channels (posts and discussions)
         "beforeMessageId": string <span color="#1b1ef7"> // deprecated. pagination cursor, get messages before this message id</span>
         "afterMessageId": string <span color="#1b1ef7"> // deprecated. pagination cursor, get messages after this message id</span>
         "messageId": string <span color="#1b1ef7"> // pagination cursor, skip to start from the beginning</span>
-        "direction": string <span color="#1b1ef7"> // pagination direction: before (default), after, bilateral</span>
+        "direction": string <span color="#1b1ef7"> // pagination direction: before (default), after, bilateral (both before and after), single (single message)</span>
         "limit": int <span color="#1b1ef7"> // max number of messages to return (1-100)</span>
     }
     "event": { "id": string, "date": timestamp }
@@ -1172,6 +1850,7 @@ Community API handles communities and community channels (posts and discussions)
             "bucketId": string
             "messageId": string
             "authorId": string
+            "agentId": string
             "networkId": string
             "created": timestamp
             "updated": timestamp
@@ -1186,6 +1865,7 @@ Community API handles communities and community channels (posts and discussions)
                 "fileSize": int
                 "contentType": string
                 "durationFloat": float
+                "updated": timestamp
                 "encryptionVersion": string <span color="#1b1ef7"> // encryption version, like 'verus.v1'</span>
                 "encryptionEpoch": int <span color="#1b1ef7"> // epoch defines key bundle that was used for encryption</span>
                 "encryptionEpk": string <span color="#1b1ef7"> // ephemeral public key that should be used to decrypt cypher data</span>
@@ -1203,6 +1883,7 @@ Community API handles communities and community channels (posts and discussions)
                     "fileSize": int
                     "contentType": string
                     "durationFloat": float
+                    "updated": timestamp
                     "encryptionVersion": string <span color="#1b1ef7"> // encryption version, like 'verus.v1'</span>
                     "encryptionEpoch": int <span color="#1b1ef7"> // epoch defines key bundle that was used for encryption</span>
                     "encryptionEpk": string <span color="#1b1ef7"> // ephemeral public key that should be used to decrypt cypher data</span>
@@ -1224,6 +1905,7 @@ Community API handles communities and community channels (posts and discussions)
                     "fileSize": int
                     "contentType": string
                     "durationFloat": float
+                    "updated": timestamp
                     "encryptionVersion": string <span color="#1b1ef7"> // encryption version, like 'verus.v1'</span>
                     "encryptionEpoch": int <span color="#1b1ef7"> // epoch defines key bundle that was used for encryption</span>
                     "encryptionEpk": string <span color="#1b1ef7"> // ephemeral public key that should be used to decrypt cypher data</span>
@@ -1235,6 +1917,7 @@ Community API handles communities and community channels (posts and discussions)
             "subChannelPath": string
             "subChannelTitles": [ string ]
             "options": [ string ]
+            "customParams": map[string]{ custom structure }
             "reactions": {
                 "counters": [{ <span color="#1b1ef7"> // counter per reaction, in descending order</span>
                     "emoji": string
@@ -1428,10 +2111,13 @@ Community API handles communities and community channels (posts and discussions)
             }
             "isHighAlert": bool <span color="#1b1ef7"> // is channel set on high alert</span>
             "isPinned": bool <span color="#1b1ef7"> // indicates if the channel was pinned by the user</span>
+            "spawnUnreadCount": int <span color="#1b1ef7"> // count of unread AI agent spawned channels from this direct channel / not returned if empty</span>
+            "spawnParentId": string <span color="#1b1ef7"> // parent channel id for spawned channel / not returned if empty</span>
+            "spawnLastMessageTs": timestamp <span color="#1b1ef7"> // timestamp of last message in spawned channels</span>
         }
         "settings": { <span color="#1b1ef7"> // community channel settings</span>
             "beneficiaryVerus": string <span color="#1b1ef7"> // identity name to receive donations</span>
-            "writePolicy": string <span color="#1b1ef7"> // who can post (All/Admin)</span>
+            "writePolicy": string <span color="#1b1ef7"> // who can post (All/Admin/Moderator)</span>
             "joinPolicy": string <span color="#1b1ef7"> // who can join (OpenForAll)</span>
         }
     }
@@ -1504,10 +2190,13 @@ Community API handles communities and community channels (posts and discussions)
             }
             "isHighAlert": bool <span color="#1b1ef7"> // is channel set on high alert</span>
             "isPinned": bool <span color="#1b1ef7"> // indicates if the channel was pinned by the user</span>
+            "spawnUnreadCount": int <span color="#1b1ef7"> // count of unread AI agent spawned channels from this direct channel / not returned if empty</span>
+            "spawnParentId": string <span color="#1b1ef7"> // parent channel id for spawned channel / not returned if empty</span>
+            "spawnLastMessageTs": timestamp <span color="#1b1ef7"> // timestamp of last message in spawned channels</span>
         }
         "settings": { <span color="#1b1ef7"> // community channel settings</span>
             "beneficiaryVerus": string <span color="#1b1ef7"> // identity name to receive donations</span>
-            "writePolicy": string <span color="#1b1ef7"> // who can post (All/Admin)</span>
+            "writePolicy": string <span color="#1b1ef7"> // who can post (All/Admin/Moderator)</span>
             "joinPolicy": string <span color="#1b1ef7"> // who can join (OpenForAll)</span>
         }
     }
@@ -1539,6 +2228,7 @@ Community API handles communities and community channels (posts and discussions)
             "bucketId": string
             "messageId": string
             "authorId": string
+            "agentId": string
             "networkId": string
             "created": timestamp
             "updated": timestamp
@@ -1553,6 +2243,7 @@ Community API handles communities and community channels (posts and discussions)
                 "fileSize": int
                 "contentType": string
                 "durationFloat": float
+                "updated": timestamp
                 "encryptionVersion": string <span color="#1b1ef7"> // encryption version, like 'verus.v1'</span>
                 "encryptionEpoch": int <span color="#1b1ef7"> // epoch defines key bundle that was used for encryption</span>
                 "encryptionEpk": string <span color="#1b1ef7"> // ephemeral public key that should be used to decrypt cypher data</span>
@@ -1570,6 +2261,7 @@ Community API handles communities and community channels (posts and discussions)
                     "fileSize": int
                     "contentType": string
                     "durationFloat": float
+                    "updated": timestamp
                     "encryptionVersion": string <span color="#1b1ef7"> // encryption version, like 'verus.v1'</span>
                     "encryptionEpoch": int <span color="#1b1ef7"> // epoch defines key bundle that was used for encryption</span>
                     "encryptionEpk": string <span color="#1b1ef7"> // ephemeral public key that should be used to decrypt cypher data</span>
@@ -1591,6 +2283,7 @@ Community API handles communities and community channels (posts and discussions)
                     "fileSize": int
                     "contentType": string
                     "durationFloat": float
+                    "updated": timestamp
                     "encryptionVersion": string <span color="#1b1ef7"> // encryption version, like 'verus.v1'</span>
                     "encryptionEpoch": int <span color="#1b1ef7"> // epoch defines key bundle that was used for encryption</span>
                     "encryptionEpk": string <span color="#1b1ef7"> // ephemeral public key that should be used to decrypt cypher data</span>
@@ -1602,6 +2295,7 @@ Community API handles communities and community channels (posts and discussions)
             "subChannelPath": string
             "subChannelTitles": [ string ]
             "options": [ string ]
+            "customParams": map[string]{ custom structure }
             "reactions": {
                 "counters": [{ <span color="#1b1ef7"> // counter per reaction, in descending order</span>
                     "emoji": string
@@ -1691,6 +2385,7 @@ Community API handles communities and community channels (posts and discussions)
             "bucketId": string
             "messageId": string
             "authorId": string
+            "agentId": string
             "networkId": string
             "created": timestamp
             "updated": timestamp
@@ -1705,6 +2400,7 @@ Community API handles communities and community channels (posts and discussions)
                 "fileSize": int
                 "contentType": string
                 "durationFloat": float
+                "updated": timestamp
                 "encryptionVersion": string <span color="#1b1ef7"> // encryption version, like 'verus.v1'</span>
                 "encryptionEpoch": int <span color="#1b1ef7"> // epoch defines key bundle that was used for encryption</span>
                 "encryptionEpk": string <span color="#1b1ef7"> // ephemeral public key that should be used to decrypt cypher data</span>
@@ -1722,6 +2418,7 @@ Community API handles communities and community channels (posts and discussions)
                     "fileSize": int
                     "contentType": string
                     "durationFloat": float
+                    "updated": timestamp
                     "encryptionVersion": string <span color="#1b1ef7"> // encryption version, like 'verus.v1'</span>
                     "encryptionEpoch": int <span color="#1b1ef7"> // epoch defines key bundle that was used for encryption</span>
                     "encryptionEpk": string <span color="#1b1ef7"> // ephemeral public key that should be used to decrypt cypher data</span>
@@ -1743,6 +2440,7 @@ Community API handles communities and community channels (posts and discussions)
                     "fileSize": int
                     "contentType": string
                     "durationFloat": float
+                    "updated": timestamp
                     "encryptionVersion": string <span color="#1b1ef7"> // encryption version, like 'verus.v1'</span>
                     "encryptionEpoch": int <span color="#1b1ef7"> // epoch defines key bundle that was used for encryption</span>
                     "encryptionEpk": string <span color="#1b1ef7"> // ephemeral public key that should be used to decrypt cypher data</span>
@@ -1754,6 +2452,7 @@ Community API handles communities and community channels (posts and discussions)
             "subChannelPath": string
             "subChannelTitles": [ string ]
             "options": [ string ]
+            "customParams": map[string]{ custom structure }
             "reactions": {
                 "counters": [{ <span color="#1b1ef7"> // counter per reaction, in descending order</span>
                     "emoji": string
@@ -1791,6 +2490,37 @@ Community API handles communities and community channels (posts and discussions)
         }
     }
     "error": { "status": bool, "code": int, "message": string }
+}
+</pre>
+
+<br>
+
+<a name="models"></a>
+
+## Models
+
+<br>
+
+<a name="user-simple"></a>
+
+#### User Simple
+
+<pre>
+{
+    "id": string
+    "firstName": string
+    "lastName": string
+    "privacyMode": int <span color="#1b1ef7"> // 0 - Default, 1 - Incognito</span>
+    "avatar": string
+    "avatar3D": { <span color="#1b1ef7"> // field is not returned if empty</span>
+        "assetId": string
+        "assetSkins": map[string]string <span color="#1b1ef7"> // map of selected skins per variants</span>
+        "avatarResourceId": string <span color="#1b1ef7"> // resource id (in case of avatar uploaded to user3DAvatar belonging)</span>
+        "avatarUrl": string <span color="#1b1ef7"> // url to gbl file (Ready Player Me)</span>
+        "avatarUserId": string <span color="#1b1ef7"> // user id for session recovery (Ready Player Me)</span>
+    }
+    "companyName": string <span color="#1b1ef7"> // name of company that user represents</span>
+    "companyTitle": string <span color="#1b1ef7"> // user title in the company</span>
 }
 </pre>
 

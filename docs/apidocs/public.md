@@ -6,6 +6,7 @@
 
 | Endpoint | Method | Description |
 |-----|-----|-----|
+| [/.well-known/jwks.json](#jwks-endpoint-for-identity-token-verification) | webRequest | JWKS endpoint for identity token verification |
 | [/seo](#handle-seo) | webRequest | Handle seo |
 | [/seo/{roomId}](#handle-seo-room-by-id) | webRequest | Handle seo room by id |
 | [/seo/{group}/{alias}](#handle-seo-room-by-group-alias) | webRequest | Handle seo room by group alias |
@@ -20,6 +21,31 @@
 | [/api/v0/publicRpc/init.activeExpoNetworks](#active-expo-networks) | publicRpc | Active expo networks |
 | [/api/v0/publicRpc/init.getNetworkDomains](#get-network-domains) | publicRpc | Get network domains |
 | [/api/v0/publicRpc/init.checkClientVersion](#check-client-version) | publicRpc | Check client version |
+| [/api/v0/publicRpc/init.getApplicationPublishedVersion](#get-application-published-version) | publicRpc | Get application published version |
+
+<br>
+
+<a name="jwks-endpoint-for-identity-token-verification"></a>
+
+### JWKS endpoint for identity token verification
+
+**HTTP Method:** GET
+
+**Path:** /.well-known/jwks.json
+
+**Description:** Returns the public keys used to sign identity tokens. For example, miniapp backends can use these keys to verify user identity tokens issued by the server.
+
+**Request:** 
+
+<pre>
+{ empty }
+</pre>
+
+**Response:** 
+
+<pre>
+JSON Web Key Set
+</pre>
 
 <br>
 
@@ -294,6 +320,8 @@ seo html page
             "hasExpo": bool <span color="#1b1ef7"> // informs clients that the network has expo</span>
             "pluginEnabled": bool <span color="#1b1ef7"> // imported from network plugin settings</span>
             "shareServerHost": string <span color="#1b1ef7"> // address of share server</span>
+            "defaultApplicationId": string <span color="#1b1ef7"> // the network's default application, if one is set</span>
+            "authApplicationId": string <span color="#1b1ef7"> // the network's default authentication application, if one is set</span>
         }
         "sessionNetworkId": string <span color="#1b1ef7"> // network id for current session</span>
         "room": {
@@ -569,6 +597,44 @@ seo html page
 
 <br>
 
+<a name="get-application-published-version"></a>
+
+### Get application published version
+
+**Method:** publicRpc
+
+**HTTP Method:** POST
+
+**Path:** /api/v0/publicRpc/init.getApplicationPublishedVersion
+
+**Request:** 
+
+<pre>
+{
+    "applicationId": string
+}
+</pre>
+
+**Response:** 
+
+<pre>
+{
+    "data": {
+        "applicationId": string
+        "version": string
+        "name": string
+        "description": string
+        "customParams": map[string]{ custom structure } <span color="#1b1ef7"> // client-defined data from the released version: icons, client/interface settings, permissions, etc</span>
+        "networks": [ string ] <span color="#1b1ef7"> // ['all'] or specific network ids the app is published in</span>
+        "excludedNetworks": [ string ] <span color="#1b1ef7"> // excluded network ids, only meaningful alongside 'all'</span>
+        "publishedAt": timestamp
+    }
+    "error": { "status": bool, "code": int, "message": string }
+}
+</pre>
+
+<br>
+
 <a name="models"></a>
 
 ## Models
@@ -653,6 +719,7 @@ seo html page
     "encryptionVersion": string <span color="#1b1ef7"> // encryption version, like 'verus.v1'</span>
     "encryptionEpoch": int <span color="#1b1ef7"> // epoch defines key bundle that was used for encryption</span>
     "encryptionEpk": string <span color="#1b1ef7"> // ephemeral public key that should be used to decrypt cypher data</span>
+    "userId": string <span color="#1b1ef7"> // user id of resource author</span>
     "belonging": string <span color="#1b1ef7"> // determines resource location in the system in a way 'belongingType:belongingPath(networkId)'</span>
     "status": string <span color="#1b1ef7"> // pending/processing/ready/failed</span>
     "metadata": {
@@ -676,6 +743,7 @@ seo html page
         "amazon": { <a href="#resource-data-amazon">resource data amazon structure</a> }
         "imdb": { <a href="#resource-data-imdb">resource data imdb structure</a> }
         "youtube": { <a href="#resource-data-youtube">resource data youtube structure</a> }
+        "vimeo": { <a href="#resource-data-vimeo">resource data vimeo structure</a> }
         "pinterest": { <a href="#resource-data-pinterest">resource data pinterest structure</a> }
         "pixabay": { <a href="#resource-data-pixabay">resource data pixabay structure</a> }
         "facebook": { <a href="#resource-data-facebook">resource data facebook structure</a> }
@@ -685,8 +753,9 @@ seo html page
         "thumbnailUrl": string
         "downloadUrl": string
         "directory": { <a href="#resource-data-directory">resource data directory structure</a> }
-        "channel": { <a href="#channel-data">channel data structure</a> }
         "googleDrive": { <a href="#google-drive">google drive structure</a> }
+        "channel": { <a href="#channel-data">channel data structure</a> }
+        "enrichment": { <a href="#enrichment-data">enrichment data structure</a> }
     }
     "customParams": map[string]{ custom structure } <span color="#1b1ef7"> // client defined parameters</span>
     "actions": [{ <a href="#programmatic-action-with-children">programmatic action with children structure</a> }] <span color="#1b1ef7"> // custom programmatic actions from users</span>
@@ -823,6 +892,19 @@ seo html page
 
 <br>
 
+<a name="resource-data-vimeo"></a>
+
+#### Resource Data Vimeo
+
+<pre>
+{
+    "videoUrl": string
+    "formatId": string
+}
+</pre>
+
+<br>
+
 <a name="resource-data-pinterest"></a>
 
 #### Resource Data Pinterest
@@ -886,6 +968,7 @@ seo html page
     "assetId": string
     "playbackUrl": string
     "masterUrl": string
+    "createdAt": int
 }
 </pre>
 
@@ -897,7 +980,7 @@ seo html page
 
 <pre>
 {
-    "generationModel": string <span color="#1b1ef7"> // the model used for image generation [dall-e-3]</span>
+    "generationModel": string <span color="#1b1ef7"> // the model used for image generation [gpt-image-2, gpt-image-1.5, gpt-image-1, gpt-image-1-mini]; defaults to gpt-image-2</span>
     "prompt": string <span color="#1b1ef7"> // a text description of the desired image</span>
     "revisedPrompt": string <span color="#1b1ef7"> // the prompt that was used to generate the image, if there was any revision to the prompt</span>
     "url": string <span color="#1b1ef7"> // the URL of the generated image</span>
@@ -919,6 +1002,20 @@ seo html page
 
 <br>
 
+<a name="google-drive"></a>
+
+#### Google Drive
+
+<pre>
+{
+    "fileId": string
+    "name": string
+    "mimeType": string
+}
+</pre>
+
+<br>
+
 <a name="channel-data"></a>
 
 #### Channel Data
@@ -934,15 +1031,18 @@ seo html page
 
 <br>
 
-<a name="google-drive"></a>
+<a name="enrichment-data"></a>
 
-#### Google Drive
+#### Enrichment Data
 
 <pre>
 {
-    "fileId": string
-    "name": string
-    "mimeType": string
+    "categories": [ string ]
+    "enrichedAt": timestamp
+    "enrichmentStatus": string
+    "language": string
+    "qualityScore": int
+    "tags": [ string ]
 }
 </pre>
 
@@ -1130,6 +1230,7 @@ seo html page
     "avatar3D": { <span color="#1b1ef7"> // field is not returned if empty</span>
         "assetId": string
         "assetSkins": map[string]string <span color="#1b1ef7"> // map of selected skins per variants</span>
+        "avatarResourceId": string <span color="#1b1ef7"> // resource id (in case of avatar uploaded to user3DAvatar belonging)</span>
         "avatarUrl": string <span color="#1b1ef7"> // url to gbl file (Ready Player Me)</span>
         "avatarUserId": string <span color="#1b1ef7"> // user id for session recovery (Ready Player Me)</span>
     }

@@ -6,8 +6,15 @@
 
 | Endpoint | Method | Description |
 |-----|-----|-----|
+| [explorer:searchRooms](#search-public-rooms) | websocket | Search public rooms |
+| ~~[explorer:rooms](#get-public-rooms-deprecated)~~ | websocket | Get public rooms: deprecated |
+| ~~[explorer:search](#search-public-rooms-deprecated)~~ | websocket | Search public rooms: deprecated |
+| ~~[explorer:featuredRooms](#get-featured-rooms-deprecated)~~ | websocket | Get featured rooms: deprecated |
+| [explorer:searchStorylines](#search-storylines) | websocket | Search storylines |
 | ~~[rooms](#get-user-rooms)~~ | websocket | Get user rooms |
 | [room:searchRoomsOfUser](#search-rooms-of-user) | websocket | Search rooms of user |
+| [room:searchRoomsForCMS](#search-rooms-of-user-for-cms) | websocket | Search rooms of user for CMS |
+| [room:discoverRoomsByCbac](#discover-rooms-by-cbac) | websocket | Discover rooms by CBAC |
 | ~~[room:getTemplateRooms](#get-template-rooms)~~ | websocket | Get template rooms |
 | [room:getTemplateRoom](#get-template-room) | websocket | Get template room |
 | [room:getTemplateRoomForPreview](#get-template-room-for-preview) | websocket | Get template room for preview |
@@ -81,13 +88,12 @@
 | [room:updateJourneyPath](#update-journey-path) | websocket | Update journey path |
 | [room:deleteJourneyPath](#delete-journey-path) | websocket | Delete journey path |
 | [room:getJourneyPaths](#get-journey-paths) | websocket | Get journey paths |
-| [room:addResourcesToSortingTable](#on-resources-added-to-room-sorting-table-event) | websocketEvent | On resources added to room sorting table event |
-| [room:deleteResourcesFromSortingTable](#on-resources-deleted-from-room-sorting-table-event) | websocketEvent | On resources deleted from room sorting table event |
-| [room:addResourcesToSortingTableDirectory](#on-resources-added-to-directory-in-room-sorting-table-event) | websocketEvent | On resources added to directory in room sorting table event |
-| [room:deleteResourcesFromSortingTableDirectory](#on-resources-deleted-from-directory-in-room-sorting-table-event) | websocketEvent | On resources deleted from directory in room sorting table event |
-| [room:resourceUpdated](#on-room-resource-updated-event) | websocketEvent | On room resource updated event |
-| [room:sortingTableResourceUpdated](#on-room-sorting-table-resource-updated-event) | websocketEvent | On room sorting table resource updated event |
+| ~~[room:addResourcesToSortingTable](#on-resources-added-to-room-sorting-table-event)~~ | websocketEvent | On resources added to room sorting table event |
+| ~~[room:deleteResourcesFromSortingTable](#on-resources-deleted-from-room-sorting-table-event)~~ | websocketEvent | On resources deleted from room sorting table event |
+| ~~[room:resourceUpdated](#on-room-resource-updated-event)~~ | websocketEvent | On room resource updated event |
+| ~~[room:sortingTableResourceUpdated](#on-room-sorting-table-resource-updated-event)~~ | websocketEvent | On room sorting table resource updated event |
 | [room:subscriptionStatusUpdated](#on-room-subscription-status-updated-event) | websocketEvent | On room subscription status updated event |
+| [room:created](#on-room-created-event) | websocketEvent | On room created event |
 | [room:delete](#on-room-deleted-event) | websocketEvent | On room deleted event |
 | [room:metadataUpdated](#on-room-metadata-updated-event) | websocketEvent | On room metadata updated event |
 | [room:settingsUpdated](#on-room-settings-updated-event) | websocketEvent | On room settings updated event |
@@ -113,6 +119,224 @@
 | [room:userLeft](#user-left-room-event) | websocketEvent | User left room event |
 | [room:userLocationChanged](#user-room-location-changed-event) | websocketEvent | User room location changed event |
 | [room:hasLightData](#room-has-light-data-event) | websocketEvent | Room has light data event |
+
+<br>
+
+<a name="search-public-rooms"></a>
+
+### Search public rooms
+
+**Method:** websocket
+
+**Endpoint:** explorer:searchRooms
+
+**Description:** API returns public rooms (according to search query) from all users in network.
+
+**Request:** 
+
+<pre>
+{
+    "data": {
+        "query": string
+        "tags": [ string ]
+        "offset": int
+        "size": int
+    }
+    "event": { "id": string, "date": timestamp }
+}
+</pre>
+
+**Response:** 
+
+<pre>
+{
+    "data": {
+        "rooms": [{
+            "id": string
+            "name": string
+            "tags": [ string ]
+            "thumbnailId": string
+            "subscriptionStatus": string
+            "ownerIds": [ string ]
+        }]
+    }
+    "error": { "status": bool, "code": int, "message": string }
+}
+</pre>
+
+<br>
+
+<a name="get-public-rooms-deprecated"></a>
+
+### Get public rooms: deprecated
+
+**Method:** websocket
+
+**Endpoint:** explorer:rooms
+
+**<span color="red">DEPRECATED</span>** 
+
+**Description:** API returns public rooms from all users in network. Rooms are sorted by popularity, most watched come first.
+
+**Request:** 
+
+<pre>
+{
+    "data": {
+        "tags": [ string ]
+        "offset": int
+        "size": int
+    }
+    "event": { "id": string, "date": timestamp }
+}
+</pre>
+
+**Response:** 
+
+<pre>
+{
+    "data": {
+        "query": string
+        "tags": [ string ]
+        "offset": int
+        "size": int
+        "rooms": [{ <a href="#room">room structure</a> }]
+    }
+    "error": { "status": bool, "code": int, "message": string }
+}
+</pre>
+
+<br>
+
+<a name="search-public-rooms-deprecated"></a>
+
+### Search public rooms: deprecated
+
+**Method:** websocket
+
+**Endpoint:** explorer:search
+
+**<span color="red">DEPRECATED</span>** 
+
+**Description:** API returns public rooms (according to search query) from all users in network.
+
+**Request:** 
+
+<pre>
+{
+    "data": {
+        "query": string
+        "tags": [ string ]
+        "offset": int
+        "size": int
+    }
+    "event": { "id": string, "date": timestamp }
+}
+</pre>
+
+**Response:** 
+
+<pre>
+{
+    "data": {
+        "query": string
+        "tags": [ string ]
+        "offset": int
+        "size": int
+        "rooms": [{ <a href="#room">room structure</a> }]
+    }
+    "error": { "status": bool, "code": int, "message": string }
+}
+</pre>
+
+<br>
+
+<a name="get-featured-rooms-deprecated"></a>
+
+### Get featured rooms: deprecated
+
+**Method:** websocket
+
+**Endpoint:** explorer:featuredRooms
+
+**<span color="red">DEPRECATED</span>** 
+
+**Description:** API returns public rooms that were featured by admins.
+
+**Request:** 
+
+<pre>
+{
+    "data": {
+        "tags": [ string ]
+        "offset": int
+        "size": int
+    }
+    "event": { "id": string, "date": timestamp }
+}
+</pre>
+
+**Response:** 
+
+<pre>
+{
+    "data": {
+        "query": string
+        "tags": [ string ]
+        "offset": int
+        "size": int
+        "rooms": [{ <a href="#room">room structure</a> }]
+    }
+    "error": { "status": bool, "code": int, "message": string }
+}
+</pre>
+
+<br>
+
+<a name="search-storylines"></a>
+
+### Search storylines
+
+**Method:** websocket
+
+**Endpoint:** explorer:searchStorylines
+
+**Description:** API returns public storylines from all users in network.
+
+**Request:** 
+
+<pre>
+{
+    "data": {
+        "query": string
+        "offset": int
+        "size": int
+    }
+    "event": { "id": string, "date": timestamp }
+}
+</pre>
+
+**Response:** 
+
+<pre>
+{
+    "data": {
+        "query": string
+        "tags": [ string ]
+        "offset": int
+        "size": int
+        "storylines": [{
+            "id": string
+            "title": string
+            "roomId": string
+            "roomName": string
+            "roomThumbnailId": string
+            "owners": [ string ]
+        }]
+    }
+    "error": { "status": bool, "code": int, "message": string }
+}
+</pre>
 
 <br>
 
@@ -173,6 +397,100 @@
         "userId": string <span color="#1b1ef7"> // if provided, api searches for available (public/invitation) rooms of other user</span>
         "query": string <span color="#1b1ef7"> // search query</span>
         "filter": string <span color="#1b1ef7"> // public/private/shared/favourite</span>
+        "offset": int
+        "size": int
+    }
+    "event": { "id": string, "date": timestamp }
+}
+</pre>
+
+**Response:** 
+
+<pre>
+{
+    "data": {
+        "rooms": [{
+            "id": string
+            "name": string
+            "tags": [ string ]
+            "thumbnailId": string
+            "subscriptionStatus": string
+            "ownerIds": [ string ]
+        }]
+    }
+    "error": { "status": bool, "code": int, "message": string }
+}
+</pre>
+
+<br>
+
+<a name="search-rooms-of-user-for-cms"></a>
+
+### Search rooms of user for CMS
+
+**Method:** websocket
+
+**Endpoint:** room:searchRoomsForCMS
+
+**Description:** Same as room:searchRoomsOfUser, but additionally returns indexation state (filled by RAG) of each returned room's room:{roomId} belonging, keyed by roomId.
+
+**Request:** 
+
+<pre>
+{
+    "data": {
+        "networkId": string <span color="#1b1ef7"> // if provided, api searches for rooms in a specific network</span>
+        "userId": string <span color="#1b1ef7"> // if provided, api searches for available (public/invitation) rooms of other user</span>
+        "query": string <span color="#1b1ef7"> // search query</span>
+        "filter": string <span color="#1b1ef7"> // public/private/shared/favourite</span>
+        "offset": int
+        "size": int
+    }
+    "event": { "id": string, "date": timestamp }
+}
+</pre>
+
+**Response:** 
+
+<pre>
+{
+    "data": {
+        "rooms": [{
+            "id": string
+            "name": string
+            "tags": [ string ]
+            "thumbnailId": string
+            "subscriptionStatus": string
+            "ownerIds": [ string ]
+        }]
+        "indexStates": map[string]{ <span color="#1b1ef7"> // maps roomId to indexation state of its room:{roomId} belonging</span>
+            "belongingKey": string
+            "state": map[string]{ custom structure }
+        }
+    }
+    "error": { "status": bool, "code": int, "message": string }
+}
+</pre>
+
+<br>
+
+<a name="discover-rooms-by-cbac"></a>
+
+### Discover rooms by CBAC
+
+**Method:** websocket
+
+**Endpoint:** room:discoverRoomsByCbac
+
+**Description:** Returns rooms that the calling user can access via CBAC badge policies, regardless of room privacy — this is how badge holders discover private rooms unlockable by their badges, without needing an existing invitation. Lists the caller's badges, resolves them to CBAC room targets, and returns the matching rooms.
+
+**Request:** 
+
+<pre>
+{
+    "data": {
+        "query": string
+        "tags": [ string ]
         "offset": int
         "size": int
     }
@@ -271,7 +589,8 @@
             "name": string
             "tags": [ string ]
             "ownerIds": [ string ]
-            "subscriptionStatus": string
+            "privacy": string <span color="#1b1ef7"> // private/public/openForAttendees</span>
+            "subscriptionStatus": string <span color="#1b1ef7"> // free/active/expired</span>
             "price": float
             "templateStyles": [ string ]
         }
@@ -443,7 +762,8 @@
             "name": string
             "tags": [ string ]
             "ownerIds": [ string ]
-            "subscriptionStatus": string
+            "privacy": string <span color="#1b1ef7"> // private/public/openForAttendees</span>
+            "subscriptionStatus": string <span color="#1b1ef7"> // free/active/expired</span>
             "price": float
             "templateStyles": [ string ]
         }]
@@ -1029,7 +1349,8 @@ Deprecated, use ```room:getRoom``` instead.
             "name": string
             "tags": [ string ]
             "ownerIds": [ string ]
-            "subscriptionStatus": string
+            "privacy": string <span color="#1b1ef7"> // private/public/openForAttendees</span>
+            "subscriptionStatus": string <span color="#1b1ef7"> // free/active/expired</span>
         }
     }
     "error": { "status": bool, "code": int, "message": string }
@@ -3013,6 +3334,7 @@ If alias group is provided:
             "avatar3D": { <span color="#1b1ef7"> // field is not returned if empty</span>
                 "assetId": string
                 "assetSkins": map[string]string <span color="#1b1ef7"> // map of selected skins per variants</span>
+                "avatarResourceId": string <span color="#1b1ef7"> // resource id (in case of avatar uploaded to user3DAvatar belonging)</span>
                 "avatarUrl": string <span color="#1b1ef7"> // url to gbl file (Ready Player Me)</span>
                 "avatarUserId": string <span color="#1b1ef7"> // user id for session recovery (Ready Player Me)</span>
             }
@@ -3655,6 +3977,8 @@ If alias group is provided:
 
 **Event:** room:addResourcesToSortingTable
 
+**<span color="red">DEPRECATED</span>** 
+
 **Data:** 
 
 <pre>
@@ -3679,6 +4003,8 @@ If alias group is provided:
 
 **Event:** room:deleteResourcesFromSortingTable
 
+**<span color="red">DEPRECATED</span>** 
+
 **Data:** 
 
 <pre>
@@ -3693,53 +4019,13 @@ If alias group is provided:
 
 <br>
 
-<a name="on-resources-added-to-directory-in-room-sorting-table-event"></a>
-
-### On resources added to directory in room sorting table event
-
-**Event:** room:addResourcesToSortingTableDirectory
-
-**Data:** 
-
-<pre>
-{
-    "data": {
-        "roomId": string
-        "directoryId": string
-        "resources": [{ <a href="#resource">resource structure</a> }]
-    }
-    "error": { "status": bool, "code": int, "message": string }
-}
-</pre>
-
-<br>
-
-<a name="on-resources-deleted-from-directory-in-room-sorting-table-event"></a>
-
-### On resources deleted from directory in room sorting table event
-
-**Event:** room:deleteResourcesFromSortingTableDirectory
-
-**Data:** 
-
-<pre>
-{
-    "data": {
-        "roomId": string
-        "directoryId": string
-        "resourceIds": [ string ]
-    }
-    "error": { "status": bool, "code": int, "message": string }
-}
-</pre>
-
-<br>
-
 <a name="on-room-resource-updated-event"></a>
 
 ### On room resource updated event
 
 **Event:** room:resourceUpdated
+
+**<span color="red">DEPRECATED</span>** 
 
 **Data:** 
 
@@ -3761,6 +4047,8 @@ If alias group is provided:
 ### On room sorting table resource updated event
 
 **Event:** room:sortingTableResourceUpdated
+
+**<span color="red">DEPRECATED</span>** 
 
 **Data:** 
 
@@ -3789,6 +4077,36 @@ If alias group is provided:
     "data": {
         "roomId": string
         "subscriptionStatus": string
+    }
+    "error": { "status": bool, "code": int, "message": string }
+}
+</pre>
+
+<br>
+
+<a name="on-room-created-event"></a>
+
+### On room created event
+
+**Event:** room:created
+
+**Description:** Event is sent to room owners.
+
+**Data:** 
+
+<pre>
+{
+    "data": {
+        "roomId": string
+        "metadata": {
+            "name": string
+            "description": string
+            "location": string
+            "privacy": string <span color="#1b1ef7"> // private/public/openForAttendees</span>
+            "tags": [ string ]
+            "firstStyle": string
+        }
+        "thumbnailId": string
     }
     "error": { "status": bool, "code": int, "message": string }
 }
@@ -3828,7 +4146,16 @@ If alias group is provided:
 <pre>
 {
     "data": {
-        "room": { <a href="#room">room structure</a> }
+        "roomId": string
+        "metadata": {
+            "name": string
+            "description": string
+            "location": string
+            "privacy": string <span color="#1b1ef7"> // private/public/openForAttendees</span>
+            "tags": [ string ]
+            "firstStyle": string
+        }
+        "thumbnailId": string
     }
     "error": { "status": bool, "code": int, "message": string }
 }
@@ -4420,6 +4747,7 @@ If alias group is provided:
     "encryptionVersion": string <span color="#1b1ef7"> // encryption version, like 'verus.v1'</span>
     "encryptionEpoch": int <span color="#1b1ef7"> // epoch defines key bundle that was used for encryption</span>
     "encryptionEpk": string <span color="#1b1ef7"> // ephemeral public key that should be used to decrypt cypher data</span>
+    "userId": string <span color="#1b1ef7"> // user id of resource author</span>
     "belonging": string <span color="#1b1ef7"> // determines resource location in the system in a way 'belongingType:belongingPath(networkId)'</span>
     "status": string <span color="#1b1ef7"> // pending/processing/ready/failed</span>
     "metadata": {
@@ -4443,6 +4771,7 @@ If alias group is provided:
         "amazon": { <a href="#resource-data-amazon">resource data amazon structure</a> }
         "imdb": { <a href="#resource-data-imdb">resource data imdb structure</a> }
         "youtube": { <a href="#resource-data-youtube">resource data youtube structure</a> }
+        "vimeo": { <a href="#resource-data-vimeo">resource data vimeo structure</a> }
         "pinterest": { <a href="#resource-data-pinterest">resource data pinterest structure</a> }
         "pixabay": { <a href="#resource-data-pixabay">resource data pixabay structure</a> }
         "facebook": { <a href="#resource-data-facebook">resource data facebook structure</a> }
@@ -4452,8 +4781,9 @@ If alias group is provided:
         "thumbnailUrl": string
         "downloadUrl": string
         "directory": { <a href="#resource-data-directory">resource data directory structure</a> }
-        "channel": { <a href="#channel-data">channel data structure</a> }
         "googleDrive": { <a href="#google-drive">google drive structure</a> }
+        "channel": { <a href="#channel-data">channel data structure</a> }
+        "enrichment": { <a href="#enrichment-data">enrichment data structure</a> }
     }
     "customParams": map[string]{ custom structure } <span color="#1b1ef7"> // client defined parameters</span>
     "actions": [{ <a href="#programmatic-action-with-children">programmatic action with children structure</a> }] <span color="#1b1ef7"> // custom programmatic actions from users</span>
@@ -4590,6 +4920,19 @@ If alias group is provided:
 
 <br>
 
+<a name="resource-data-vimeo"></a>
+
+#### Resource Data Vimeo
+
+<pre>
+{
+    "videoUrl": string
+    "formatId": string
+}
+</pre>
+
+<br>
+
 <a name="resource-data-pinterest"></a>
 
 #### Resource Data Pinterest
@@ -4653,6 +4996,7 @@ If alias group is provided:
     "assetId": string
     "playbackUrl": string
     "masterUrl": string
+    "createdAt": int
 }
 </pre>
 
@@ -4664,7 +5008,7 @@ If alias group is provided:
 
 <pre>
 {
-    "generationModel": string <span color="#1b1ef7"> // the model used for image generation [dall-e-3]</span>
+    "generationModel": string <span color="#1b1ef7"> // the model used for image generation [gpt-image-2, gpt-image-1.5, gpt-image-1, gpt-image-1-mini]; defaults to gpt-image-2</span>
     "prompt": string <span color="#1b1ef7"> // a text description of the desired image</span>
     "revisedPrompt": string <span color="#1b1ef7"> // the prompt that was used to generate the image, if there was any revision to the prompt</span>
     "url": string <span color="#1b1ef7"> // the URL of the generated image</span>
@@ -4686,6 +5030,20 @@ If alias group is provided:
 
 <br>
 
+<a name="google-drive"></a>
+
+#### Google Drive
+
+<pre>
+{
+    "fileId": string
+    "name": string
+    "mimeType": string
+}
+</pre>
+
+<br>
+
 <a name="channel-data"></a>
 
 #### Channel Data
@@ -4701,15 +5059,18 @@ If alias group is provided:
 
 <br>
 
-<a name="google-drive"></a>
+<a name="enrichment-data"></a>
 
-#### Google Drive
+#### Enrichment Data
 
 <pre>
 {
-    "fileId": string
-    "name": string
-    "mimeType": string
+    "categories": [ string ]
+    "enrichedAt": timestamp
+    "enrichmentStatus": string
+    "language": string
+    "qualityScore": int
+    "tags": [ string ]
 }
 </pre>
 
@@ -4897,6 +5258,7 @@ If alias group is provided:
     "avatar3D": { <span color="#1b1ef7"> // field is not returned if empty</span>
         "assetId": string
         "assetSkins": map[string]string <span color="#1b1ef7"> // map of selected skins per variants</span>
+        "avatarResourceId": string <span color="#1b1ef7"> // resource id (in case of avatar uploaded to user3DAvatar belonging)</span>
         "avatarUrl": string <span color="#1b1ef7"> // url to gbl file (Ready Player Me)</span>
         "avatarUserId": string <span color="#1b1ef7"> // user id for session recovery (Ready Player Me)</span>
     }

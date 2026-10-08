@@ -15,7 +15,12 @@
 | [social:deleteFriend](#delete-friend) | websocket | Delete friend |
 | [social:searchUsers](#search-users) | websocket | Search users |
 | [social:searchSimpleUsers](#search-simple-users) | websocket | Search simple users |
+| [social:searchSimpleUsersForGroup](#search-simple-users-for-group) | websocket | Search simple users for group |
+| [social:searchFriendsForGroup](#search-friends-for-group) | websocket | Search friends for group |
+| [social:searchSimpleUsersForCommunity](#search-simple-users-for-community) | websocket | Search simple users for community |
+| [social:searchFriendsForCommunity](#search-friends-for-community) | websocket | Search friends for community |
 | [social:searchUsersByContacts](#search-users-by-contacts) | websocket | Search users by contacts |
+| [social:searchUsersByBadgeId](#search-users-by-badge-id) | websocket | Search users by badge id |
 | [social:getUserSimpleInfo](#get-user-simple-info) | websocket | Get user simple info |
 | [social:getUserByVerusName](#get-user-by-verus-name) | websocket | Get user by verus name |
 | [social:getUserByVerusIAddress](#get-user-by-verus-i-address) | websocket | Get user by verus i address |
@@ -30,8 +35,10 @@
 | [social:unfollowUser](#unfollow-user) | websocket | Unfollow user |
 | [social:searchUserFollowers](#search-user-followers) | websocket | Search user followers |
 | [social:searchUserFollowings](#search-user-followings) | websocket | Search user followings |
+| [social:friendAdded](#friend-added-event) | websocketEvent | Friend added event |
 | [social:friendDeleted](#friend-deleted-event) | websocketEvent | Friend deleted event |
 | [social:followingStatusChanged](#following-status-changed-event) | websocketEvent | Following status changed event |
+| [social:followerStatusChanged](#follower-status-changed-event) | websocketEvent | Follower status changed event |
 
 <br>
 
@@ -235,6 +242,7 @@
             "avatar3D": { <span color="#1b1ef7"> // field is not returned if empty</span>
                 "assetId": string
                 "assetSkins": map[string]string <span color="#1b1ef7"> // map of selected skins per variants</span>
+                "avatarResourceId": string <span color="#1b1ef7"> // resource id (in case of avatar uploaded to user3DAvatar belonging)</span>
                 "avatarUrl": string <span color="#1b1ef7"> // url to gbl file (Ready Player Me)</span>
                 "avatarUserId": string <span color="#1b1ef7"> // user id for session recovery (Ready Player Me)</span>
             }
@@ -322,6 +330,7 @@
             "avatar3D": { <span color="#1b1ef7"> // field is not returned if empty</span>
                 "assetId": string
                 "assetSkins": map[string]string <span color="#1b1ef7"> // map of selected skins per variants</span>
+                "avatarResourceId": string <span color="#1b1ef7"> // resource id (in case of avatar uploaded to user3DAvatar belonging)</span>
                 "avatarUrl": string <span color="#1b1ef7"> // url to gbl file (Ready Player Me)</span>
                 "avatarUserId": string <span color="#1b1ef7"> // user id for session recovery (Ready Player Me)</span>
             }
@@ -374,6 +383,237 @@
 
 <br>
 
+<a name="search-simple-users-for-group"></a>
+
+### Search simple users for group
+
+**Method:** websocket
+
+**Endpoint:** social:searchSimpleUsersForGroup
+
+**Description:** API returns list of users found by provided query, with each user's role in the specified group (Admin / Moderator / Participant / empty if not a member).
+
+**Request:** 
+
+<pre>
+{
+    "data": {
+        "groupId": string
+        "query": string
+        "offset": int
+        "size": int
+    }
+    "event": { "id": string, "date": timestamp }
+}
+</pre>
+
+**Response:** 
+
+<pre>
+{
+    "data": {
+        "users": [{
+            "id": string
+            "firstName": string
+            "lastName": string
+            "privacyMode": int <span color="#1b1ef7"> // 0 - Default, 1 - Incognito</span>
+            "avatar": string
+            "avatar3D": { <span color="#1b1ef7"> // field is not returned if empty</span>
+                "assetId": string
+                "assetSkins": map[string]string <span color="#1b1ef7"> // map of selected skins per variants</span>
+                "avatarResourceId": string <span color="#1b1ef7"> // resource id (in case of avatar uploaded to user3DAvatar belonging)</span>
+                "avatarUrl": string <span color="#1b1ef7"> // url to gbl file (Ready Player Me)</span>
+                "avatarUserId": string <span color="#1b1ef7"> // user id for session recovery (Ready Player Me)</span>
+            }
+            "companyName": string <span color="#1b1ef7"> // name of company that user represents</span>
+            "companyTitle": string <span color="#1b1ef7"> // user title in the company</span>
+            "groupRole": string <span color="#1b1ef7"> // Admin / Moderator / Participant / (empty string if not a member)</span>
+        }]
+        "total": int
+    }
+    "error": { "status": bool, "code": int, "message": string }
+}
+</pre>
+
+<br>
+
+<a name="search-friends-for-group"></a>
+
+### Search friends for group
+
+**Method:** websocket
+
+**Endpoint:** social:searchFriendsForGroup
+
+**Description:** Friend list is ordered by first, last name. Each user includes their role in the specified group (Admin / Moderator / Participant / empty if not a member).
+
+**Request:** 
+
+<pre>
+{
+    "data": {
+        "groupId": string
+        "forUser": string
+        "query": string
+        "exclude": [ string ]
+        "offset": int
+        "size": int
+    }
+    "event": { "id": string, "date": timestamp }
+}
+</pre>
+
+**Response:** 
+
+<pre>
+{
+    "data": {
+        "users": [{
+            "id": string
+            "firstName": string
+            "lastName": string
+            "privacyMode": int <span color="#1b1ef7"> // 0 - Default, 1 - Incognito</span>
+            "avatar": string
+            "avatar3D": { <span color="#1b1ef7"> // field is not returned if empty</span>
+                "assetId": string
+                "assetSkins": map[string]string <span color="#1b1ef7"> // map of selected skins per variants</span>
+                "avatarResourceId": string <span color="#1b1ef7"> // resource id (in case of avatar uploaded to user3DAvatar belonging)</span>
+                "avatarUrl": string <span color="#1b1ef7"> // url to gbl file (Ready Player Me)</span>
+                "avatarUserId": string <span color="#1b1ef7"> // user id for session recovery (Ready Player Me)</span>
+            }
+            "companyName": string <span color="#1b1ef7"> // name of company that user represents</span>
+            "companyTitle": string <span color="#1b1ef7"> // user title in the company</span>
+            "isFriend": bool
+            "friendRequestSent": bool
+            "friendRequestReceived": bool
+            "follow": bool
+            "groupRole": string <span color="#1b1ef7"> // Admin / Moderator / Participant / (empty string if not a member)</span>
+        }]
+        "total": int
+    }
+    "error": { "status": bool, "code": int, "message": string }
+}
+</pre>
+
+<br>
+
+<a name="search-simple-users-for-community"></a>
+
+### Search simple users for community
+
+**Method:** websocket
+
+**Endpoint:** social:searchSimpleUsersForCommunity
+
+**Description:** API returns list of users found by provided query, with each user's role in the specified community (Admin / Moderator / Participant / empty if not a member).
+
+**Request:** 
+
+<pre>
+{
+    "data": {
+        "communityId": string
+        "query": string
+        "offset": int
+        "size": int
+    }
+    "event": { "id": string, "date": timestamp }
+}
+</pre>
+
+**Response:** 
+
+<pre>
+{
+    "data": {
+        "users": [{
+            "id": string
+            "firstName": string
+            "lastName": string
+            "privacyMode": int <span color="#1b1ef7"> // 0 - Default, 1 - Incognito</span>
+            "avatar": string
+            "avatar3D": { <span color="#1b1ef7"> // field is not returned if empty</span>
+                "assetId": string
+                "assetSkins": map[string]string <span color="#1b1ef7"> // map of selected skins per variants</span>
+                "avatarResourceId": string <span color="#1b1ef7"> // resource id (in case of avatar uploaded to user3DAvatar belonging)</span>
+                "avatarUrl": string <span color="#1b1ef7"> // url to gbl file (Ready Player Me)</span>
+                "avatarUserId": string <span color="#1b1ef7"> // user id for session recovery (Ready Player Me)</span>
+            }
+            "companyName": string <span color="#1b1ef7"> // name of company that user represents</span>
+            "companyTitle": string <span color="#1b1ef7"> // user title in the company</span>
+            "communityRole": string <span color="#1b1ef7"> // Admin / Moderator / Participant</span>
+            "isOwner": bool <span color="#1b1ef7"> // true if this participant is the current community owner</span>
+            "joined": timestamp <span color="#1b1ef7"> // when the user joined the community (zero if not a member)</span>
+        }]
+        "total": int
+    }
+    "error": { "status": bool, "code": int, "message": string }
+}
+</pre>
+
+<br>
+
+<a name="search-friends-for-community"></a>
+
+### Search friends for community
+
+**Method:** websocket
+
+**Endpoint:** social:searchFriendsForCommunity
+
+**Description:** Friend list is ordered by first, last name. Each user includes their role in the specified community (Admin / Moderator / Participant / empty if not a member).
+
+**Request:** 
+
+<pre>
+{
+    "data": {
+        "communityId": string
+        "forUser": string
+        "query": string
+        "exclude": [ string ]
+        "offset": int
+        "size": int
+    }
+    "event": { "id": string, "date": timestamp }
+}
+</pre>
+
+**Response:** 
+
+<pre>
+{
+    "data": {
+        "users": [{
+            "id": string
+            "firstName": string
+            "lastName": string
+            "privacyMode": int <span color="#1b1ef7"> // 0 - Default, 1 - Incognito</span>
+            "avatar": string
+            "avatar3D": { <span color="#1b1ef7"> // field is not returned if empty</span>
+                "assetId": string
+                "assetSkins": map[string]string <span color="#1b1ef7"> // map of selected skins per variants</span>
+                "avatarResourceId": string <span color="#1b1ef7"> // resource id (in case of avatar uploaded to user3DAvatar belonging)</span>
+                "avatarUrl": string <span color="#1b1ef7"> // url to gbl file (Ready Player Me)</span>
+                "avatarUserId": string <span color="#1b1ef7"> // user id for session recovery (Ready Player Me)</span>
+            }
+            "companyName": string <span color="#1b1ef7"> // name of company that user represents</span>
+            "companyTitle": string <span color="#1b1ef7"> // user title in the company</span>
+            "isFriend": bool
+            "friendRequestSent": bool
+            "friendRequestReceived": bool
+            "follow": bool
+            "communityRole": string <span color="#1b1ef7"> // Admin / Moderator / Participant / (empty string if not a member)</span>
+            "joined": timestamp <span color="#1b1ef7"> // when the user joined the community (zero if not a member)</span>
+        }]
+        "total": int
+    }
+    "error": { "status": bool, "code": int, "message": string }
+}
+</pre>
+
+<br>
+
 <a name="search-users-by-contacts"></a>
 
 ### Search users by contacts
@@ -401,6 +641,44 @@
 {
     "data": {
         "users": [{ <a href="#user-simple">user simple structure</a> }]
+    }
+    "error": { "status": bool, "code": int, "message": string }
+}
+</pre>
+
+<br>
+
+<a name="search-users-by-badge-id"></a>
+
+### Search users by badge id
+
+**Method:** websocket
+
+**Endpoint:** social:searchUsersByBadgeId
+
+**Description:** API returns list of users holding the given badge, optionally filtered by query.
+
+**Request:** 
+
+<pre>
+{
+    "data": {
+        "badgeId": string
+        "query": string
+        "offset": int
+        "size": int
+    }
+    "event": { "id": string, "date": timestamp }
+}
+</pre>
+
+**Response:** 
+
+<pre>
+{
+    "data": {
+        "users": [{ <a href="#user-simple">user simple structure</a> }]
+        "total": int
     }
     "error": { "status": bool, "code": int, "message": string }
 }
@@ -582,6 +860,7 @@ Counts user visit, subtracts token from source user and adds token to target use
             "avatar3D": { <span color="#1b1ef7"> // field is not returned if empty</span>
                 "assetId": string
                 "assetSkins": map[string]string <span color="#1b1ef7"> // map of selected skins per variants</span>
+                "avatarResourceId": string <span color="#1b1ef7"> // resource id (in case of avatar uploaded to user3DAvatar belonging)</span>
                 "avatarUrl": string <span color="#1b1ef7"> // url to gbl file (Ready Player Me)</span>
                 "avatarUserId": string <span color="#1b1ef7"> // user id for session recovery (Ready Player Me)</span>
             }
@@ -600,6 +879,9 @@ Counts user visit, subtracts token from source user and adds token to target use
             "linkUrl": string
             "identityType": int <span color="#1b1ef7"> // 0 - Not Assigned, 1 - SSID, 2 - VSSID</span>
             "identityName": string <span color="#1b1ef7"> // Verus identity name</span>
+            "contactCount": int <span color="#1b1ef7"> // number of connections (friends) this user has</span>
+            "followersCount": int <span color="#1b1ef7"> // number of followers this user has</span>
+            "communityCount": int <span color="#1b1ef7"> // number of communities this user participates in, within the current network</span>
         }
     }
     "error": { "status": bool, "code": int, "message": string }
@@ -679,6 +961,7 @@ Counts user visit, subtracts token from source user and adds token to target use
             "avatar3D": { <span color="#1b1ef7"> // field is not returned if empty</span>
                 "assetId": string
                 "assetSkins": map[string]string <span color="#1b1ef7"> // map of selected skins per variants</span>
+                "avatarResourceId": string <span color="#1b1ef7"> // resource id (in case of avatar uploaded to user3DAvatar belonging)</span>
                 "avatarUrl": string <span color="#1b1ef7"> // url to gbl file (Ready Player Me)</span>
                 "avatarUserId": string <span color="#1b1ef7"> // user id for session recovery (Ready Player Me)</span>
             }
@@ -862,7 +1145,7 @@ Counts user visit, subtracts token from source user and adds token to target use
 
 **Endpoint:** social:searchUserFollowers
 
-**Description:** Api returns people who are following current user.
+**Description:** Api returns people who are following current user. Followers are ordered by follow date, most recent followers are first in the list.
 
 **Request:** 
 
@@ -892,6 +1175,7 @@ Counts user visit, subtracts token from source user and adds token to target use
             "avatar3D": { <span color="#1b1ef7"> // field is not returned if empty</span>
                 "assetId": string
                 "assetSkins": map[string]string <span color="#1b1ef7"> // map of selected skins per variants</span>
+                "avatarResourceId": string <span color="#1b1ef7"> // resource id (in case of avatar uploaded to user3DAvatar belonging)</span>
                 "avatarUrl": string <span color="#1b1ef7"> // url to gbl file (Ready Player Me)</span>
                 "avatarUserId": string <span color="#1b1ef7"> // user id for session recovery (Ready Player Me)</span>
             }
@@ -918,7 +1202,7 @@ Counts user visit, subtracts token from source user and adds token to target use
 
 **Endpoint:** social:searchUserFollowings
 
-**Description:** Api returns people who are being followed by current user.
+**Description:** Api returns people who are being followed by current user. Followings are ordered by follow date, most recent followings are first in the list.
 
 **Request:** 
 
@@ -948,6 +1232,7 @@ Counts user visit, subtracts token from source user and adds token to target use
             "avatar3D": { <span color="#1b1ef7"> // field is not returned if empty</span>
                 "assetId": string
                 "assetSkins": map[string]string <span color="#1b1ef7"> // map of selected skins per variants</span>
+                "avatarResourceId": string <span color="#1b1ef7"> // resource id (in case of avatar uploaded to user3DAvatar belonging)</span>
                 "avatarUrl": string <span color="#1b1ef7"> // url to gbl file (Ready Player Me)</span>
                 "avatarUserId": string <span color="#1b1ef7"> // user id for session recovery (Ready Player Me)</span>
             }
@@ -959,6 +1244,25 @@ Counts user visit, subtracts token from source user and adds token to target use
             "follow": bool
         }]
         "total": int
+    }
+    "error": { "status": bool, "code": int, "message": string }
+}
+</pre>
+
+<br>
+
+<a name="friend-added-event"></a>
+
+### Friend added event
+
+**Event:** social:friendAdded
+
+**Data:** 
+
+<pre>
+{
+    "data": {
+        "targetUser": string
     }
     "error": { "status": bool, "code": int, "message": string }
 }
@@ -1006,6 +1310,27 @@ Counts user visit, subtracts token from source user and adds token to target use
 
 <br>
 
+<a name="follower-status-changed-event"></a>
+
+### Follower status changed event
+
+**Event:** social:followerStatusChanged
+
+**Data:** 
+
+<pre>
+{
+    "data": {
+        "userId": string
+        "followerId": string
+        "isFollowing": bool
+    }
+    "error": { "status": bool, "code": int, "message": string }
+}
+</pre>
+
+<br>
+
 <a name="models"></a>
 
 ## Models
@@ -1026,6 +1351,7 @@ Counts user visit, subtracts token from source user and adds token to target use
     "avatar3D": { <span color="#1b1ef7"> // field is not returned if empty</span>
         "assetId": string
         "assetSkins": map[string]string <span color="#1b1ef7"> // map of selected skins per variants</span>
+        "avatarResourceId": string <span color="#1b1ef7"> // resource id (in case of avatar uploaded to user3DAvatar belonging)</span>
         "avatarUrl": string <span color="#1b1ef7"> // url to gbl file (Ready Player Me)</span>
         "avatarUserId": string <span color="#1b1ef7"> // user id for session recovery (Ready Player Me)</span>
     }

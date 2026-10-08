@@ -6,15 +6,15 @@
 
 | Endpoint | Method | Description |
 |-----|-----|-----|
-| [room:videochat:setRoomVideochatMode](#set-room-videochat-mode) | websocket | Set room videochat mode |
-| [room:videochat:setRoomVideochatType](#set-room-videochat-type) | websocket | Set room videochat type |
-| [room:videochat:setRoomVideochatEngine](#set-room-videochat-engine) | websocket | Set room videochat engine |
-| [room:videochat:setRoomVideochatExcludeListeners](#set-room-videochat-exclude-listeners) | websocket | Set room videochat exclude listeners |
-| [room:videochat:setRoomVideochatUsePresentationBoard](#set-room-videochat-use-presentation-board) | websocket | Set room videochat use presentation board |
-| [room:videochat:setRoomVideochatEnableStreaming](#set-room-videochat-enable-streaming) | websocket | Set room videochat enable streaming |
-| [room:videochat:setRoomVideochatNotificationMode](#set-room-videochat-notification-mode) | websocket | Set room videochat notification mode |
-| [room:videochat:setRoomVideochatAutoPromotion](#set-room-videochat-auto-promotion) | websocket | Set room videochat auto promotion |
-| [room:videochat:setRoomVideochatLimit](#set-room-videochat-limit) | websocket | Set room videochat limit |
+| ~~[room:videochat:setRoomVideochatMode](#set-room-videochat-mode)~~ | websocket | Set room videochat mode |
+| ~~[room:videochat:setRoomVideochatType](#set-room-videochat-type)~~ | websocket | Set room videochat type |
+| ~~[room:videochat:setRoomVideochatEngine](#set-room-videochat-engine)~~ | websocket | Set room videochat engine |
+| ~~[room:videochat:setRoomVideochatExcludeListeners](#set-room-videochat-exclude-listeners)~~ | websocket | Set room videochat exclude listeners |
+| ~~[room:videochat:setRoomVideochatUsePresentationBoard](#set-room-videochat-use-presentation-board)~~ | websocket | Set room videochat use presentation board |
+| ~~[room:videochat:setRoomVideochatEnableStreaming](#set-room-videochat-enable-streaming)~~ | websocket | Set room videochat enable streaming |
+| ~~[room:videochat:setRoomVideochatNotificationMode](#set-room-videochat-notification-mode)~~ | websocket | Set room videochat notification mode |
+| ~~[room:videochat:setRoomVideochatAutoPromotion](#set-room-videochat-auto-promotion)~~ | websocket | Set room videochat auto promotion |
+| ~~[room:videochat:setRoomVideochatLimit](#set-room-videochat-limit)~~ | websocket | Set room videochat limit |
 
 <br>
 
@@ -25,6 +25,8 @@
 **Method:** websocket
 
 **Endpoint:** room:videochat:setRoomVideochatMode
+
+**<span color="red">DEPRECATED</span>** 
 
 **Request:** 
 
@@ -56,7 +58,7 @@
 
 **Endpoint:** room:videochat:setRoomVideochatType
 
-**Description:** Only for admin accounts.
+**<span color="red">DEPRECATED</span>** 
 
 **Request:** 
 
@@ -88,7 +90,7 @@
 
 **Endpoint:** room:videochat:setRoomVideochatEngine
 
-**Description:** Only for admin accounts.
+**<span color="red">DEPRECATED</span>** 
 
 **Request:** 
 
@@ -120,6 +122,8 @@
 
 **Endpoint:** room:videochat:setRoomVideochatExcludeListeners
 
+**<span color="red">DEPRECATED</span>** 
+
 **Request:** 
 
 <pre>
@@ -149,6 +153,8 @@
 **Method:** websocket
 
 **Endpoint:** room:videochat:setRoomVideochatUsePresentationBoard
+
+**<span color="red">DEPRECATED</span>** 
 
 **Request:** 
 
@@ -180,6 +186,8 @@
 
 **Endpoint:** room:videochat:setRoomVideochatEnableStreaming
 
+**<span color="red">DEPRECATED</span>** 
+
 **Request:** 
 
 <pre>
@@ -209,6 +217,8 @@
 **Method:** websocket
 
 **Endpoint:** room:videochat:setRoomVideochatNotificationMode
+
+**<span color="red">DEPRECATED</span>** 
 
 **Description:** 0 - server default, 1 - do not show, 2 - show, 3 - show and sound
 
@@ -241,6 +251,8 @@
 **Method:** websocket
 
 **Endpoint:** room:videochat:setRoomVideochatAutoPromotion
+
+**<span color="red">DEPRECATED</span>** 
 
 **Request:** 
 
@@ -275,6 +287,8 @@
 **Method:** websocket
 
 **Endpoint:** room:videochat:setRoomVideochatLimit
+
+**<span color="red">DEPRECATED</span>** 
 
 **Request:** 
 

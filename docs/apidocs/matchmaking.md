@@ -196,7 +196,8 @@ While search, man is [0-5] years older than woman and both are 18+ by default
             "name": string
             "tags": [ string ]
             "ownerIds": [ string ]
-            "subscriptionStatus": string
+            "privacy": string <span color="#1b1ef7"> // private/public/openForAttendees</span>
+            "subscriptionStatus": string <span color="#1b1ef7"> // free/active/expired</span>
         }
     }
     "error": { "status": bool, "code": int, "message": string }
@@ -1111,6 +1112,7 @@ Users should fill in questionnaire before they appear in search result.
     "avatar3D": { <span color="#1b1ef7"> // field is not returned if empty</span>
         "assetId": string
         "assetSkins": map[string]string <span color="#1b1ef7"> // map of selected skins per variants</span>
+        "avatarResourceId": string <span color="#1b1ef7"> // resource id (in case of avatar uploaded to user3DAvatar belonging)</span>
         "avatarUrl": string <span color="#1b1ef7"> // url to gbl file (Ready Player Me)</span>
         "avatarUserId": string <span color="#1b1ef7"> // user id for session recovery (Ready Player Me)</span>
     }

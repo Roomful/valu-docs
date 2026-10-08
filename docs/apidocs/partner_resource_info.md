@@ -1,43 +1,147 @@
 <br>
 
-<a name="room-prop-content-api"></a>
+<a name="partner-resourceinfo-api"></a>
 
-## Room: Prop Content API
+## Partner: ResourceInfo API
 
 | Endpoint | Method | Description |
 |-----|-----|-----|
-| [room:subscribeToProp](#subscribe-to-prop-channel) | websocket | Subscribe to prop channel |
-| [room:unsubscribeFromProp](#unsubscribe-from-prop-channel) | websocket | Unsubscribe from prop channel |
-| [room:changePropContent](#change-prop-content) | websocket | Change prop content |
-| [room:removeContentOfProps](#remove-content-of-props) | websocket | Remove content of props |
-| [room:swapContentOfProps](#swap-content-of-props) | websocket | Swap content of props |
-| [room:changeResourcePosition](#change-resource-position) | websocket | Change resource position |
-| [room:linkPropContent](#link-prop-content) | websocket | Link prop content |
-| [room:unlinkPropContent](#unlink-prop-content) | websocket | Unlink prop content |
-| [room:getPropContent](#get-prop-content) | websocket | Get prop content |
-| [room:propContentUpdated](#on-room-prop-content-updated-event) | websocketEvent | On room prop content updated event |
+| [/api/v0/partnerRpc/resourceInfo.getResourceById](#get-resource-by-id) | jsonRpc | Get resource by id |
+| [/api/v0/partnerRpc/resourceInfo.getResourceUrl](#get-resource-url) | jsonRpc | Get resource url |
+| [/api/v0/partnerRpc/resourceInfo.updateResourceEnrichment](#update-resource-enrichment) | jsonRpc | Update resource enrichment |
+| [/api/v0/partnerRpc/resourceInfo.setBelongingIndexState](#set-belonging-index-state) | jsonRpc | Set belonging index state |
+| [/api/v0/partnerRpc/resourceInfo.fetchPendingJobs](#fetch-pending-jobs) | jsonRpc | Fetch pending jobs |
+| [/api/v0/partnerRpc/resourceInfo.completeJob](#complete-job) | jsonRpc | Complete job |
+| [/api/v0/partnerRpc/resourceInfo.checkUserCanViewBelonging](#check-user-can-view-belonging) | jsonRpc | Check user can view belonging |
+| [/api/v0/partnerRpc/resourceInfo.checkUserCanViewResource](#check-user-can-view-resource) | jsonRpc | Check user can view resource |
+| [/api/v0/partnerRpc/resourceInfo.searchBelonging](#search-belonging) | jsonRpc | Search belonging |
+| [/api/v0/partnerRpc/resourceInfo.listParentDirectories](#list-parent-directories) | jsonRpc | List parent directories |
 
 <br>
 
-<a name="subscribe-to-prop-channel"></a>
+<a name="get-resource-by-id"></a>
 
-### Subscribe to prop channel
+### Get resource by id
 
-**Method:** websocket
+**Method:** jsonRpc
 
-**Endpoint:** room:subscribeToProp
+**HTTP Method:** POST
 
-**Description:** Subscribe to prop event channel
+**Path:** /api/v0/partnerRpc/resourceInfo.getResourceById
+
+**Description:** API returns resource metadata by its id.
 
 **Request:** 
 
 <pre>
 {
+    "resourceId": string
+}
+</pre>
+
+**Response:** 
+
+<pre>
+{
     "data": {
-        "roomId": string
-        "propId": string
+        "resource": { <a href="#resource">resource structure</a> }
     }
-    "event": { "id": string, "date": timestamp }
+    "error": { "status": bool, "code": int, "message": string }
+}
+</pre>
+
+<br>
+
+<a name="get-resource-url"></a>
+
+### Get resource url
+
+**Method:** jsonRpc
+
+**HTTP Method:** POST
+
+**Path:** /api/v0/partnerRpc/resourceInfo.getResourceUrl
+
+**Description:** API returns direct URL to resource file data.
+
+**Request:** 
+
+<pre>
+{
+    "resourceId": string
+}
+</pre>
+
+**Response:** 
+
+<pre>
+{
+    "data": {
+        "url": string
+        "encryptionVersion": string <span color="#1b1ef7"> // encryption version, like 'verus.v1'</span>
+        "encryptionEpoch": int <span color="#1b1ef7"> // epoch defines key bundle that was used for encryption</span>
+        "encryptionEpk": string <span color="#1b1ef7"> // ephemeral public key that should be used to decrypt cypher data</span>
+    }
+    "error": { "status": bool, "code": int, "message": string }
+}
+</pre>
+
+<br>
+
+<a name="update-resource-enrichment"></a>
+
+### Update resource enrichment
+
+**Method:** jsonRpc
+
+**HTTP Method:** POST
+
+**Path:** /api/v0/partnerRpc/resourceInfo.updateResourceEnrichment
+
+**Description:** API updates resource after AI enrichment.
+
+**Request:** 
+
+<pre>
+{
+    "resourceId": string
+    "enrichment": { <a href="#enrichment-data">enrichment data structure</a> }
+    "title": string
+    "description": string
+}
+</pre>
+
+**Response:** 
+
+<pre>
+{
+    "data": {
+        "resource": { <a href="#resource">resource structure</a> }
+    }
+    "error": { "status": bool, "code": int, "message": string }
+}
+</pre>
+
+<br>
+
+<a name="set-belonging-index-state"></a>
+
+### Set belonging index state
+
+**Method:** jsonRpc
+
+**HTTP Method:** POST
+
+**Path:** /api/v0/partnerRpc/resourceInfo.setBelongingIndexState
+
+**Description:** API sets indexation state of a belonging (filled by RAG).
+
+**Request:** 
+
+<pre>
+{
+    "belonging": string
+    "state": map[string]{ custom structure }
 }
 </pre>
 
@@ -51,25 +155,65 @@
 
 <br>
 
-<a name="unsubscribe-from-prop-channel"></a>
+<a name="fetch-pending-jobs"></a>
 
-### Unsubscribe from prop channel
+### Fetch pending jobs
 
-**Method:** websocket
+**Method:** jsonRpc
 
-**Endpoint:** room:unsubscribeFromProp
+**HTTP Method:** POST
 
-**Description:** Unsubscribe from prop event channel
+**Path:** /api/v0/partnerRpc/resourceInfo.fetchPendingJobs
+
+**Description:** API returns pending resource enrichment jobs to process. Each returned job is leased - call resourceInfo.completeJob to report the outcome, or it becomes fetchable again once the lease expires.
 
 **Request:** 
 
 <pre>
 {
+    "limit": int <span color="#1b1ef7"> // max number of jobs to return (1-100)</span>
+}
+</pre>
+
+**Response:** 
+
+<pre>
+{
     "data": {
-        "roomId": string
-        "propId": string
+        "jobs": [{
+            "jobId": string
+            "payload": {
+                "resourceId": string
+                "networkId": string
+            }
+            "attemptCount": int <span color="#1b1ef7"> // how many times this job has been leased so far, including this time</span>
+        }]
     }
-    "event": { "id": string, "date": timestamp }
+    "error": { "status": bool, "code": int, "message": string }
+}
+</pre>
+
+<br>
+
+<a name="complete-job"></a>
+
+### Complete job
+
+**Method:** jsonRpc
+
+**HTTP Method:** POST
+
+**Path:** /api/v0/partnerRpc/resourceInfo.completeJob
+
+**Description:** API reports the outcome of a resource enrichment job: success completes it, failure either requeues it for retry or dead-letters it once attempts are exhausted. Idempotent - completing an already-terminal job again is a no-op, not an error.
+
+**Request:** 
+
+<pre>
+{
+    "jobId": string
+    "success": bool
+    "error": string <span color="#1b1ef7"> // error message when success is false</span>
 }
 </pre>
 
@@ -83,64 +227,30 @@
 
 <br>
 
-<a name="change-prop-content"></a>
+<a name="check-user-can-view-belonging"></a>
 
-### Change prop content
+### Check user can view belonging
 
-**Method:** websocket
+**Method:** jsonRpc
 
-**Endpoint:** room:changePropContent
+**HTTP Method:** POST
 
-**Request:** 
+**Path:** /api/v0/partnerRpc/resourceInfo.checkUserCanViewBelonging
 
-<pre>
-{
-    "data": {
-        "roomId": string
-        "propId": string
-        "appendToListEnd": bool <span color="#1b1ef7"> // append to the end of resource list (if true)</span>
-        "moveToProp": [ string ] <span color="#1b1ef7"> // list of resource ids</span>
-        "removeFromProp": [ string ] <span color="#1b1ef7"> // list of resource ids</span>
-        "moveToRoomSortingTable": [ string ] <span color="#1b1ef7"> // list of resource ids (only for undo operation)</span>
-        "moveToSortingTable": [ string ] <span color="#1b1ef7"> // list of resource ids</span>
-        "thumbnail": string <span color="#1b1ef7"> // resource id</span>
-    }
-    "event": { "id": string, "date": timestamp }
-}
-</pre>
-
-**Response:** 
-
-<pre>
-{
-    "data": {
-        "roomId": string
-        "propId": string
-    }
-    "error": { "status": bool, "code": int, "message": string }
-}
-</pre>
-
-<br>
-
-<a name="remove-content-of-props"></a>
-
-### Remove content of props
-
-**Method:** websocket
-
-**Endpoint:** room:removeContentOfProps
+**Description:** API return no error if user has permission to view belonging resources.
 
 **Request:** 
 
 <pre>
 {
-    "data": {
-        "roomId": string
-        "propIds": [ string ]
-        "moveToRoomSortingTable": bool
+    "userId": string
+    "belonging": {
+        "networkId": string
+        "belongingType": string
+        "belongingId": string
+        "belongingPath": string
     }
-    "event": { "id": string, "date": timestamp }
+    "grantToken": string <span color="#1b1ef7"> // optional; one-time token that grants permission for this action</span>
 }
 </pre>
 
@@ -154,24 +264,24 @@
 
 <br>
 
-<a name="swap-content-of-props"></a>
+<a name="check-user-can-view-resource"></a>
 
-### Swap content of props
+### Check user can view resource
 
-**Method:** websocket
+**Method:** jsonRpc
 
-**Endpoint:** room:swapContentOfProps
+**HTTP Method:** POST
+
+**Path:** /api/v0/partnerRpc/resourceInfo.checkUserCanViewResource
+
+**Description:** API return no error if user has permission to view resource.
 
 **Request:** 
 
 <pre>
 {
-    "data": {
-        "roomId": string
-        "prop1Id": string
-        "prop2Id": string
-    }
-    "event": { "id": string, "date": timestamp }
+    "userId": string
+    "resourceId": string
 }
 </pre>
 
@@ -185,125 +295,32 @@
 
 <br>
 
-<a name="change-resource-position"></a>
+<a name="search-belonging"></a>
 
-### Change resource position
+### Search belonging
 
-**Method:** websocket
+**Method:** jsonRpc
 
-**Endpoint:** room:changeResourcePosition
+**HTTP Method:** POST
 
-**Request:** 
+**Path:** /api/v0/partnerRpc/resourceInfo.searchBelonging
 
-<pre>
-{
-    "data": {
-        "prop": string
-        "resource": string
-        "position": int
-    }
-    "event": { "id": string, "date": timestamp }
-}
-</pre>
-
-**Response:** 
-
-<pre>
-{
-    "error": { "status": bool, "code": int, "message": string }
-}
-</pre>
-
-<br>
-
-<a name="link-prop-content"></a>
-
-### Link prop content
-
-**Method:** websocket
-
-**Endpoint:** room:linkPropContent
-
-**Description:** Api creates link between two props. If link created, prop will receive content from source prop.
-* Api returns error code ```830``` if link prop points to itself.
-* Api returns error code ```831``` if source prop has a link to another prop.
-* Api returns error code ```832``` if other props use current prop as a link source.
+**Description:** API returns resources by its belonging.
 
 **Request:** 
 
 <pre>
 {
-    "data": {
-        "roomId": string
-        "propId": string
-        "sourceRoomId": string
-        "sourcePropId": string
+    "belonging": {
+        "networkId": string
+        "belongingType": string
+        "belongingId": string
+        "belongingPath": string
     }
-    "event": { "id": string, "date": timestamp }
-}
-</pre>
-
-**Response:** 
-
-<pre>
-{
-    "error": { "status": bool, "code": int, "message": string }
-}
-</pre>
-
-<br>
-
-<a name="unlink-prop-content"></a>
-
-### Unlink prop content
-
-**Method:** websocket
-
-**Endpoint:** room:unlinkPropContent
-
-**Description:** Api deletes link between two props.
-
-**Request:** 
-
-<pre>
-{
-    "data": {
-        "roomId": string
-        "propId": string
-    }
-    "event": { "id": string, "date": timestamp }
-}
-</pre>
-
-**Response:** 
-
-<pre>
-{
-    "error": { "status": bool, "code": int, "message": string }
-}
-</pre>
-
-<br>
-
-<a name="get-prop-content"></a>
-
-### Get prop content
-
-**Method:** websocket
-
-**Endpoint:** room:getPropContent
-
-**Request:** 
-
-<pre>
-{
-    "data": {
-        "roomId": string
-        "propId": string
-        "offset": int
-        "size": int
-    }
-    "event": { "id": string, "date": timestamp }
+    "query": string
+    "filterBy": string <span color="#1b1ef7"> // filter content (directory/noDirectory)</span>
+    "cursor": string
+    "limit": int
 }
 </pre>
 
@@ -312,7 +329,15 @@
 <pre>
 {
     "data": {
-        "content": [{ <a href="#resource">resource structure</a> }]
+        "resources": [{ <a href="#resource">resource structure</a> }]
+        "nextCursor": string
+        "hasMore": bool
+        "permissions": {
+            "get": bool <span color="#1b1ef7"> // permission to fetch single item from belonging</span>
+            "list": bool <span color="#1b1ef7"> // permission to list items within belonging</span>
+            "create": bool <span color="#1b1ef7"> // permission to add item to belonging</span>
+            "update": bool <span color="#1b1ef7"> // permission to update item within belonging</span>
+        }
     }
     "error": { "status": bool, "code": int, "message": string }
 }
@@ -320,20 +345,32 @@
 
 <br>
 
-<a name="on-room-prop-content-updated-event"></a>
+<a name="list-parent-directories"></a>
 
-### On room prop content updated event
+### List parent directories
 
-**Event:** room:propContentUpdated
+**Method:** jsonRpc
 
-**Data:** 
+**HTTP Method:** POST
+
+**Path:** /api/v0/partnerRpc/resourceInfo.listParentDirectories
+
+**Description:** API returns parent directories for resource, from top to bottom.
+
+**Request:** 
+
+<pre>
+{
+    "resourceId": string
+}
+</pre>
+
+**Response:** 
 
 <pre>
 {
     "data": {
-        "roomId": string
-        "propId": string
-        "content": [{ <a href="#resource">resource structure</a> }]
+        "resources": [{ <a href="#resource">resource structure</a> }]
     }
     "error": { "status": bool, "code": int, "message": string }
 }

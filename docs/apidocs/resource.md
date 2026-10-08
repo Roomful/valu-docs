@@ -7,6 +7,7 @@
 | Endpoint | Method | Description |
 |-----|-----|-----|
 | [/api/v0/resource/create](#create-resource-metadata) | webRequest | Create resource metadata |
+| [/api/v0/resource/metadata/{id}](#get-resource-metadata) | webRequest | Get resource metadata |
 | [/api/v0/resource/{id}](#read-resource) | webRequest | Read resource |
 | [/api/v0/resource/network/{networkId}/{id}](#read-resource-from-certain-network-) | webRequest | Read resource (from certain network) |
 | [/api/v0/resource/proxy/{id}](#proxy-resource) | webRequest | Proxy resource |
@@ -37,6 +38,7 @@
 | [imdb:info](#info-imdb) | websocket | Info imdb |
 | [resource:createImdbMulti](#create-imdb-resources) | websocket | Create imdb resources |
 | [link:info](#info-link) | websocket | Info link |
+| [link:infoAsync](#info-link-async) | websocket | Info link async |
 | [pinterest:search](#search-pinterest) | websocket | Search pinterest |
 | [pinterest:info](#info-pinterest) | websocket | Info pinterest |
 | [resource:createPinterest](#create-pinterest-resource) | websocket | Create pinterest resource |
@@ -60,6 +62,7 @@
 | [resource:delete](#delete-resource) | websocket | Delete resource |
 | [resource:move](#move-resource) | websocket | Move resource |
 | [resource:updateAttributes](#update-resource-attributes) | websocket | Update resource attributes |
+| [resource:updateEnrichment](#update-resource-enrichment) | websocket | Update resource enrichment |
 | ~~[resource:getUrl](#get-url)~~ | websocket | Get url |
 | [resource:getResourceUrl](#get-resource-url) | websocket | Get resource url |
 | [resource:getThumbnailUrl](#get-thumbnail-url) | websocket | Get thumbnail url |
@@ -67,24 +70,24 @@
 | ~~[resource:getResourceFromNetwork](#get-resource-from-network)~~ | websocket | Get resource from network |
 | ~~[resource:listBelonging](#list-belonging-resources)~~ | websocket | List belonging resources |
 | [resource:searchBelonging](#search-belonging-resources) | websocket | Search belonging resources |
+| [resource:subscribeToBelonging](#subscribe-to-belonging) | websocket | Subscribe to belonging |
 | [resource:unsubscribeFromBelonging](#unsubscribe-from-belonging) | websocket | Unsubscribe from belonging |
 | [resource:getPublicMusic](#get-public-music) | websocket | Get public music |
 | [resource:createDirectory](#create-directory) | websocket | Create directory |
 | [resource:listParentDirectories](#list-parent-directories) | websocket | List parent directories |
 | [resource:getStreamSources](#get-stream-sources) | websocket | Get stream sources |
-| [sortingTable:addResources](#on-resources-added-to-user-sorting-table-event) | websocketEvent | On resources added to user sorting table event |
-| [sortingTable:deleteResources](#on-resources-deleted-from-user-sorting-table-event) | websocketEvent | On resources deleted from user sorting table event |
-| [sortingTable:addResourcesToDirectory](#on-resources-added-to-directory-in-user-sorting-table-event) | websocketEvent | On resources added to directory in user sorting table event |
-| [sortingTable:deleteResourcesFromDirectory](#on-resources-deleted-from-directory-in-user-sorting-table-event) | websocketEvent | On resources deleted from directory in user sorting table event |
-| [resource:addedToUploadSession](#on-resources-added-to-upload-session-event) | websocketEvent | On resources added to upload session event |
-| [resource:deletedFromUploadSession](#on-resources-deleted-from-upload-session-event) | websocketEvent | On resources deleted from upload session event |
-| [sortingTable:resourceUpdated](#on-user-sorting-table-resource-updated-event) | websocketEvent | On user sorting table resource updated event |
+| ~~[sortingTable:addResources](#on-resources-added-to-user-sorting-table-event)~~ | websocketEvent | On resources added to user sorting table event |
+| ~~[sortingTable:deleteResources](#on-resources-deleted-from-user-sorting-table-event)~~ | websocketEvent | On resources deleted from user sorting table event |
+| ~~[resource:addedToUploadSession](#on-resources-added-to-upload-session-event)~~ | websocketEvent | On resources added to upload session event |
+| ~~[resource:deletedFromUploadSession](#on-resources-deleted-from-upload-session-event)~~ | websocketEvent | On resources deleted from upload session event |
+| ~~[sortingTable:resourceUpdated](#on-user-sorting-table-resource-updated-event)~~ | websocketEvent | On user sorting table resource updated event |
 | [resource:addedToBelonging](#on-resources-added-to-belonging-event) | websocketEvent | On resources added to belonging event |
 | [resource:deletedFromBelonging](#on-resources-deleted-from-belonging-event) | websocketEvent | On resources deleted from belonging event |
 | [resource:updated](#on-resource-updated-event) | websocketEvent | On resource updated event |
-| [resource:updatedInUploadSession](#on-upload-session-resource-updated-event) | websocketEvent | On upload session resource updated event |
-| [resource:updatedInChannel](#on-channel-resource-updated-event) | websocketEvent | On channel resource updated event |
+| ~~[resource:updatedInUploadSession](#on-upload-session-resource-updated-event)~~ | websocketEvent | On upload session resource updated event |
+| ~~[resource:updatedInChannel](#on-channel-resource-updated-event)~~ | websocketEvent | On channel resource updated event |
 | [resource:syncGoogleDriveDirectoryResult](#on-sync-google-drive-directory-result-event) | websocketEvent | On sync google drive directory result event |
+| [link:infoEvent](#info-link-event) | websocketEvent | Info link event |
 
 <br>
 
@@ -101,6 +104,7 @@
 <pre>
 {
     "resource": { <a href="#resource">resource structure</a> }
+    "grantToken": string <span color="#1b1ef7"> // optional; one-time token that grants permission for this action</span>
     "parent": string <span color="#1b1ef7"> // mark that resource belongs to directory</span>
     "roomId": string <span color="#1b1ef7"> // mark that resource belongs to room</span>
     "contributeToRoom": string <span color="#1b1ef7"> // mark that resource belongs to room sorting table</span>
@@ -126,6 +130,7 @@
     "encryptionVersion": string <span color="#1b1ef7"> // encryption version, like 'verus.v1'</span>
     "encryptionEpoch": int <span color="#1b1ef7"> // epoch defines key bundle that was used for encryption</span>
     "encryptionEpk": string <span color="#1b1ef7"> // ephemeral public key that should be used to decrypt cypher data</span>
+    "userId": string <span color="#1b1ef7"> // user id of resource author</span>
     "belonging": string <span color="#1b1ef7"> // determines resource location in the system in a way 'belongingType:belongingPath(networkId)'</span>
     "status": string <span color="#1b1ef7"> // pending/processing/ready/failed</span>
     "metadata": {
@@ -149,6 +154,7 @@
         "amazon": { <a href="#resource-data-amazon">resource data amazon structure</a> }
         "imdb": { <a href="#resource-data-imdb">resource data imdb structure</a> }
         "youtube": { <a href="#resource-data-youtube">resource data youtube structure</a> }
+        "vimeo": { <a href="#resource-data-vimeo">resource data vimeo structure</a> }
         "pinterest": { <a href="#resource-data-pinterest">resource data pinterest structure</a> }
         "pixabay": { <a href="#resource-data-pixabay">resource data pixabay structure</a> }
         "facebook": { <a href="#resource-data-facebook">resource data facebook structure</a> }
@@ -158,11 +164,37 @@
         "thumbnailUrl": string
         "downloadUrl": string
         "directory": { <a href="#resource-data-directory">resource data directory structure</a> }
-        "channel": { <a href="#channel-data">channel data structure</a> }
         "googleDrive": { <a href="#google-drive">google drive structure</a> }
+        "channel": { <a href="#channel-data">channel data structure</a> }
+        "enrichment": { <a href="#enrichment-data">enrichment data structure</a> }
     }
     "customParams": map[string]{ custom structure } <span color="#1b1ef7"> // client defined parameters</span>
     "actions": [{ <a href="#programmatic-action-with-children">programmatic action with children structure</a> }] <span color="#1b1ef7"> // custom programmatic actions from users</span>
+}
+</pre>
+
+<br>
+
+<a name="get-resource-metadata"></a>
+
+### Get resource metadata
+
+**HTTP Method:** GET
+
+**Path:** /api/v0/resource/metadata/{id}
+
+**Request:** 
+
+<pre>
+{ empty }
+</pre>
+
+**Response:** 
+
+<pre>
+{
+    "data": { <a href="#resource">resource structure</a> }
+    "error": { "status": bool, "code": int, "message": string }
 }
 </pre>
 
@@ -812,6 +844,7 @@ X-Session-Id: sessionToken
                 "amazon": { <a href="#resource-data-amazon">resource data amazon structure</a> }
                 "imdb": { <a href="#resource-data-imdb">resource data imdb structure</a> }
                 "youtube": { <a href="#resource-data-youtube">resource data youtube structure</a> }
+                "vimeo": { <a href="#resource-data-vimeo">resource data vimeo structure</a> }
                 "pinterest": { <a href="#resource-data-pinterest">resource data pinterest structure</a> }
                 "pixabay": { <a href="#resource-data-pixabay">resource data pixabay structure</a> }
                 "facebook": { <a href="#resource-data-facebook">resource data facebook structure</a> }
@@ -821,8 +854,9 @@ X-Session-Id: sessionToken
                 "thumbnailUrl": string
                 "downloadUrl": string
                 "directory": { <a href="#resource-data-directory">resource data directory structure</a> }
-                "channel": { <a href="#channel-data">channel data structure</a> }
                 "googleDrive": { <a href="#google-drive">google drive structure</a> }
+                "channel": { <a href="#channel-data">channel data structure</a> }
+                "enrichment": { <a href="#enrichment-data">enrichment data structure</a> }
             }
             "customParams": map[string]{ custom structure }
         }
@@ -1019,6 +1053,37 @@ X-Session-Id: sessionToken
 
 <br>
 
+<a name="info-link-async"></a>
+
+### Info link async
+
+**Method:** websocket
+
+**Endpoint:** link:infoAsync
+
+**Description:** API returns web page information of url provided in request. API is asynchronous, response will be sent with `link:infoEvent` event.
+
+**Request:** 
+
+<pre>
+{
+    "data": {
+        "url": string
+    }
+    "event": { "id": string, "date": timestamp }
+}
+</pre>
+
+**Response:** 
+
+<pre>
+{
+    "error": { "status": bool, "code": int, "message": string }
+}
+</pre>
+
+<br>
+
 <a name="search-pinterest"></a>
 
 ### Search pinterest
@@ -1159,6 +1224,7 @@ X-Session-Id: sessionToken
 {
     "data": {
         "pin": string
+        "grantToken": string <span color="#1b1ef7"> // optional; one-time token that grants permission for this action</span>
         "parent": string <span color="#1b1ef7"> // mark that resource belongs to directory</span>
         "roomId": string <span color="#1b1ef7"> // mark that resource belongs to room</span>
         "contributeToRoom": string <span color="#1b1ef7"> // mark that resource belongs to room sorting table</span>
@@ -1536,15 +1602,18 @@ X-Session-Id: sessionToken
 
 For Facebook resources, use resource:remoteImageUpload instead. 
 
-Belonging determines resource location in the system in a way `belongingType:belongingPath(networkId)`. Part with `(networkId)` is optional.
+Belonging determines resource location in the system in a way `app:applicationId:belongingType:belongingPath(networkId)`. Parts with `app:applicationId:` and `(networkId)` are optional.
 
 **Available `belonging` field values:**
 
-* `userSortingTable:{userId}` - add resource to user sorting table;
-* `roomSortingTable:{roomId}` - add resource to room sorting table;
-* `userAIGeneration:{userId}` - add resource to the list of AI generated resources by user;
+* `userSortingTable:{userId}`                - add resource to user sorting table;
+* `roomSortingTable:{roomId}`                - add resource to room sorting table;
+* `userAIGeneration:{userId}`                - add resource to the list of AI generated resources by user;
+* `userPublic:{userId}`                      - add resource to the list of user public resources, available for all;
 * `uploadSession:{userId}/{uploadSessionId}` - upload resource before assigning to final belonging;
-* `directory:{parentResourceId}` - add resource to a directory.
+* `directory:{parentResourceId}`             - add resource to a directory.
+* `applicationPublic:{applicationId}`        - add resource to a public belonging of application.
+* `app:{applicationId}:{belonging}`          - belongings listed above with application context.
 
 
 
@@ -1555,6 +1624,7 @@ Belonging determines resource location in the system in a way `belongingType:bel
     "data": {
         "resource": { <a href="#resource">resource structure</a> }
         "networkId": string
+        "grantToken": string <span color="#1b1ef7"> // optional; one-time token that grants permission for this action</span>
         "parent": string <span color="#1b1ef7"> // mark that resource belongs to directory</span>
         "roomId": string <span color="#1b1ef7"> // mark that resource belongs to room</span>
         "contributeToRoom": string <span color="#1b1ef7"> // mark that resource belongs to room sorting table</span>
@@ -1599,6 +1669,7 @@ Resource field ```metadata.contentType``` will be one of: ```roomful#url```, ```
     "data": {
         "url": string
         "urlType": string <span color="#1b1ef7"> // Hls/Dash</span>
+        "grantToken": string <span color="#1b1ef7"> // optional; one-time token that grants permission for this action</span>
         "parent": string <span color="#1b1ef7"> // mark that resource belongs to directory</span>
         "roomId": string <span color="#1b1ef7"> // mark that resource belongs to room</span>
         "contributeToRoom": string <span color="#1b1ef7"> // mark that resource belongs to room sorting table</span>
@@ -1640,6 +1711,7 @@ Resource field ```metadata.contentType``` will be one of: ```roomful#url```, ```
         "source": string
         "sourceId": string
         "sourceLink": string
+        "grantToken": string <span color="#1b1ef7"> // optional; one-time token that grants permission for this action</span>
         "parent": string <span color="#1b1ef7"> // mark that resource belongs to directory</span>
         "roomId": string <span color="#1b1ef7"> // mark that resource belongs to room</span>
         "contributeToRoom": string <span color="#1b1ef7"> // mark that resource belongs to room sorting table</span>
@@ -1678,7 +1750,7 @@ Resource field ```metadata.contentType``` will be one of: ```roomful#url```, ```
 <pre>
 {
     "data": {
-        "generationModel": string <span color="#1b1ef7"> // the model used for image generation [dall-e-3]</span>
+        "generationModel": string <span color="#1b1ef7"> // the model used for image generation [gpt-image-2, gpt-image-1.5, gpt-image-1, gpt-image-1-mini]; defaults to gpt-image-2</span>
         "prompt": string <span color="#1b1ef7"> // a text description of the desired image</span>
         "parent": string <span color="#1b1ef7"> // mark that resource belongs to directory</span>
         "roomId": string <span color="#1b1ef7"> // mark that resource belongs to room</span>
@@ -1720,6 +1792,7 @@ Resource field ```metadata.contentType``` will be one of: ```roomful#url```, ```
     "data": {
         "resource": string
         "networkId": string
+        "grantToken": string <span color="#1b1ef7"> // optional; one-time token that grants permission for this action</span>
         "parent": string <span color="#1b1ef7"> // mark that resource belongs to directory</span>
         "roomId": string <span color="#1b1ef7"> // mark that resource belongs to room</span>
         "contributeToRoom": string <span color="#1b1ef7"> // mark that resource belongs to room sorting table</span>
@@ -1860,6 +1933,7 @@ Resource field ```metadata.contentType``` will be one of: ```roomful#url```, ```
         "resourceId": string
         "networkId": string
         "belonging": string
+        "grantToken": string <span color="#1b1ef7"> // optional; one-time token that grants permission for the destination belonging</span>
     }
     "event": { "id": string, "date": timestamp }
 }
@@ -1898,6 +1972,39 @@ Resource field ```metadata.contentType``` will be one of: ```roomful#url```, ```
         }
         "params": map[string]{ custom structure }
         "actions": [{ <a href="#programmatic-action-with-children">programmatic action with children structure</a> }]
+    }
+    "event": { "id": string, "date": timestamp }
+}
+</pre>
+
+**Response:** 
+
+<pre>
+{
+    "data": {
+        "resource": { <a href="#resource">resource structure</a> }
+    }
+    "error": { "status": bool, "code": int, "message": string }
+}
+</pre>
+
+<br>
+
+<a name="update-resource-enrichment"></a>
+
+### Update resource enrichment
+
+**Method:** websocket
+
+**Endpoint:** resource:updateEnrichment
+
+**Request:** 
+
+<pre>
+{
+    "data": {
+        "resource": string
+        "enrichment": { <a href="#enrichment-data">enrichment data structure</a> }
     }
     "event": { "id": string, "date": timestamp }
 }
@@ -2146,14 +2253,19 @@ Resource field ```metadata.contentType``` will be one of: ```roomful#url```, ```
 API subscribes user socket to belonging broadcast channel (only directory and community for now).
 
 Examples:
-* `userAIGeneration:{userId}`    - resources added to list of AI generated resources by user;
-* `userSortingTable:{userId}`    - user sorting table resource;
-* `roomSortingTable:{roomId}`    - room sorting table resources;
-* `room:{roomId}`                - resources in a room;
-* `room:{roomId}/{propId}`       - resources in a room prop;
-* `roomProps:{roomId}`           - all resources in all room props;
-* `community:{communityId}`      - community resources;
-* `directory:{parentResourceId}` - directory resources.
+* `userAIGeneration:{userId}`         - resources added to list of AI generated resources by user;
+* `userSortingTable:{userId}`         - user sorting table resources;
+* `userThumbnail:{userId}`            - user thumbnail resources (profile pictures);
+* `user3DAvatar:{userId}`             - user 3D avatar resources;
+* `userPublic:{userId}`               - user public resources, available for all;
+* `roomSortingTable:{roomId}`         - room sorting table resources;
+* `room:{roomId}`                     - resources in a room;
+* `room:{roomId}/{propId}`            - resources in a room prop;
+* `roomProps:{roomId}`                - all resources in all room props;
+* `community:{communityId}`           - community resources;
+* `directory:{parentResourceId}`      - directory resources.
+* `applicationPublic:{applicationId}` - public belonging of application.
+* `app:{applicationId}:{belonging}`   - belongings listed above with application context.
 
 
 
@@ -2164,8 +2276,10 @@ Examples:
     "data": {
         "belonging": string
         "query": string
+        "filterBy": string <span color="#1b1ef7"> // filter content (directory/noDirectory)</span>
         "cursor": string
         "limit": int
+        "subscribe": bool <span color="#1b1ef7"> // if true, subscribes user socket to belonging broadcast channel</span>
     }
     "event": { "id": string, "date": timestamp }
 }
@@ -2179,7 +2293,44 @@ Examples:
         "resources": [{ <a href="#resource">resource structure</a> }]
         "nextCursor": string
         "hasMore": bool
+        "permissions": {
+            "get": bool <span color="#1b1ef7"> // permission to fetch single item from belonging</span>
+            "list": bool <span color="#1b1ef7"> // permission to list items within belonging</span>
+            "create": bool <span color="#1b1ef7"> // permission to add item to belonging</span>
+            "update": bool <span color="#1b1ef7"> // permission to update item within belonging</span>
+        }
     }
+    "error": { "status": bool, "code": int, "message": string }
+}
+</pre>
+
+<br>
+
+<a name="subscribe-to-belonging"></a>
+
+### Subscribe to belonging
+
+**Method:** websocket
+
+**Endpoint:** resource:subscribeToBelonging
+
+**Description:** API subscribes user socket to belonging broadcast channel.
+
+**Request:** 
+
+<pre>
+{
+    "data": {
+        "belonging": string
+    }
+    "event": { "id": string, "date": timestamp }
+}
+</pre>
+
+**Response:** 
+
+<pre>
+{
     "error": { "status": bool, "code": int, "message": string }
 }
 </pre>
@@ -2263,6 +2414,7 @@ Examples:
     "data": {
         "title": string
         "belonging": string
+        "grantToken": string <span color="#1b1ef7"> // optional; one-time token that grants permission for this action</span>
     }
     "event": { "id": string, "date": timestamp }
 }
@@ -2357,6 +2509,8 @@ Examples:
 
 **Event:** sortingTable:addResources
 
+**<span color="red">DEPRECATED</span>** 
+
 **Data:** 
 
 <pre>
@@ -2376,6 +2530,8 @@ Examples:
 
 **Event:** sortingTable:deleteResources
 
+**<span color="red">DEPRECATED</span>** 
+
 **Data:** 
 
 <pre>
@@ -2389,51 +2545,13 @@ Examples:
 
 <br>
 
-<a name="on-resources-added-to-directory-in-user-sorting-table-event"></a>
-
-### On resources added to directory in user sorting table event
-
-**Event:** sortingTable:addResourcesToDirectory
-
-**Data:** 
-
-<pre>
-{
-    "data": {
-        "directoryId": string
-        "resources": [{ <a href="#resource">resource structure</a> }]
-    }
-    "error": { "status": bool, "code": int, "message": string }
-}
-</pre>
-
-<br>
-
-<a name="on-resources-deleted-from-directory-in-user-sorting-table-event"></a>
-
-### On resources deleted from directory in user sorting table event
-
-**Event:** sortingTable:deleteResourcesFromDirectory
-
-**Data:** 
-
-<pre>
-{
-    "data": {
-        "directoryId": string
-        "resourceIds": [ string ]
-    }
-    "error": { "status": bool, "code": int, "message": string }
-}
-</pre>
-
-<br>
-
 <a name="on-resources-added-to-upload-session-event"></a>
 
 ### On resources added to upload session event
 
 **Event:** resource:addedToUploadSession
+
+**<span color="red">DEPRECATED</span>** 
 
 **Data:** 
 
@@ -2454,6 +2572,8 @@ Examples:
 
 **Event:** resource:deletedFromUploadSession
 
+**<span color="red">DEPRECATED</span>** 
+
 **Data:** 
 
 <pre>
@@ -2472,6 +2592,8 @@ Examples:
 ### On user sorting table resource updated event
 
 **Event:** sortingTable:resourceUpdated
+
+**<span color="red">DEPRECATED</span>** 
 
 **Data:** 
 
@@ -2552,6 +2674,8 @@ Examples:
 
 **Event:** resource:updatedInUploadSession
 
+**<span color="red">DEPRECATED</span>** 
+
 **Data:** 
 
 <pre>
@@ -2570,6 +2694,8 @@ Examples:
 ### On channel resource updated event
 
 **Event:** resource:updatedInChannel
+
+**<span color="red">DEPRECATED</span>** 
 
 **Data:** 
 
@@ -2606,6 +2732,29 @@ Examples:
 
 <br>
 
+<a name="info-link-event"></a>
+
+### Info link event
+
+**Event:** link:infoEvent
+
+**Data:** 
+
+<pre>
+{
+    "data": {
+        "url": string
+        "title": string
+        "description": string
+        "isImage": bool
+        "thumbnail": string
+    }
+    "error": { "status": bool, "code": int, "message": string }
+}
+</pre>
+
+<br>
+
 <a name="models"></a>
 
 ## Models
@@ -2631,6 +2780,7 @@ Examples:
     "encryptionVersion": string <span color="#1b1ef7"> // encryption version, like 'verus.v1'</span>
     "encryptionEpoch": int <span color="#1b1ef7"> // epoch defines key bundle that was used for encryption</span>
     "encryptionEpk": string <span color="#1b1ef7"> // ephemeral public key that should be used to decrypt cypher data</span>
+    "userId": string <span color="#1b1ef7"> // user id of resource author</span>
     "belonging": string <span color="#1b1ef7"> // determines resource location in the system in a way 'belongingType:belongingPath(networkId)'</span>
     "status": string <span color="#1b1ef7"> // pending/processing/ready/failed</span>
     "metadata": {
@@ -2654,6 +2804,7 @@ Examples:
         "amazon": { <a href="#resource-data-amazon">resource data amazon structure</a> }
         "imdb": { <a href="#resource-data-imdb">resource data imdb structure</a> }
         "youtube": { <a href="#resource-data-youtube">resource data youtube structure</a> }
+        "vimeo": { <a href="#resource-data-vimeo">resource data vimeo structure</a> }
         "pinterest": { <a href="#resource-data-pinterest">resource data pinterest structure</a> }
         "pixabay": { <a href="#resource-data-pixabay">resource data pixabay structure</a> }
         "facebook": { <a href="#resource-data-facebook">resource data facebook structure</a> }
@@ -2663,8 +2814,9 @@ Examples:
         "thumbnailUrl": string
         "downloadUrl": string
         "directory": { <a href="#resource-data-directory">resource data directory structure</a> }
-        "channel": { <a href="#channel-data">channel data structure</a> }
         "googleDrive": { <a href="#google-drive">google drive structure</a> }
+        "channel": { <a href="#channel-data">channel data structure</a> }
+        "enrichment": { <a href="#enrichment-data">enrichment data structure</a> }
     }
     "customParams": map[string]{ custom structure } <span color="#1b1ef7"> // client defined parameters</span>
     "actions": [{ <a href="#programmatic-action-with-children">programmatic action with children structure</a> }] <span color="#1b1ef7"> // custom programmatic actions from users</span>
@@ -2801,6 +2953,19 @@ Examples:
 
 <br>
 
+<a name="resource-data-vimeo"></a>
+
+#### Resource Data Vimeo
+
+<pre>
+{
+    "videoUrl": string
+    "formatId": string
+}
+</pre>
+
+<br>
+
 <a name="resource-data-pinterest"></a>
 
 #### Resource Data Pinterest
@@ -2864,6 +3029,7 @@ Examples:
     "assetId": string
     "playbackUrl": string
     "masterUrl": string
+    "createdAt": int
 }
 </pre>
 
@@ -2875,7 +3041,7 @@ Examples:
 
 <pre>
 {
-    "generationModel": string <span color="#1b1ef7"> // the model used for image generation [dall-e-3]</span>
+    "generationModel": string <span color="#1b1ef7"> // the model used for image generation [gpt-image-2, gpt-image-1.5, gpt-image-1, gpt-image-1-mini]; defaults to gpt-image-2</span>
     "prompt": string <span color="#1b1ef7"> // a text description of the desired image</span>
     "revisedPrompt": string <span color="#1b1ef7"> // the prompt that was used to generate the image, if there was any revision to the prompt</span>
     "url": string <span color="#1b1ef7"> // the URL of the generated image</span>
@@ -2897,6 +3063,20 @@ Examples:
 
 <br>
 
+<a name="google-drive"></a>
+
+#### Google Drive
+
+<pre>
+{
+    "fileId": string
+    "name": string
+    "mimeType": string
+}
+</pre>
+
+<br>
+
 <a name="channel-data"></a>
 
 #### Channel Data
@@ -2912,15 +3092,18 @@ Examples:
 
 <br>
 
-<a name="google-drive"></a>
+<a name="enrichment-data"></a>
 
-#### Google Drive
+#### Enrichment Data
 
 <pre>
 {
-    "fileId": string
-    "name": string
-    "mimeType": string
+    "categories": [ string ]
+    "enrichedAt": timestamp
+    "enrichmentStatus": string
+    "language": string
+    "qualityScore": int
+    "tags": [ string ]
 }
 </pre>
 

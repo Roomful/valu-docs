@@ -23,6 +23,9 @@
 | [/verus/getClaimsData/{challengeId}](#api-returns-claims-data-that-should-be-saved-by-verus-wallet-using-challengeid-) | webRequest | Api returns claims data that should be saved by Verus wallet (using challengeId). |
 | [/verus/getAttestationResponse](#proxy-response-from-verus-to-crypto-server-) | webRequest | Proxy response from Verus to crypto server. |
 | [/verus/getAttestationProofsResponse](#proxy-response-from-verus-to-crypto-server-) | webRequest | Proxy response from Verus to crypto server. |
+| [/verus/timelockResponse](#proxy-response-from-verus-to-crypto-server-) | webRequest | Proxy response from Verus to crypto server. |
+| [/verus/revokeResponse](#proxy-response-from-verus-to-crypto-server-) | webRequest | Proxy response from Verus to crypto server. |
+| [/verus/recoverResponse](#proxy-response-from-verus-to-crypto-server-) | webRequest | Proxy response from Verus to crypto server. |
 | [/agreement/{agreementType}?...queryParameters](#show-agreement-page-) | webRequest | Show agreement page. |
 | [verus:getScopedRootKey](#get-scoped-root-key-from-verus-wallet) | websocket | Get scoped root key from Verus wallet |
 | [verus:createAlbum](#create-album-using-verus) | websocket | Create album using Verus |
@@ -86,6 +89,7 @@
 | [verus:provideProofToVerifySocialAccount](#verus-provide-proof-to-verify-social-account) | websocket | Verus provide proof to verify social account |
 | [verus:getDeeplinkToSaveClaims](#verus-get-deeplink-to-save-claims) | websocket | Verus get deeplink to save claims |
 | [verus:getDeeplinkToSignCredential](#verus-get-deeplink-to-sign-credential) | websocket | Verus get deeplink to sign credential |
+| [verus:getDeeplinkToSignCredentials](#verus-get-deeplink-to-sign-credentials) | websocket | Verus get deeplink to sign credentials |
 | [verus:getDeeplinkToCreateEndorsement](#verus-get-deeplink-to-create-endorsement) | websocket | Verus get deeplink to create endorsement |
 | [verus:saveEndorsementsToBlockchain](#verus-save-endorsements-to-blockchain) | websocket | Verus save endorsements to blockchain |
 | ~~[verus:getEndorsementHash](#verus-get-endorsement-hash)~~ | websocket | Verus get endorsement hash |
@@ -119,6 +123,36 @@
 | [verus:listIdentitiesFromWalletOnCurrency](#verus-list-identities-from-wallet-on-currency) | websocket | Verus list identities from wallet on currency |
 | [verus:getAllIdentitiesInWalletOnCurrency](#verus-get-all-identities-in-wallet-on-currency) | websocket | Verus get all identities in wallet on currency |
 | [verus:getProvisionDeeplink](#verus-get-provision-deeplink) | websocket | Verus get provision deeplink |
+| [verus:getIdentityProvisionStatus](#verus-get-identity-provision-status) | websocket | Verus get identity provision status |
+| [verus:checkValuLightIdentityName](#verus-check-valu-light-identity-name) | websocket | Verus check valu light identity name |
+| [verus:provisionValuLightIdentity](#verus-provision-valu-light-identity) | websocket | Verus provision valu light identity |
+| [verus:getValuLightIdentityProvisionStatus](#verus-get-valu-light-identity-provision-status) | websocket | Verus get valu light identity provision status |
+| [verus:createIdentityMarketplaceSellOffer](#verus-create-identity-marketplace-sell-offer) | websocket | Verus create identity marketplace sell offer |
+| [verus:deleteIdentityMarketplaceSellOffer](#verus-delete-identity-marketplace-sell-offer) | websocket | Verus delete identity marketplace sell offer |
+| [verus:listIdentityMarketplaceSellOffersOfCurrentUser](#verus-list-identity-marketplace-sell-offers-of-current-user) | websocket | Verus list identity marketplace sell offers of current user |
+| [verus:listIdentityMarketplaceSellOffersOfTargetUser](#verus-list-identity-marketplace-sell-offers-of-target-user) | websocket | Verus list identity marketplace sell offers of target user |
+| [verus:createIdentityMarketplaceBuyOffer](#verus-create-identity-marketplace-buy-offer) | websocket | Verus create identity marketplace buy offer |
+| [verus:deleteIdentityMarketplaceBuyOffer](#verus-delete-identity-marketplace-buy-offer) | websocket | Verus delete identity marketplace buy offer |
+| [verus:listIdentityMarketplaceOutgoingBuyOffers](#verus-list-identity-marketplace-outgoing-buy-offers) | websocket | Verus list identity marketplace outgoing buy offers |
+| [verus:listIdentityMarketplaceIncomingBuyOffers](#verus-list-identity-marketplace-incoming-buy-offers) | websocket | Verus list identity marketplace incoming buy offers |
+| [verus:getDeeplinkToPayForIdentityMarketplaceBuyOffer](#verus-get-deeplink-to-pay-for-identity-marketplace-buy-offer) | websocket | Verus get deeplink to pay for identity marketplace buy offer |
+| [verus:simulatePaymentForIdentityMarketplaceBuyOffer](#verus-simulate-payment-for-identity-marketplace-buy-offer) | websocket | Verus simulate payment for identity marketplace buy offer |
+| [verus:acceptIdentityMarketplaceBuyOffer](#verus-accept-identity-marketplace-buy-offer) | websocket | Verus accept identity marketplace buy offer |
+| [verus:listIdentityMarketplaceBuyOfferValues](#verus-list-identity-marketplace-buy-offer-values) | websocket | Verus list identity marketplace buy offer values |
+| [verus:listAmbassadors](#verus-list-ambassadors) | websocket | Verus list ambassadors |
+| [verus:listIdentities](#verus-list-identities) | websocket | Verus list identities |
+| [verus:getIdentityStatus](#verus-get-identity-status) | websocket | Verus get identity status |
+| [verus:listIdentityTransactions](#verus-list-identity-transactions) | websocket | Verus list identity transactions |
+| [verus:listIdentityBalances](#verus-list-identity-balances) | websocket | Verus list identity balances |
+| [verus:getBlockHeight](#verus-get-block-height) | websocket | Verus get block height |
+| [verus:getTimelockDeeplink](#verus-get-timelock-deeplink) | websocket | Verus get timelock deeplink |
+| [verus:getRevokeDeeplink](#verus-get-revoke-deeplink) | websocket | Verus get revoke deeplink |
+| [verus:getRevokeIdentities](#verus-get-revoke-identities) | websocket | Verus get revoke identities |
+| [verus:getRecoveryDeeplink](#verus-get-recovery-deeplink) | websocket | Verus get recovery deeplink |
+| [verus:getRecoveryIdentities](#verus-get-recovery-identities) | websocket | Verus get recovery identities |
+| [verus:createAgentId](#verus-create-agent-id) | websocket | Verus create agent id |
+| [verus:getAgentsBalance](#verus-get-agents-balance) | websocket | Verus get agents balance |
+| [verus:agentSendMoney](#verus-agent-send-money) | websocket | Verus agent send money |
 | ~~[verus:verifiableStatementCreated](#on-attestation-statement-claim-created-event-deprecated)~~ | websocketEvent | On attestation statement claim created event: deprecated |
 | [verus:statementClaimCreated](#on-attestation-statement-claim-created-event) | websocketEvent | On attestation statement claim created event |
 | ~~[verus:verifiableSocialAccountCreated](#on-attestation-social-account-claim-created-event-deprecated)~~ | websocketEvent | On attestation social account claim created event: deprecated |
@@ -168,6 +202,9 @@
 | [verus:signatureForEducationClaimCreated](#on-new-signature-for-attestation-education-claim-event) | websocketEvent | On new signature for attestation education claim event |
 | [verus:signatureForAchievementClaimCreated](#on-new-signature-for-attestation-achievement-claim-event) | websocketEvent | On new signature for attestation achievement claim event |
 | [verus:signatureForBlockClaimCreated](#on-new-signature-for-attestation-block-claim-event) | websocketEvent | On new signature for attestation block claim event |
+| [verus:identityMarketplaceBuyOfferCreatedEvent](#on-identity-marketplace-buy-offer-created-event) | websocketEvent | On identity marketplace buy offer created event |
+| [verus:identityMarketplaceBuyOfferUpdatedEvent](#on-identity-marketplace-buy-offer-updated-event) | websocketEvent | On identity marketplace buy offer updated event |
+| [verus:identityMarketplaceBuyOfferAutoAcceptEvent](#on-identity-marketplace-buy-offer-auto-accept-event) | websocketEvent | On identity marketplace buy offer auto accept event |
 | [verus:signDisclaimerSuccess](#verus-sign-disclaimer-success-event) | websocketEvent | Verus sign disclaimer success event |
 | [verus:signDisclaimerError](#verus-sign-disclaimer-error-event) | websocketEvent | Verus sign disclaimer error event |
 | [verus:purchaseContentSuccess](#verus-purchase-content-success-event) | websocketEvent | Verus purchase content success event |
@@ -196,6 +233,15 @@
 | [verus:nftMintedEvent](#on-verus-nft-minted-event) | websocketEvent | On verus nft minted event |
 | [verus:paymentReadyEvent](#on-verus-payment-ready-event) | websocketEvent | On verus payment ready event |
 | [verus:currencyReadyEvent](#on-verus-currency-ready-event) | websocketEvent | On verus currency ready event |
+| [verus:provisionStartedEvent](#on-provision-started-event) | websocketEvent | On provision started event |
+| [verus:provisionEndedEvent](#on-provision-ended-event) | websocketEvent | On provision ended event |
+| [verus:valuLightProvisionStartedEvent](#on-valu-light-provision-started-event) | websocketEvent | On valu light provision started event |
+| [verus:valuLightProvisionEndedEvent](#on-valu-light-provision-ended-event) | websocketEvent | On valu light provision ended event |
+| [verus:timelockResultEvent](#on-timelock-result-event) | websocketEvent | On timelock result event |
+| [verus:revokeResultEvent](#on-revoke-result-event) | websocketEvent | On revoke result event |
+| [verus:recoveryResultEvent](#on-recovery-result-event) | websocketEvent | On recovery result event |
+| [verus:agentIdCreatedEvent](#on-verus-agent-id-created-event) | websocketEvent | On verus agent id created event |
+| [verus:agentBalancesEvent](#on-verus-agent-balances-event) | websocketEvent | On verus agent balances event |
 
 <br>
 
@@ -528,7 +574,7 @@ JSON body
 
 ### Api returns claims data that should be saved by Verus wallet (using one time token).
 
-**HTTP Method:** POST
+**HTTP Method:** GET
 
 **Path:** /verus/getClaimsData
 
@@ -554,7 +600,7 @@ JSON body
 
 ### Api returns claims data that should be saved by Verus wallet (using challengeId).
 
-**HTTP Method:** POST
+**HTTP Method:** GET
 
 **Path:** /verus/getClaimsData/{challengeId}
 
@@ -601,6 +647,72 @@ JSON body
 **HTTP Method:** POST
 
 **Path:** /verus/getAttestationProofsResponse
+
+**Request:** 
+
+<pre>
+JSON body
+</pre>
+
+**Response:** 
+
+<pre>
+{ empty }
+</pre>
+
+<br>
+
+<a name="proxy-response-from-verus-to-crypto-server-"></a>
+
+### Proxy response from Verus to crypto server.
+
+**HTTP Method:** POST
+
+**Path:** /verus/timelockResponse
+
+**Request:** 
+
+<pre>
+JSON body
+</pre>
+
+**Response:** 
+
+<pre>
+{ empty }
+</pre>
+
+<br>
+
+<a name="proxy-response-from-verus-to-crypto-server-"></a>
+
+### Proxy response from Verus to crypto server.
+
+**HTTP Method:** POST
+
+**Path:** /verus/revokeResponse
+
+**Request:** 
+
+<pre>
+JSON body
+</pre>
+
+**Response:** 
+
+<pre>
+{ empty }
+</pre>
+
+<br>
+
+<a name="proxy-response-from-verus-to-crypto-server-"></a>
+
+### Proxy response from Verus to crypto server.
+
+**HTTP Method:** POST
+
+**Path:** /verus/recoverResponse
 
 **Request:** 
 
@@ -2543,11 +2655,13 @@ JSON body
             "blockTitle": string
             "formReference": string
             "networkId": string
+            "badgeId": string
             "blockAnswers": [{
                 "networkId": string
                 "blockId": string
                 "questionId": string
                 "questionTitle": string
+                "questionType": string
                 "questionMessage": string
                 "answerMessage": string
                 "fieldReference": string
@@ -3238,11 +3352,13 @@ JSON body
                 "blockTitle": string
                 "formReference": string
                 "networkId": string
+                "badgeId": string
                 "blockAnswers": [{
                     "networkId": string
                     "blockId": string
                     "questionId": string
                     "questionTitle": string
+                    "questionType": string
                     "questionMessage": string
                     "answerMessage": string
                     "fieldReference": string
@@ -3529,6 +3645,45 @@ JSON body
 
 <br>
 
+<a name="verus-get-deeplink-to-sign-credentials"></a>
+
+### Verus get deeplink to sign credentials
+
+**Method:** websocket
+
+**Endpoint:** verus:getDeeplinkToSignCredentials
+
+**Description:** Endpoint returns a single deeplink for signing multiple credentials at once.
+
+**Request:** 
+
+<pre>
+{
+    "data": {
+        "requests": [{
+            "targetUser": string <span color="#1b1ef7"> // user id of the claim</span>
+            "claimId": string
+            "message": string
+        }]
+    }
+    "event": { "id": string, "date": timestamp }
+}
+</pre>
+
+**Response:** 
+
+<pre>
+{
+    "data": {
+        "challengeId": string
+        "deepLink": string
+    }
+    "error": { "status": bool, "code": int, "message": string }
+}
+</pre>
+
+<br>
+
 <a name="verus-get-deeplink-to-create-endorsement"></a>
 
 ### Verus get deeplink to create endorsement
@@ -3706,6 +3861,7 @@ JSON body
         "referenceId": string <span color="#1b1ef7"> // blockchain reference id (64 length hexadecimal string)</span>
         "formReference": string <span color="#1b1ef7"> // form reference to filter the claim-blocks</span>
         "customData": { json data } <span color="#1b1ef7"> // in case if claim has additional data</span>
+        "credentialTemplateId": string <span color="#1b1ef7"> // only for credentials, id of the credential template claim it was granted from</span>
         "claimId": string
         "claimMessage": string
         "status": string <span color="#1b1ef7"> // claim verification status by Verus signatures (Not Saved / Saved / Verified / Verified And Persisted)</span>
@@ -3778,6 +3934,7 @@ JSON body
             "referenceId": string <span color="#1b1ef7"> // blockchain reference id (64 length hexadecimal string)</span>
             "formReference": string <span color="#1b1ef7"> // form reference to filter the claim-blocks</span>
             "customData": { json data } <span color="#1b1ef7"> // in case if claim has additional data</span>
+            "credentialTemplateId": string <span color="#1b1ef7"> // only for credentials, id of the credential template claim it was granted from</span>
             "claimId": string
             "claimMessage": string
             "status": string <span color="#1b1ef7"> // claim verification status by Verus signatures (Not Saved / Saved / Verified / Verified And Persisted)</span>
@@ -3808,6 +3965,7 @@ JSON body
     "data": {
         "claimId": string <span color="#1b1ef7"> // id of the credential template</span>
         "userIds": [ string ] <span color="#1b1ef7"> // user ids of the recipients of the credential from the template</span>
+        "issuingId": string <span color="#1b1ef7"> // special case for issuing Verus ID (i.e. ambassadors)</span>
     }
     "event": { "id": string, "date": timestamp }
 }
@@ -3826,6 +3984,7 @@ JSON body
             "referenceId": string <span color="#1b1ef7"> // blockchain reference id (64 length hexadecimal string)</span>
             "formReference": string <span color="#1b1ef7"> // form reference to filter the claim-blocks</span>
             "customData": { json data } <span color="#1b1ef7"> // in case if claim has additional data</span>
+            "credentialTemplateId": string <span color="#1b1ef7"> // only for credentials, id of the credential template claim it was granted from</span>
             "claimId": string
             "claimMessage": string
             "status": string <span color="#1b1ef7"> // claim verification status by Verus signatures (Not Saved / Saved / Verified / Verified And Persisted)</span>
@@ -3876,6 +4035,7 @@ JSON body
                 "referenceId": string <span color="#1b1ef7"> // blockchain reference id (64 length hexadecimal string)</span>
                 "formReference": string <span color="#1b1ef7"> // form reference to filter the claim-blocks</span>
                 "customData": { json data } <span color="#1b1ef7"> // in case if claim has additional data</span>
+                "credentialTemplateId": string <span color="#1b1ef7"> // only for credentials, id of the credential template claim it was granted from</span>
                 "claimId": string
                 "claimMessage": string
                 "status": string <span color="#1b1ef7"> // claim verification status by Verus signatures (Not Saved / Saved / Verified / Verified And Persisted)</span>
@@ -4162,13 +4322,14 @@ JSON body
         "blockType": string <span color="#1b1ef7"> // attestation/credential</span>
         "usageType": string <span color="#1b1ef7"> // single/multiple</span>
         "formReference": string
+        "badgeId": string <span color="#1b1ef7"> // if present, badge is granted to user when block claim is verified</span>
         "approveOptions": [ string ]
         "requiredAttestations": [ string ]
         "blockQuestions": [{
             "isRequired": bool
             "fieldReference": string
             "questionTitle": string
-            "questionType": string
+            "questionType": string <span color="#1b1ef7"> // statement/skill/multipleChoice/issuingId</span>
             "questionMessage": string
             "multipleChoice": [{
                 "answerMessage": string
@@ -4195,21 +4356,22 @@ JSON body
             "usageType": string <span color="#1b1ef7"> // single/multiple</span>
             "blockTitle": string
             "formReference": string
+            "badgeId": string <span color="#1b1ef7"> // if present, badge is granted to user when block claim is verified</span>
             "blockSchema": map[string]{ custom structure } <span color="#1b1ef7"> // client side visual information about the form</span>
             "blockQuestions": [{
                 "questionId": string
                 "isRequired": bool
                 "fieldReference": string
                 "questionTitle": string
-                "questionType": string
+                "questionType": string <span color="#1b1ef7"> // statement/skill/multipleChoice/issuingId</span>
                 "questionMessage": string
                 "multipleChoice": [{
                     "answerMessage": string
                     "needUpload": bool
                 }]
             }]
-            "approveOptions": [ string ]
-            "requiredAttestations": [ string ]
+            "approveOptions": [ string ] <span color="#1b1ef7"> // who can approve attestation block claim: all/verusIAddress/userId (example: ['userId:123456', 'verusIAddress:q1w2e3r4t5y6'])</span>
+            "requiredAttestations": [ string ] <span color="#1b1ef7"> // attestations required for this block to appear, like ['personalDataProofs.has_age_of_birth', 'locationProofs.has_physical_addresses']</span>
         }
     }
     "error": { "status": bool, "code": int, "message": string }
@@ -4264,13 +4426,14 @@ JSON body
         "blockId": string
         "blockTitle": string
         "formReference": string
+        "badgeId": string <span color="#1b1ef7"> // if present, badge is granted to user when block claim is verified</span>
         "approveOptions": [ string ]
         "requiredAttestations": [ string ]
         "blockQuestions": [{
             "isRequired": bool
             "fieldReference": string
             "questionTitle": string
-            "questionType": string
+            "questionType": string <span color="#1b1ef7"> // statement/skill/multipleChoice/issuingId</span>
             "questionMessage": string
             "multipleChoice": [{
                 "answerMessage": string
@@ -4354,21 +4517,22 @@ JSON body
             "usageType": string <span color="#1b1ef7"> // single/multiple</span>
             "blockTitle": string
             "formReference": string
+            "badgeId": string <span color="#1b1ef7"> // if present, badge is granted to user when block claim is verified</span>
             "blockSchema": map[string]{ custom structure } <span color="#1b1ef7"> // client side visual information about the form</span>
             "blockQuestions": [{
                 "questionId": string
                 "isRequired": bool
                 "fieldReference": string
                 "questionTitle": string
-                "questionType": string
+                "questionType": string <span color="#1b1ef7"> // statement/skill/multipleChoice/issuingId</span>
                 "questionMessage": string
                 "multipleChoice": [{
                     "answerMessage": string
                     "needUpload": bool
                 }]
             }]
-            "approveOptions": [ string ]
-            "requiredAttestations": [ string ]
+            "approveOptions": [ string ] <span color="#1b1ef7"> // who can approve attestation block claim: all/verusIAddress/userId (example: ['userId:123456', 'verusIAddress:q1w2e3r4t5y6'])</span>
+            "requiredAttestations": [ string ] <span color="#1b1ef7"> // attestations required for this block to appear, like ['personalDataProofs.has_age_of_birth', 'locationProofs.has_physical_addresses']</span>
         }]
     }
     "error": { "status": bool, "code": int, "message": string }
@@ -4413,21 +4577,22 @@ JSON body
             "usageType": string <span color="#1b1ef7"> // single/multiple</span>
             "blockTitle": string
             "formReference": string
+            "badgeId": string <span color="#1b1ef7"> // if present, badge is granted to user when block claim is verified</span>
             "blockSchema": map[string]{ custom structure } <span color="#1b1ef7"> // client side visual information about the form</span>
             "blockQuestions": [{
                 "questionId": string
                 "isRequired": bool
                 "fieldReference": string
                 "questionTitle": string
-                "questionType": string
+                "questionType": string <span color="#1b1ef7"> // statement/skill/multipleChoice/issuingId</span>
                 "questionMessage": string
                 "multipleChoice": [{
                     "answerMessage": string
                     "needUpload": bool
                 }]
             }]
-            "approveOptions": [ string ]
-            "requiredAttestations": [ string ]
+            "approveOptions": [ string ] <span color="#1b1ef7"> // who can approve attestation block claim: all/verusIAddress/userId (example: ['userId:123456', 'verusIAddress:q1w2e3r4t5y6'])</span>
+            "requiredAttestations": [ string ] <span color="#1b1ef7"> // attestations required for this block to appear, like ['personalDataProofs.has_age_of_birth', 'locationProofs.has_physical_addresses']</span>
         }]
         "claims": map[blockId]{ attestation claim } <span color="#1b1ef7"> // user claims (answers) per blockId per questionId</span>
     }
@@ -4471,21 +4636,22 @@ JSON body
             "usageType": string <span color="#1b1ef7"> // single/multiple</span>
             "blockTitle": string
             "formReference": string
+            "badgeId": string <span color="#1b1ef7"> // if present, badge is granted to user when block claim is verified</span>
             "blockSchema": map[string]{ custom structure } <span color="#1b1ef7"> // client side visual information about the form</span>
             "blockQuestions": [{
                 "questionId": string
                 "isRequired": bool
                 "fieldReference": string
                 "questionTitle": string
-                "questionType": string
+                "questionType": string <span color="#1b1ef7"> // statement/skill/multipleChoice/issuingId</span>
                 "questionMessage": string
                 "multipleChoice": [{
                     "answerMessage": string
                     "needUpload": bool
                 }]
             }]
-            "approveOptions": [ string ]
-            "requiredAttestations": [ string ]
+            "approveOptions": [ string ] <span color="#1b1ef7"> // who can approve attestation block claim: all/verusIAddress/userId (example: ['userId:123456', 'verusIAddress:q1w2e3r4t5y6'])</span>
+            "requiredAttestations": [ string ] <span color="#1b1ef7"> // attestations required for this block to appear, like ['personalDataProofs.has_age_of_birth', 'locationProofs.has_physical_addresses']</span>
         }]
         "claims": [{ <span color="#1b1ef7"> // user claims (answers) for blocks</span>
             "attestationType": string
@@ -4500,11 +4666,13 @@ JSON body
             "blockTitle": string
             "formReference": string
             "networkId": string
+            "badgeId": string
             "blockAnswers": [{
                 "networkId": string
                 "blockId": string
                 "questionId": string
                 "questionTitle": string
+                "questionType": string
                 "questionMessage": string
                 "answerMessage": string
                 "fieldReference": string
@@ -4822,6 +4990,12 @@ JSON body
 <pre>
 {
     "data": {
+        "identitiesList": map[string][{
+            "identity": string
+            "identityaddress": string
+            "metadata": string
+            "parent": string
+        }]
     }
     "error": { "status": bool, "code": int, "message": string }
 }
@@ -4862,6 +5036,1065 @@ JSON body
     "data": {
         "challengeId": string
         "deepLink": string
+    }
+    "error": { "status": bool, "code": int, "message": string }
+}
+</pre>
+
+<br>
+
+<a name="verus-get-identity-provision-status"></a>
+
+### Verus get identity provision status
+
+**Method:** websocket
+
+**Endpoint:** verus:getIdentityProvisionStatus
+
+**Request:** 
+
+<pre>
+{
+    "data": {
+        "identityName": string
+    }
+    "event": { "id": string, "date": timestamp }
+}
+</pre>
+
+**Response:** 
+
+<pre>
+{
+    "data": {
+        "status": bool
+    }
+    "error": { "status": bool, "code": int, "message": string }
+}
+</pre>
+
+<br>
+
+<a name="verus-check-valu-light-identity-name"></a>
+
+### Verus check valu light identity name
+
+**Method:** websocket
+
+**Endpoint:** verus:checkValuLightIdentityName
+
+**Description:** Tells whether a name can be provisioned right now through ValuLight. Does not reserve it.
+
+**Request:** 
+
+<pre>
+{
+    "data": {
+        "name": string <span color="#1b1ef7"> // alice, alice.valuid or alice.valuid@</span>
+        "currency": string <span color="#1b1ef7"> // parent currency, e.g. valuid@; must match a parent written in name; defaults to valuid</span>
+    }
+    "event": { "id": string, "date": timestamp }
+}
+</pre>
+
+**Response:** 
+
+<pre>
+{
+    "data": {
+        "status": bool <span color="#1b1ef7"> // true when the name can be provisioned</span>
+        "identity": string <span color="#1b1ef7"> // full name that was checked, e.g. alice.valuid@</span>
+        "error": string <span color="#1b1ef7"> // empty when the name can be provisioned; otherwise why not</span>
+    }
+    "error": { "status": bool, "code": int, "message": string }
+}
+</pre>
+
+<br>
+
+<a name="verus-provision-valu-light-identity"></a>
+
+### Verus provision valu light identity
+
+**Method:** websocket
+
+**Endpoint:** verus:provisionValuLightIdentity
+
+**Description:** Queues one identity for ValuLight's hot-wallet-funded provisioning; no action is required in the user's own wallet. Once registered, server links the identity to user and sends ```verus:valuLightProvisionStartedEvent``` / ```verus:valuLightProvisionEndedEvent``` events.
+
+**Request:** 
+
+<pre>
+{
+    "data": {
+        "name": string <span color="#1b1ef7"> // alice, alice.valuid or alice.valuid@</span>
+        "primaryAddress": string <span color="#1b1ef7"> // the user's rAddress</span>
+        "currency": string <span color="#1b1ef7"> // parent currency; defaults to valuid</span>
+    }
+    "event": { "id": string, "date": timestamp }
+}
+</pre>
+
+**Response:** 
+
+<pre>
+{
+    "data": {
+        "error": string <span color="#1b1ef7"> // why the identity was rejected, or a request-level problem; empty when queued</span>
+        "identity": string <span color="#1b1ef7"> // full name, e.g. vss100.valuid@; empty when not queued</span>
+        "challengeId": string <span color="#1b1ef7"> // id in the provisionStarted/provisionEnded callbacks; empty when not queued</span>
+    }
+    "error": { "status": bool, "code": int, "message": string }
+}
+</pre>
+
+<br>
+
+<a name="verus-get-valu-light-identity-provision-status"></a>
+
+### Verus get valu light identity provision status
+
+**Method:** websocket
+
+**Endpoint:** verus:getValuLightIdentityProvisionStatus
+
+**Description:** Returns the progress of the identity the current user last queued via ```verus:provisionValuLightIdentity```.
+
+**Request:** 
+
+<pre>
+{ empty }
+</pre>
+
+**Response:** 
+
+<pre>
+{
+    "data": {
+        "error": string <span color="#1b1ef7"> // call-level problem, falling back to the job's own failure reason; empty when there is none</span>
+        "identity": string <span color="#1b1ef7"> // full name, e.g. vss100.valuid@; empty when no job matched</span>
+        "name": string <span color="#1b1ef7"> // vss100; empty when no job matched</span>
+        "currency": string <span color="#1b1ef7"> // valuid; empty when no job matched</span>
+        "createdAt": string <span color="#1b1ef7"> // UTC timestamp; empty when no job matched</span>
+        "status": string <span color="#1b1ef7"> // pending, registernamecommitment, registeridentity, ready or error; empty when no job matched</span>
+    }
+    "error": { "status": bool, "code": int, "message": string }
+}
+</pre>
+
+<br>
+
+<a name="verus-create-identity-marketplace-sell-offer"></a>
+
+### Verus create identity marketplace sell offer
+
+**Method:** websocket
+
+**Endpoint:** verus:createIdentityMarketplaceSellOffer
+
+**Description:** Endpoint creates/updates an offer from user attestation data that could be sold on identity marketplace.
+
+When creating/updating sell offer, user must increase encryption epoch (targetType: `identitySellOffer`, targetId: `userId:identityKey`).
+
+**Request:** 
+
+<pre>
+{
+    "data": {
+        "identityKey": string <span color="#1b1ef7"> // vdxf intent key (e.g., vrsc::identity.firstname)</span>
+        "identityKeyValue": string <span color="#1b1ef7"> // encrypted value (cipher-text) of the identity key</span>
+        "price": float <span color="#1b1ef7"> // price in $cents for which the identity key value is being sold</span>
+        "encryptionVersion": string <span color="#1b1ef7"> // encryption version, like 'verus.v1'</span>
+        "encryptionEpoch": int <span color="#1b1ef7"> // epoch defines key bundle that was used for encryption</span>
+        "encryptionEpk": string <span color="#1b1ef7"> // ephemeral public key that should be used to decrypt cypher data</span>
+    }
+    "event": { "id": string, "date": timestamp }
+}
+</pre>
+
+**Response:** 
+
+<pre>
+{
+    "error": { "status": bool, "code": int, "message": string }
+}
+</pre>
+
+<br>
+
+<a name="verus-delete-identity-marketplace-sell-offer"></a>
+
+### Verus delete identity marketplace sell offer
+
+**Method:** websocket
+
+**Endpoint:** verus:deleteIdentityMarketplaceSellOffer
+
+**Request:** 
+
+<pre>
+{
+    "data": {
+        "identityKey": string <span color="#1b1ef7"> // vdxf intent key (e.g., vrsc::identity.firstname)</span>
+    }
+    "event": { "id": string, "date": timestamp }
+}
+</pre>
+
+**Response:** 
+
+<pre>
+{
+    "error": { "status": bool, "code": int, "message": string }
+}
+</pre>
+
+<br>
+
+<a name="verus-list-identity-marketplace-sell-offers-of-current-user"></a>
+
+### Verus list identity marketplace sell offers of current user
+
+**Method:** websocket
+
+**Endpoint:** verus:listIdentityMarketplaceSellOffersOfCurrentUser
+
+**Description:** Endpoint returns list of identity marketplace sell offers created by current user.
+
+**Request:** 
+
+<pre>
+{ empty }
+</pre>
+
+**Response:** 
+
+<pre>
+{
+    "data": {
+        "offers": [{
+            "userId": string <span color="#1b1ef7"> // user who is sharing data with the rest of the world</span>
+            "identityKey": string <span color="#1b1ef7"> // vdxf intent key (e.g., vrsc::identity.firstname)</span>
+            "price": float <span color="#1b1ef7"> // price in $cents for which the identity key value is being sold</span>
+            "encryptionVersion": string <span color="#1b1ef7"> // encryption version, like 'verus.v1'</span>
+            "encryptionEpoch": int <span color="#1b1ef7"> // epoch defines key bundle that was used for encryption</span>
+            "encryptionEpk": string <span color="#1b1ef7"> // ephemeral public key that should be used to decrypt cypher data</span>
+            "identityKeyValue": string <span color="#1b1ef7"> // encrypted value (cipher-text) of the identity key</span>
+        }]
+    }
+    "error": { "status": bool, "code": int, "message": string }
+}
+</pre>
+
+<br>
+
+<a name="verus-list-identity-marketplace-sell-offers-of-target-user"></a>
+
+### Verus list identity marketplace sell offers of target user
+
+**Method:** websocket
+
+**Endpoint:** verus:listIdentityMarketplaceSellOffersOfTargetUser
+
+**Description:** Endpoint returns list of identity marketplace sell offers created by target user.
+
+**Request:** 
+
+<pre>
+{
+    "data": {
+        "targetUser": string
+    }
+    "event": { "id": string, "date": timestamp }
+}
+</pre>
+
+**Response:** 
+
+<pre>
+{
+    "data": {
+        "offers": [{
+            "userId": string <span color="#1b1ef7"> // user who is sharing data with the rest of the world</span>
+            "identityKey": string <span color="#1b1ef7"> // vdxf intent key (e.g., vrsc::identity.firstname)</span>
+            "price": float <span color="#1b1ef7"> // price in $cents for which the identity key value is being sold</span>
+        }]
+    }
+    "error": { "status": bool, "code": int, "message": string }
+}
+</pre>
+
+<br>
+
+<a name="verus-create-identity-marketplace-buy-offer"></a>
+
+### Verus create identity marketplace buy offer
+
+**Method:** websocket
+
+**Endpoint:** verus:createIdentityMarketplaceBuyOffer
+
+**Description:** Endpoint creates identity marketplace buy offer for target user's identity sell offer. 
+
+When creating buy offer, user must create new encryption epoch. (targetType: `identityBuyOffer`, targetId: `offerId`). Later, this epoch should be used to access purchased identity values.
+
+**Request:** 
+
+<pre>
+{
+    "data": {
+        "targetUserId": string <span color="#1b1ef7"> // user who is being requested to share data</span>
+        "identityListings": [{ <span color="#1b1ef7"> // list of identities that user wants to buy</span>
+            "identityKey": string <span color="#1b1ef7"> // vdxf intent key (e.g., vrsc::identity.firstname)</span>
+            "price": float <span color="#1b1ef7"> // price in $cents for which the identity key value is being sold</span>
+        }]
+    }
+    "event": { "id": string, "date": timestamp }
+}
+</pre>
+
+**Response:** 
+
+<pre>
+{
+    "data": {
+        "offer": {
+            "userId": string <span color="#1b1ef7"> // user who is requesting to buy data</span>
+            "targetUserId": string <span color="#1b1ef7"> // user who is being requested to share data</span>
+            "offerId": string <span color="#1b1ef7"> // unique offer id</span>
+            "offerStatus": string <span color="#1b1ef7"> // status of the buy offer (e.g., waitingForTransaction, transactionInProcess, waitingForAccept, accepted, expired)</span>
+            "created": timestamp <span color="#1b1ef7"> // timestamp when the buy offer was created</span>
+            "totalPrice": float <span color="#1b1ef7"> // total price in $cents for all requested identity keys</span>
+            "transactionId": string <span color="#1b1ef7"> // transaction id of the payment for this buy offer</span>
+            "transactionStatus": string <span color="#1b1ef7"> // status of the payment transaction (e.g., pending, completed, failed)</span>
+            "autoAccept": bool <span color="#1b1ef7"> // indicates whether the buy offer should be automatically accepted when payment is completed</span>
+            "identityListings": [{ <span color="#1b1ef7"> // list of identities that user wants to buy</span>
+                "offerId": string <span color="#1b1ef7"> // unique offer id</span>
+                "identityKey": string <span color="#1b1ef7"> // vdxf intent key (e.g., vrsc::identity.firstname)</span>
+                "price": float <span color="#1b1ef7"> // price in $cents for which the identity key value is being sold</span>
+            }]
+        }
+    }
+    "error": { "status": bool, "code": int, "message": string }
+}
+</pre>
+
+<br>
+
+<a name="verus-delete-identity-marketplace-buy-offer"></a>
+
+### Verus delete identity marketplace buy offer
+
+**Method:** websocket
+
+**Endpoint:** verus:deleteIdentityMarketplaceBuyOffer
+
+**Request:** 
+
+<pre>
+{
+    "data": {
+        "offerId": string
+    }
+    "event": { "id": string, "date": timestamp }
+}
+</pre>
+
+**Response:** 
+
+<pre>
+{
+    "error": { "status": bool, "code": int, "message": string }
+}
+</pre>
+
+<br>
+
+<a name="verus-list-identity-marketplace-outgoing-buy-offers"></a>
+
+### Verus list identity marketplace outgoing buy offers
+
+**Method:** websocket
+
+**Endpoint:** verus:listIdentityMarketplaceOutgoingBuyOffers
+
+**Description:** Endpoint returns list of identity marketplace buy offers created by current user.
+
+**Request:** 
+
+<pre>
+{ empty }
+</pre>
+
+**Response:** 
+
+<pre>
+{
+    "data": {
+        "offers": [{
+            "userId": string <span color="#1b1ef7"> // user who is requesting to buy data</span>
+            "targetUserId": string <span color="#1b1ef7"> // user who is being requested to share data</span>
+            "offerId": string <span color="#1b1ef7"> // unique offer id</span>
+            "offerStatus": string <span color="#1b1ef7"> // status of the buy offer (e.g., waitingForTransaction, transactionInProcess, waitingForAccept, accepted, expired)</span>
+            "created": timestamp <span color="#1b1ef7"> // timestamp when the buy offer was created</span>
+            "totalPrice": float <span color="#1b1ef7"> // total price in $cents for all requested identity keys</span>
+            "transactionId": string <span color="#1b1ef7"> // transaction id of the payment for this buy offer</span>
+            "transactionStatus": string <span color="#1b1ef7"> // status of the payment transaction (e.g., pending, completed, failed)</span>
+            "autoAccept": bool <span color="#1b1ef7"> // indicates whether the buy offer should be automatically accepted when payment is completed</span>
+            "identityListings": [{ <span color="#1b1ef7"> // list of identities that user wants to buy</span>
+                "offerId": string <span color="#1b1ef7"> // unique offer id</span>
+                "identityKey": string <span color="#1b1ef7"> // vdxf intent key (e.g., vrsc::identity.firstname)</span>
+                "price": float <span color="#1b1ef7"> // price in $cents for which the identity key value is being sold</span>
+            }]
+        }]
+    }
+    "error": { "status": bool, "code": int, "message": string }
+}
+</pre>
+
+<br>
+
+<a name="verus-list-identity-marketplace-incoming-buy-offers"></a>
+
+### Verus list identity marketplace incoming buy offers
+
+**Method:** websocket
+
+**Endpoint:** verus:listIdentityMarketplaceIncomingBuyOffers
+
+**Description:** Endpoint returns list of identity marketplace buy offers addressed to current user.
+
+**Request:** 
+
+<pre>
+{ empty }
+</pre>
+
+**Response:** 
+
+<pre>
+{
+    "data": {
+        "offers": [{
+            "userId": string <span color="#1b1ef7"> // user who is requesting to buy data</span>
+            "targetUserId": string <span color="#1b1ef7"> // user who is being requested to share data</span>
+            "offerId": string <span color="#1b1ef7"> // unique offer id</span>
+            "offerStatus": string <span color="#1b1ef7"> // status of the buy offer (e.g., waitingForTransaction, transactionInProcess, waitingForAccept, accepted, expired)</span>
+            "created": timestamp <span color="#1b1ef7"> // timestamp when the buy offer was created</span>
+            "totalPrice": float <span color="#1b1ef7"> // total price in $cents for all requested identity keys</span>
+            "transactionId": string <span color="#1b1ef7"> // transaction id of the payment for this buy offer</span>
+            "transactionStatus": string <span color="#1b1ef7"> // status of the payment transaction (e.g., pending, completed, failed)</span>
+            "autoAccept": bool <span color="#1b1ef7"> // indicates whether the buy offer should be automatically accepted when payment is completed</span>
+            "identityListings": [{ <span color="#1b1ef7"> // list of identities that user wants to buy</span>
+                "offerId": string <span color="#1b1ef7"> // unique offer id</span>
+                "identityKey": string <span color="#1b1ef7"> // vdxf intent key (e.g., vrsc::identity.firstname)</span>
+                "price": float <span color="#1b1ef7"> // price in $cents for which the identity key value is being sold</span>
+            }]
+        }]
+    }
+    "error": { "status": bool, "code": int, "message": string }
+}
+</pre>
+
+<br>
+
+<a name="verus-get-deeplink-to-pay-for-identity-marketplace-buy-offer"></a>
+
+### Verus get deeplink to pay for identity marketplace buy offer
+
+**Method:** websocket
+
+**Endpoint:** verus:getDeeplinkToPayForIdentityMarketplaceBuyOffer
+
+**Description:** Endpoint returns deeplink to user in order to pay for identity marketplace buy offer using Verus.
+
+**Request:** 
+
+<pre>
+{
+    "data": {
+        "offerId": string
+    }
+    "event": { "id": string, "date": timestamp }
+}
+</pre>
+
+**Response:** 
+
+<pre>
+{
+    "data": {
+        "challengeId": string
+        "deepLink": string
+    }
+    "error": { "status": bool, "code": int, "message": string }
+}
+</pre>
+
+<br>
+
+<a name="verus-simulate-payment-for-identity-marketplace-buy-offer"></a>
+
+### Verus simulate payment for identity marketplace buy offer
+
+**Method:** websocket
+
+**Endpoint:** verus:simulatePaymentForIdentityMarketplaceBuyOffer
+
+**Description:** Endpoint simulates payment for identity marketplace buy offer. DEVELOPERS ONLY.
+
+**Request:** 
+
+<pre>
+{
+    "data": {
+        "offerId": string
+    }
+    "event": { "id": string, "date": timestamp }
+}
+</pre>
+
+**Response:** 
+
+<pre>
+{
+    "error": { "status": bool, "code": int, "message": string }
+}
+</pre>
+
+<br>
+
+<a name="verus-accept-identity-marketplace-buy-offer"></a>
+
+### Verus accept identity marketplace buy offer
+
+**Method:** websocket
+
+**Endpoint:** verus:acceptIdentityMarketplaceBuyOffer
+
+**Description:** Endpoint accepts identity marketplace buy offer after payment is completed. 
+
+When accepting the offer, user must set an additional owner for an encryption epoch for each sold identity value (ownerType: `identityBuyOffer`, ownerId: `offerId`).
+
+**Request:** 
+
+<pre>
+{
+    "data": {
+        "offerId": string
+    }
+    "event": { "id": string, "date": timestamp }
+}
+</pre>
+
+**Response:** 
+
+<pre>
+{
+    "error": { "status": bool, "code": int, "message": string }
+}
+</pre>
+
+<br>
+
+<a name="verus-list-identity-marketplace-buy-offer-values"></a>
+
+### Verus list identity marketplace buy offer values
+
+**Method:** websocket
+
+**Endpoint:** verus:listIdentityMarketplaceBuyOfferValues
+
+**Description:** Endpoint returns list of values for identity marketplace buy offer after payment is completed and offer is accepted.
+
+**Request:** 
+
+<pre>
+{
+    "data": {
+        "offerId": string
+    }
+    "event": { "id": string, "date": timestamp }
+}
+</pre>
+
+**Response:** 
+
+<pre>
+{
+    "data": {
+        "offers": [{
+            "offerId": string <span color="#1b1ef7"> // unique offer id</span>
+            "userId": string <span color="#1b1ef7"> // user who is sharing data with the rest of the world</span>
+            "identityKey": string <span color="#1b1ef7"> // vdxf intent key (e.g., vrsc::identity.firstname)</span>
+            "price": float <span color="#1b1ef7"> // price in $cents for which the identity key value is being sold</span>
+            "encryptionVersion": string <span color="#1b1ef7"> // encryption version, like 'verus.v1'</span>
+            "encryptionEpoch": int <span color="#1b1ef7"> // epoch defines key bundle that was used for encryption</span>
+            "encryptionEpk": string <span color="#1b1ef7"> // ephemeral public key that should be used to decrypt cypher data</span>
+            "identityKeyValue": string <span color="#1b1ef7"> // encrypted value (cipher-text) of the identity key</span>
+        }]
+    }
+    "error": { "status": bool, "code": int, "message": string }
+}
+</pre>
+
+<br>
+
+<a name="verus-list-ambassadors"></a>
+
+### Verus list ambassadors
+
+**Method:** websocket
+
+**Endpoint:** verus:listAmbassadors
+
+**Description:** Endpoint returns list of predefined ambassador ids.
+
+**Request:** 
+
+<pre>
+{ empty }
+</pre>
+
+**Response:** 
+
+<pre>
+{
+    "data": {
+        "ambassadors": [{
+            "place": string
+            "id": string
+            "token": string
+            "status": string
+        }]
+    }
+    "error": { "status": bool, "code": int, "message": string }
+}
+</pre>
+
+<br>
+
+<a name="verus-list-identities"></a>
+
+### Verus list identities
+
+**Method:** websocket
+
+**Endpoint:** verus:listIdentities
+
+**Request:** 
+
+<pre>
+{ empty }
+</pre>
+
+**Response:** 
+
+<pre>
+{
+    "data": {
+        "identitiesList": [{
+            "type": string
+            "address": string
+            "status": string
+            "timelock": int
+            "timelockStatus": string
+            "lockType": string
+        }]
+    }
+    "error": { "status": bool, "code": int, "message": string }
+}
+</pre>
+
+<br>
+
+<a name="verus-get-identity-status"></a>
+
+### Verus get identity status
+
+**Method:** websocket
+
+**Endpoint:** verus:getIdentityStatus
+
+**Request:** 
+
+<pre>
+{
+    "data": {
+        "identity": string
+    }
+    "event": { "id": string, "date": timestamp }
+}
+</pre>
+
+**Response:** 
+
+<pre>
+{
+    "data": {
+        "status": string
+        "timelock": int
+        "timelockStatus": string
+        "lockType": string
+    }
+    "error": { "status": bool, "code": int, "message": string }
+}
+</pre>
+
+<br>
+
+<a name="verus-list-identity-transactions"></a>
+
+### Verus list identity transactions
+
+**Method:** websocket
+
+**Endpoint:** verus:listIdentityTransactions
+
+**Request:** 
+
+<pre>
+{
+    "data": {
+        "address": string
+    }
+    "event": { "id": string, "date": timestamp }
+}
+</pre>
+
+**Response:** 
+
+<pre>
+{
+    "data": {
+        "transactions": [{
+            "type": string
+            "amount": float
+            "addresses": [ string ]
+            "txid": string
+            "timestamp": timestamp
+        }]
+    }
+    "error": { "status": bool, "code": int, "message": string }
+}
+</pre>
+
+<br>
+
+<a name="verus-list-identity-balances"></a>
+
+### Verus list identity balances
+
+**Method:** websocket
+
+**Endpoint:** verus:listIdentityBalances
+
+**Request:** 
+
+<pre>
+{
+    "data": {
+        "address": string
+    }
+    "event": { "id": string, "date": timestamp }
+}
+</pre>
+
+**Response:** 
+
+<pre>
+{
+    "data": {
+        "balance": [ map[string]float64 ]
+    }
+    "error": { "status": bool, "code": int, "message": string }
+}
+</pre>
+
+<br>
+
+<a name="verus-get-block-height"></a>
+
+### Verus get block height
+
+**Method:** websocket
+
+**Endpoint:** verus:getBlockHeight
+
+**Request:** 
+
+<pre>
+{ empty }
+</pre>
+
+**Response:** 
+
+<pre>
+{
+    "data": {
+        "blockHeight": int
+    }
+    "error": { "status": bool, "code": int, "message": string }
+}
+</pre>
+
+<br>
+
+<a name="verus-get-timelock-deeplink"></a>
+
+### Verus get timelock deeplink
+
+**Method:** websocket
+
+**Endpoint:** verus:getTimelockDeeplink
+
+**Description:** Endpoint returns deeplink that should be used for Verus timelock process. After Verus timelock process is finished, server sends ```verus:timelockResultEvent```.
+
+**Request:** 
+
+<pre>
+{
+    "data": {
+        "identityName": string
+        "hours": int
+        "isDelay": bool
+    }
+    "event": { "id": string, "date": timestamp }
+}
+</pre>
+
+**Response:** 
+
+<pre>
+{
+    "data": {
+        "deepLink": string
+    }
+    "error": { "status": bool, "code": int, "message": string }
+}
+</pre>
+
+<br>
+
+<a name="verus-get-revoke-deeplink"></a>
+
+### Verus get revoke deeplink
+
+**Method:** websocket
+
+**Endpoint:** verus:getRevokeDeeplink
+
+**Description:** Endpoint returns deeplink that should be used for Verus revocation process. After Verus timelock process is finished, server sends ```verus:revokeResultEvent```.
+
+**Request:** 
+
+<pre>
+{
+    "data": {
+        "identityName": string
+    }
+    "event": { "id": string, "date": timestamp }
+}
+</pre>
+
+**Response:** 
+
+<pre>
+{
+    "data": {
+        "deepLink": string
+    }
+    "error": { "status": bool, "code": int, "message": string }
+}
+</pre>
+
+<br>
+
+<a name="verus-get-revoke-identities"></a>
+
+### Verus get revoke identities
+
+**Method:** websocket
+
+**Endpoint:** verus:getRevokeIdentities
+
+**Request:** 
+
+<pre>
+{
+    "data": {
+        "identity": string
+    }
+    "event": { "id": string, "date": timestamp }
+}
+</pre>
+
+**Response:** 
+
+<pre>
+{
+    "data": {
+        "identitiesList": [ string ]
+    }
+    "error": { "status": bool, "code": int, "message": string }
+}
+</pre>
+
+<br>
+
+<a name="verus-get-recovery-deeplink"></a>
+
+### Verus get recovery deeplink
+
+**Method:** websocket
+
+**Endpoint:** verus:getRecoveryDeeplink
+
+**Description:** Endpoint returns deeplink that should be used for Verus recovery process. After Verus timelock process is finished, server sends ```verus:recoveryResultEvent```.
+
+**Request:** 
+
+<pre>
+{
+    "data": {
+        "identityName": string
+        "primaryaddress": string
+    }
+    "event": { "id": string, "date": timestamp }
+}
+</pre>
+
+**Response:** 
+
+<pre>
+{
+    "data": {
+        "deepLink": string
+        "recoveryData": string
+    }
+    "error": { "status": bool, "code": int, "message": string }
+}
+</pre>
+
+<br>
+
+<a name="verus-get-recovery-identities"></a>
+
+### Verus get recovery identities
+
+**Method:** websocket
+
+**Endpoint:** verus:getRecoveryIdentities
+
+**Request:** 
+
+<pre>
+{
+    "data": {
+        "identity": string
+    }
+    "event": { "id": string, "date": timestamp }
+}
+</pre>
+
+**Response:** 
+
+<pre>
+{
+    "data": {
+        "identitiesList": [ string ]
+    }
+    "error": { "status": bool, "code": int, "message": string }
+}
+</pre>
+
+<br>
+
+<a name="verus-create-agent-id"></a>
+
+### Verus create agent id
+
+**Method:** websocket
+
+**Endpoint:** verus:createAgentId
+
+**Description:** Results are sent asynchronously through `verus:agentIdCreatedEvent` event.
+
+**Request:** 
+
+<pre>
+{
+    "data": {
+        "identityName": string
+        "ownerIdentity": string
+    }
+    "event": { "id": string, "date": timestamp }
+}
+</pre>
+
+**Response:** 
+
+<pre>
+{
+    "error": { "status": bool, "code": int, "message": string }
+}
+</pre>
+
+<br>
+
+<a name="verus-get-agents-balance"></a>
+
+### Verus get agents balance
+
+**Method:** websocket
+
+**Endpoint:** verus:getAgentsBalance
+
+**Description:** Results are sent asynchronously through `verus:agentsBalanceResultEvent` event.
+
+**Request:** 
+
+<pre>
+{ empty }
+</pre>
+
+**Response:** 
+
+<pre>
+{
+    "error": { "status": bool, "code": int, "message": string }
+}
+</pre>
+
+<br>
+
+<a name="verus-agent-send-money"></a>
+
+### Verus agent send money
+
+**Method:** websocket
+
+**Endpoint:** verus:agentSendMoney
+
+**Request:** 
+
+<pre>
+{
+    "data": {
+        "fromAddress": string
+        "to": string
+        "amount": float
+    }
+    "event": { "id": string, "date": timestamp }
+}
+</pre>
+
+**Response:** 
+
+<pre>
+{
+    "data": {
+        "transactionId": string
     }
     "error": { "status": bool, "code": int, "message": string }
 }
@@ -5236,11 +6469,13 @@ JSON body
         "blockTitle": string
         "formReference": string
         "networkId": string
+        "badgeId": string
         "blockAnswers": [{
             "networkId": string
             "blockId": string
             "questionId": string
             "questionTitle": string
+            "questionType": string
             "questionMessage": string
             "answerMessage": string
             "fieldReference": string
@@ -6286,6 +7521,105 @@ JSON body
 
 <br>
 
+<a name="on-identity-marketplace-buy-offer-created-event"></a>
+
+### On identity marketplace buy offer created event
+
+**Event:** verus:identityMarketplaceBuyOfferCreatedEvent
+
+**Data:** 
+
+<pre>
+{
+    "data": {
+        "offer": {
+            "userId": string <span color="#1b1ef7"> // user who is requesting to buy data</span>
+            "targetUserId": string <span color="#1b1ef7"> // user who is being requested to share data</span>
+            "offerId": string <span color="#1b1ef7"> // unique offer id</span>
+            "offerStatus": string <span color="#1b1ef7"> // status of the buy offer (e.g., waitingForTransaction, transactionInProcess, waitingForAccept, accepted, expired)</span>
+            "created": timestamp <span color="#1b1ef7"> // timestamp when the buy offer was created</span>
+            "totalPrice": float <span color="#1b1ef7"> // total price in $cents for all requested identity keys</span>
+            "transactionId": string <span color="#1b1ef7"> // transaction id of the payment for this buy offer</span>
+            "transactionStatus": string <span color="#1b1ef7"> // status of the payment transaction (e.g., pending, completed, failed)</span>
+            "autoAccept": bool <span color="#1b1ef7"> // indicates whether the buy offer should be automatically accepted when payment is completed</span>
+            "identityListings": [{ <span color="#1b1ef7"> // list of identities that user wants to buy</span>
+                "offerId": string <span color="#1b1ef7"> // unique offer id</span>
+                "identityKey": string <span color="#1b1ef7"> // vdxf intent key (e.g., vrsc::identity.firstname)</span>
+                "price": float <span color="#1b1ef7"> // price in $cents for which the identity key value is being sold</span>
+            }]
+        }
+    }
+    "error": { "status": bool, "code": int, "message": string }
+}
+</pre>
+
+<br>
+
+<a name="on-identity-marketplace-buy-offer-updated-event"></a>
+
+### On identity marketplace buy offer updated event
+
+**Event:** verus:identityMarketplaceBuyOfferUpdatedEvent
+
+**Data:** 
+
+<pre>
+{
+    "data": {
+        "offer": {
+            "userId": string <span color="#1b1ef7"> // user who is requesting to buy data</span>
+            "targetUserId": string <span color="#1b1ef7"> // user who is being requested to share data</span>
+            "offerId": string <span color="#1b1ef7"> // unique offer id</span>
+            "offerStatus": string <span color="#1b1ef7"> // status of the buy offer (e.g., waitingForTransaction, transactionInProcess, waitingForAccept, accepted, expired)</span>
+            "created": timestamp <span color="#1b1ef7"> // timestamp when the buy offer was created</span>
+            "totalPrice": float <span color="#1b1ef7"> // total price in $cents for all requested identity keys</span>
+            "transactionId": string <span color="#1b1ef7"> // transaction id of the payment for this buy offer</span>
+            "transactionStatus": string <span color="#1b1ef7"> // status of the payment transaction (e.g., pending, completed, failed)</span>
+            "autoAccept": bool <span color="#1b1ef7"> // indicates whether the buy offer should be automatically accepted when payment is completed</span>
+            "identityListings": [{ <span color="#1b1ef7"> // list of identities that user wants to buy</span>
+                "offerId": string <span color="#1b1ef7"> // unique offer id</span>
+                "identityKey": string <span color="#1b1ef7"> // vdxf intent key (e.g., vrsc::identity.firstname)</span>
+                "price": float <span color="#1b1ef7"> // price in $cents for which the identity key value is being sold</span>
+            }]
+        }
+    }
+    "error": { "status": bool, "code": int, "message": string }
+}
+</pre>
+
+<br>
+
+<a name="on-identity-marketplace-buy-offer-auto-accept-event"></a>
+
+### On identity marketplace buy offer auto accept event
+
+**Event:** verus:identityMarketplaceBuyOfferAutoAcceptEvent
+
+**Description:** Triggered when payment is completed for buy offer with auto accept flag. When target user device receives an event, it should automatically accept an offer and disclose identity listings to a buyer.
+
+**Data:** 
+
+<pre>
+{
+    "data": {
+        "offerId": string
+        "buyerUserId": string
+        "listings": [{
+            "userId": string <span color="#1b1ef7"> // user who is sharing data with the rest of the world</span>
+            "identityKey": string <span color="#1b1ef7"> // vdxf intent key (e.g., vrsc::identity.firstname)</span>
+            "price": float <span color="#1b1ef7"> // price in $cents for which the identity key value is being sold</span>
+            "encryptionVersion": string <span color="#1b1ef7"> // encryption version, like 'verus.v1'</span>
+            "encryptionEpoch": int <span color="#1b1ef7"> // epoch defines key bundle that was used for encryption</span>
+            "encryptionEpk": string <span color="#1b1ef7"> // ephemeral public key that should be used to decrypt cypher data</span>
+            "identityKeyValue": string <span color="#1b1ef7"> // encrypted value (cipher-text) of the identity key</span>
+        }]
+    }
+    "error": { "status": bool, "code": int, "message": string }
+}
+</pre>
+
+<br>
+
 <a name="verus-sign-disclaimer-success-event"></a>
 
 ### Verus sign disclaimer success event
@@ -6595,6 +7929,7 @@ JSON body
             "avatar3D": { <span color="#1b1ef7"> // field is not returned if empty</span>
                 "assetId": string
                 "assetSkins": map[string]string <span color="#1b1ef7"> // map of selected skins per variants</span>
+                "avatarResourceId": string <span color="#1b1ef7"> // resource id (in case of avatar uploaded to user3DAvatar belonging)</span>
                 "avatarUrl": string <span color="#1b1ef7"> // url to gbl file (Ready Player Me)</span>
                 "avatarUserId": string <span color="#1b1ef7"> // user id for session recovery (Ready Player Me)</span>
             }
@@ -6703,6 +8038,7 @@ JSON body
         "socialType": string <span color="#1b1ef7"> // x/linkedin</span>
         "socialUsername": string <span color="#1b1ef7"> // username in target social network</span>
         "signature": string
+        "verifyLink": string
         "isSuccess": bool
         "errorCode": int
         "errorString": string
@@ -6731,6 +8067,7 @@ JSON body
         "socialType": string <span color="#1b1ef7"> // x/linkedin</span>
         "socialUsername": string <span color="#1b1ef7"> // username in target social network</span>
         "signature": string
+        "verifyLink": string
         "isSuccess": bool
         "errorCode": int
         "errorString": string
@@ -6961,6 +8298,188 @@ JSON body
     "data": {
         "error": string <span color="#1b1ef7"> // Error message if any</span>
         "challengeId": string <span color="#1b1ef7"> // ID related to the namespace/currency setup</span>
+    }
+    "error": { "status": bool, "code": int, "message": string }
+}
+</pre>
+
+<br>
+
+<a name="on-provision-started-event"></a>
+
+### On provision started event
+
+**Event:** verus:provisionStartedEvent
+
+**Data:** 
+
+<pre>
+{
+    "data": {
+        "error": string
+    }
+    "error": { "status": bool, "code": int, "message": string }
+}
+</pre>
+
+<br>
+
+<a name="on-provision-ended-event"></a>
+
+### On provision ended event
+
+**Event:** verus:provisionEndedEvent
+
+**Data:** 
+
+<pre>
+{
+    "data": {
+        "txid": string
+        "error": string
+    }
+    "error": { "status": bool, "code": int, "message": string }
+}
+</pre>
+
+<br>
+
+<a name="on-valu-light-provision-started-event"></a>
+
+### On valu light provision started event
+
+**Event:** verus:valuLightProvisionStartedEvent
+
+**Data:** 
+
+<pre>
+{
+    "data": {
+        "error": string
+    }
+    "error": { "status": bool, "code": int, "message": string }
+}
+</pre>
+
+<br>
+
+<a name="on-valu-light-provision-ended-event"></a>
+
+### On valu light provision ended event
+
+**Event:** verus:valuLightProvisionEndedEvent
+
+**Data:** 
+
+<pre>
+{
+    "data": {
+        "txid": string
+        "error": string
+    }
+    "error": { "status": bool, "code": int, "message": string }
+}
+</pre>
+
+<br>
+
+<a name="on-timelock-result-event"></a>
+
+### On timelock result event
+
+**Event:** verus:timelockResultEvent
+
+**Data:** 
+
+<pre>
+{
+    "data": {
+        "error": string
+    }
+    "error": { "status": bool, "code": int, "message": string }
+}
+</pre>
+
+<br>
+
+<a name="on-revoke-result-event"></a>
+
+### On revoke result event
+
+**Event:** verus:revokeResultEvent
+
+**Data:** 
+
+<pre>
+{
+    "data": {
+        "identity": string
+        "error": string
+    }
+    "error": { "status": bool, "code": int, "message": string }
+}
+</pre>
+
+<br>
+
+<a name="on-recovery-result-event"></a>
+
+### On recovery result event
+
+**Event:** verus:recoveryResultEvent
+
+**Data:** 
+
+<pre>
+{
+    "data": {
+        "identity": string
+        "error": string
+    }
+    "error": { "status": bool, "code": int, "message": string }
+}
+</pre>
+
+<br>
+
+<a name="on-verus-agent-id-created-event"></a>
+
+### On verus agent id created event
+
+**Event:** verus:agentIdCreatedEvent
+
+**Data:** 
+
+<pre>
+{
+    "data": {
+        "identityName": string
+        "iAddress": string
+        "error": string
+    }
+    "error": { "status": bool, "code": int, "message": string }
+}
+</pre>
+
+<br>
+
+<a name="on-verus-agent-balances-event"></a>
+
+### On verus agent balances event
+
+**Event:** verus:agentBalancesEvent
+
+**Data:** 
+
+<pre>
+{
+    "data": {
+        "agents": [{ <span color="#1b1ef7"> // list of agents with their balances</span>
+            "iAddress": string
+            "identityName": string
+            "balance": float
+        }]
+        "error": string
     }
     "error": { "status": bool, "code": int, "message": string }
 }

@@ -315,7 +315,7 @@ API is used to manage user requests, such as: room invitation, friend request an
             "updated": timestamp
             "networkId": string <span color="#1b1ef7"> // Request network id</span>
             "initiatorUserId": string <span color="#1b1ef7"> // Id of user who sent request</span>
-            "recipientUserId": string <span color="#1b1ef7"> // Id of user who received request</span>
+            "recipientUserId": string <span color="#1b1ef7"> // Id of user or entity (e.g. communityId) who received request</span>
             "type": string <span color="#1b1ef7"> // Connection/Invitation/Meeting/Community/AttestationClaim</span>
             "status": string <span color="#1b1ef7"> // pending/accepted/declined</span>
             "message": string <span color="#1b1ef7"> // Request message by client</span>
@@ -421,7 +421,7 @@ API is used to manage user requests, such as: room invitation, friend request an
         "updated": timestamp
         "networkId": string <span color="#1b1ef7"> // Request network id</span>
         "initiatorUserId": string <span color="#1b1ef7"> // Id of user who sent request</span>
-        "recipientUserId": string <span color="#1b1ef7"> // Id of user who received request</span>
+        "recipientUserId": string <span color="#1b1ef7"> // Id of user or entity (e.g. communityId) who received request</span>
         "type": string <span color="#1b1ef7"> // Connection/Invitation/Meeting/Community/AttestationClaim</span>
         "status": string <span color="#1b1ef7"> // pending/accepted/declined</span>
         "message": string <span color="#1b1ef7"> // Request message by client</span>
@@ -450,7 +450,7 @@ API is used to manage user requests, such as: room invitation, friend request an
         "updated": timestamp
         "networkId": string <span color="#1b1ef7"> // Request network id</span>
         "initiatorUserId": string <span color="#1b1ef7"> // Id of user who sent request</span>
-        "recipientUserId": string <span color="#1b1ef7"> // Id of user who received request</span>
+        "recipientUserId": string <span color="#1b1ef7"> // Id of user or entity (e.g. communityId) who received request</span>
         "type": string <span color="#1b1ef7"> // Connection/Invitation/Meeting/Community/AttestationClaim</span>
         "status": string <span color="#1b1ef7"> // pending/accepted/declined</span>
         "message": string <span color="#1b1ef7"> // Request message by client</span>
@@ -479,7 +479,7 @@ API is used to manage user requests, such as: room invitation, friend request an
         "updated": timestamp
         "networkId": string <span color="#1b1ef7"> // Request network id</span>
         "initiatorUserId": string <span color="#1b1ef7"> // Id of user who sent request</span>
-        "recipientUserId": string <span color="#1b1ef7"> // Id of user who received request</span>
+        "recipientUserId": string <span color="#1b1ef7"> // Id of user or entity (e.g. communityId) who received request</span>
         "type": string <span color="#1b1ef7"> // Connection/Invitation/Meeting/Community/AttestationClaim</span>
         "status": string <span color="#1b1ef7"> // pending/accepted/declined</span>
         "message": string <span color="#1b1ef7"> // Request message by client</span>
@@ -508,7 +508,7 @@ API is used to manage user requests, such as: room invitation, friend request an
         "updated": timestamp
         "networkId": string <span color="#1b1ef7"> // Request network id</span>
         "initiatorUserId": string <span color="#1b1ef7"> // Id of user who sent request</span>
-        "recipientUserId": string <span color="#1b1ef7"> // Id of user who received request</span>
+        "recipientUserId": string <span color="#1b1ef7"> // Id of user or entity (e.g. communityId) who received request</span>
         "type": string <span color="#1b1ef7"> // Connection/Invitation/Meeting/Community/AttestationClaim</span>
         "status": string <span color="#1b1ef7"> // pending/accepted/declined</span>
         "message": string <span color="#1b1ef7"> // Request message by client</span>
@@ -570,6 +570,7 @@ API is used to manage user requests, such as: room invitation, friend request an
     "avatar3D": { <span color="#1b1ef7"> // field is not returned if empty</span>
         "assetId": string
         "assetSkins": map[string]string <span color="#1b1ef7"> // map of selected skins per variants</span>
+        "avatarResourceId": string <span color="#1b1ef7"> // resource id (in case of avatar uploaded to user3DAvatar belonging)</span>
         "avatarUrl": string <span color="#1b1ef7"> // url to gbl file (Ready Player Me)</span>
         "avatarUserId": string <span color="#1b1ef7"> // user id for session recovery (Ready Player Me)</span>
     }

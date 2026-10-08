@@ -13,6 +13,7 @@
 | ~~[social:archiveInvitation](#archive-invitation)~~ | websocket | Archive invitation |
 | ~~[social:unarchiveInvitation](#unarchive-invitation)~~ | websocket | Unarchive invitation |
 | [room:getRoomInvitations](#get-room-invitations) | websocket | Get room invitations |
+| [room:getUserRoomAccessInfo](#get-user-room-access-info) | websocket | Get user room access info |
 | [social:getUserInvitations](#get-user-invitations) | websocket | Get user invitations |
 | ~~[social:getArchivedInvitations](#get-archived-user-invitations)~~ | websocket | Get archived user invitations |
 | [social:requestThoughtsOfUsers](#request-thoughts-of-users) | websocket | Request thoughts of users |
@@ -297,6 +298,66 @@ Function creates user request of "Invitation" type. See [requests API](request.m
 
 <br>
 
+<a name="get-user-room-access-info"></a>
+
+### Get user room access info
+
+**Method:** websocket
+
+**Endpoint:** room:getUserRoomAccessInfo
+
+**Description:** Returns whether the target user has access to the room (via an explicit invitation, or implicitly, e.g. the room is public) along with that invitation, if one exists. The calling user must have view access to the room.
+
+**Request:** 
+
+<pre>
+{
+    "data": {
+        "roomId": string
+        "userId": string
+    }
+    "event": { "id": string, "date": timestamp }
+}
+</pre>
+
+**Response:** 
+
+<pre>
+{
+    "data": {
+        "hasAccess": bool <span color="#1b1ef7"> // whether the target user can view the room, via an invitation or otherwise (e.g. public room)</span>
+        "permissions": { <span color="#1b1ef7"> // the target user's permissions in the room, if they have access</span>
+            "view": bool
+            "comment": bool
+            "contribute": bool
+            "edit": bool
+            "manage": bool
+        }
+        "invitation": { <span color="#1b1ef7"> // present only if the target user has an explicit invitation</span>
+            "id": string
+            "created": timestamp
+            "updated": timestamp
+            "status": string
+            "description": string
+            "permissions": {
+                "view": bool
+                "comment": bool
+                "contribute": bool
+                "edit": bool
+                "manage": bool
+            }
+            "invitedById": string
+            "userId": string
+            "roomId": string
+            "roomPrivacy": string
+        }
+    }
+    "error": { "status": bool, "code": int, "message": string }
+}
+</pre>
+
+<br>
+
 <a name="get-user-invitations"></a>
 
 ### Get user invitations
@@ -348,7 +409,8 @@ Function creates user request of "Invitation" type. See [requests API](request.m
                 "name": string
                 "tags": [ string ]
                 "ownerIds": [ string ]
-                "subscriptionStatus": string
+                "privacy": string <span color="#1b1ef7"> // private/public/openForAttendees</span>
+                "subscriptionStatus": string <span color="#1b1ef7"> // free/active/expired</span>
             }
         }]
     }
@@ -610,6 +672,7 @@ Function creates user request of "Invitation" type. See [requests API](request.m
     "avatar3D": { <span color="#1b1ef7"> // field is not returned if empty</span>
         "assetId": string
         "assetSkins": map[string]string <span color="#1b1ef7"> // map of selected skins per variants</span>
+        "avatarResourceId": string <span color="#1b1ef7"> // resource id (in case of avatar uploaded to user3DAvatar belonging)</span>
         "avatarUrl": string <span color="#1b1ef7"> // url to gbl file (Ready Player Me)</span>
         "avatarUserId": string <span color="#1b1ef7"> // user id for session recovery (Ready Player Me)</span>
     }
@@ -680,6 +743,7 @@ Function creates user request of "Invitation" type. See [requests API](request.m
     "encryptionVersion": string <span color="#1b1ef7"> // encryption version, like 'verus.v1'</span>
     "encryptionEpoch": int <span color="#1b1ef7"> // epoch defines key bundle that was used for encryption</span>
     "encryptionEpk": string <span color="#1b1ef7"> // ephemeral public key that should be used to decrypt cypher data</span>
+    "userId": string <span color="#1b1ef7"> // user id of resource author</span>
     "belonging": string <span color="#1b1ef7"> // determines resource location in the system in a way 'belongingType:belongingPath(networkId)'</span>
     "status": string <span color="#1b1ef7"> // pending/processing/ready/failed</span>
     "metadata": {
@@ -703,6 +767,7 @@ Function creates user request of "Invitation" type. See [requests API](request.m
         "amazon": { <a href="#resource-data-amazon">resource data amazon structure</a> }
         "imdb": { <a href="#resource-data-imdb">resource data imdb structure</a> }
         "youtube": { <a href="#resource-data-youtube">resource data youtube structure</a> }
+        "vimeo": { <a href="#resource-data-vimeo">resource data vimeo structure</a> }
         "pinterest": { <a href="#resource-data-pinterest">resource data pinterest structure</a> }
         "pixabay": { <a href="#resource-data-pixabay">resource data pixabay structure</a> }
         "facebook": { <a href="#resource-data-facebook">resource data facebook structure</a> }
@@ -712,8 +777,9 @@ Function creates user request of "Invitation" type. See [requests API](request.m
         "thumbnailUrl": string
         "downloadUrl": string
         "directory": { <a href="#resource-data-directory">resource data directory structure</a> }
-        "channel": { <a href="#channel-data">channel data structure</a> }
         "googleDrive": { <a href="#google-drive">google drive structure</a> }
+        "channel": { <a href="#channel-data">channel data structure</a> }
+        "enrichment": { <a href="#enrichment-data">enrichment data structure</a> }
     }
     "customParams": map[string]{ custom structure } <span color="#1b1ef7"> // client defined parameters</span>
     "actions": [{ <a href="#programmatic-action-with-children">programmatic action with children structure</a> }] <span color="#1b1ef7"> // custom programmatic actions from users</span>
@@ -850,6 +916,19 @@ Function creates user request of "Invitation" type. See [requests API](request.m
 
 <br>
 
+<a name="resource-data-vimeo"></a>
+
+#### Resource Data Vimeo
+
+<pre>
+{
+    "videoUrl": string
+    "formatId": string
+}
+</pre>
+
+<br>
+
 <a name="resource-data-pinterest"></a>
 
 #### Resource Data Pinterest
@@ -913,6 +992,7 @@ Function creates user request of "Invitation" type. See [requests API](request.m
     "assetId": string
     "playbackUrl": string
     "masterUrl": string
+    "createdAt": int
 }
 </pre>
 
@@ -924,7 +1004,7 @@ Function creates user request of "Invitation" type. See [requests API](request.m
 
 <pre>
 {
-    "generationModel": string <span color="#1b1ef7"> // the model used for image generation [dall-e-3]</span>
+    "generationModel": string <span color="#1b1ef7"> // the model used for image generation [gpt-image-2, gpt-image-1.5, gpt-image-1, gpt-image-1-mini]; defaults to gpt-image-2</span>
     "prompt": string <span color="#1b1ef7"> // a text description of the desired image</span>
     "revisedPrompt": string <span color="#1b1ef7"> // the prompt that was used to generate the image, if there was any revision to the prompt</span>
     "url": string <span color="#1b1ef7"> // the URL of the generated image</span>
@@ -946,6 +1026,20 @@ Function creates user request of "Invitation" type. See [requests API](request.m
 
 <br>
 
+<a name="google-drive"></a>
+
+#### Google Drive
+
+<pre>
+{
+    "fileId": string
+    "name": string
+    "mimeType": string
+}
+</pre>
+
+<br>
+
 <a name="channel-data"></a>
 
 #### Channel Data
@@ -961,15 +1055,18 @@ Function creates user request of "Invitation" type. See [requests API](request.m
 
 <br>
 
-<a name="google-drive"></a>
+<a name="enrichment-data"></a>
 
-#### Google Drive
+#### Enrichment Data
 
 <pre>
 {
-    "fileId": string
-    "name": string
-    "mimeType": string
+    "categories": [ string ]
+    "enrichedAt": timestamp
+    "enrichmentStatus": string
+    "language": string
+    "qualityScore": int
+    "tags": [ string ]
 }
 </pre>
 

@@ -8,12 +8,15 @@
 |-----|-----|-----|
 | ~~[social:getPropTeamMembers](#get-prop-team-members)~~ | websocket | Get prop team members |
 | [social:getPropInvitations](#get-prop-invitations) | websocket | Get prop invitations |
+| [social:listAllPropInvitationsInRoom](#list-all-prop-invitations-in-room) | websocket | List all prop invitations in room |
 | ~~[social:inviteManagerToProp](#invite-manager-to-prop)~~ | websocket | Invite manager to prop |
 | [social:inviteToProp](#invite-to-prop) | websocket | Invite to prop |
 | [social:deletePropInvitation](#delete-prop-invitation) | websocket | Delete prop invitation |
+| [room:propTeamMemberInteraction](#prop-team-member-interaction) | websocket | Prop team member interaction |
 | [room:propInvitationCreated](#on-prop-invitation-created-event) | websocketEvent | On prop invitation created event |
 | [room:propInvitationUpdated](#on-prop-invitation-updated-event) | websocketEvent | On prop invitation updated event |
 | [room:propInvitationDeleted](#on-prop-invitation-deleted-event) | websocketEvent | On prop invitation deleted event |
+| [room:propTeamMemberInteractionEvent](#on-prop-team-member-interaction-event) | websocketEvent | On prop team member interaction event |
 
 <br>
 
@@ -105,6 +108,52 @@
 
 <br>
 
+<a name="list-all-prop-invitations-in-room"></a>
+
+### List all prop invitations in room
+
+**Method:** websocket
+
+**Endpoint:** social:listAllPropInvitationsInRoom
+
+**Request:** 
+
+<pre>
+{
+    "data": {
+        "roomId": string
+    }
+    "event": { "id": string, "date": timestamp }
+}
+</pre>
+
+**Response:** 
+
+<pre>
+{
+    "data": {
+        "invitations": [{
+            "roomId": string
+            "propId": string
+            "userId": string
+            "created": timestamp
+            "permissions": {
+                "view": bool
+                "comment": bool
+                "contribute": bool
+                "edit": bool
+                "manage": bool
+            }
+            "invitedById": string
+            "customParams": map[string]{ custom structure } <span color="#1b1ef7"> // custom invitation parameters set by client, like AI agent settings</span>
+        }]
+    }
+    "error": { "status": bool, "code": int, "message": string }
+}
+</pre>
+
+<br>
+
 <a name="invite-manager-to-prop"></a>
 
 ### Invite manager to prop
@@ -163,6 +212,7 @@
             "edit": bool
             "manage": bool
         }
+        "customParams": map[string]{ custom structure } <span color="#1b1ef7"> // custom invitation parameters set by client, like AI agent settings</span>
     }
     "event": { "id": string, "date": timestamp }
 }
@@ -194,13 +244,40 @@
         "roomId": string
         "propId": string
         "invitedUser": string
-        "permissions": {
-            "view": bool
-            "comment": bool
-            "contribute": bool
-            "edit": bool
-            "manage": bool
-        }
+    }
+    "event": { "id": string, "date": timestamp }
+}
+</pre>
+
+**Response:** 
+
+<pre>
+{
+    "error": { "status": bool, "code": int, "message": string }
+}
+</pre>
+
+<br>
+
+<a name="prop-team-member-interaction"></a>
+
+### Prop team member interaction
+
+**Method:** websocket
+
+**Endpoint:** room:propTeamMemberInteraction
+
+**Description:** Endpoint is used when client wants to interact with prop team member, e.g. to communicate with team member agent.
+
+**Request:** 
+
+<pre>
+{
+    "data": {
+        "roomId": string
+        "propId": string
+        "memberIds": [ string ] <span color="#1b1ef7"> // optional, if empty - interaction event will receive all team members of the prop</span>
+        "customParams": map[string]{ custom structure } <span color="#1b1ef7"> // custom interaction parameters set by client</span>
     }
     "event": { "id": string, "date": timestamp }
 }
@@ -279,6 +356,28 @@
 
 <br>
 
+<a name="on-prop-team-member-interaction-event"></a>
+
+### On prop team member interaction event
+
+**Event:** room:propTeamMemberInteractionEvent
+
+**Data:** 
+
+<pre>
+{
+    "data": {
+        "roomId": string
+        "propId": string
+        "userId": string <span color="#1b1ef7"> // user who triggered the interaction event</span>
+        "customParams": map[string]{ custom structure } <span color="#1b1ef7"> // custom interaction parameters set by client</span>
+    }
+    "error": { "status": bool, "code": int, "message": string }
+}
+</pre>
+
+<br>
+
 <a name="models"></a>
 
 ## Models
@@ -299,6 +398,7 @@
     "avatar3D": { <span color="#1b1ef7"> // field is not returned if empty</span>
         "assetId": string
         "assetSkins": map[string]string <span color="#1b1ef7"> // map of selected skins per variants</span>
+        "avatarResourceId": string <span color="#1b1ef7"> // resource id (in case of avatar uploaded to user3DAvatar belonging)</span>
         "avatarUrl": string <span color="#1b1ef7"> // url to gbl file (Ready Player Me)</span>
         "avatarUserId": string <span color="#1b1ef7"> // user id for session recovery (Ready Player Me)</span>
     }
@@ -323,6 +423,7 @@
         "manage": bool
     }
     "invitedById": string
+    "customParams": map[string]{ custom structure } <span color="#1b1ef7"> // custom invitation parameters set by client, like AI agent settings</span>
     "invitedUser": { <a href="#user-simple">user simple structure</a> }
 }
 </pre>

@@ -16,10 +16,21 @@
 | ~~[/api/v0/partnerRpc/verus.attestationFetched](#attestation-fetched)~~ | jsonRpc | Attestation fetched |
 | ~~[/api/v0/partnerRpc/verus.attestationProofsFetched](#attestation-proofs-fetched)~~ | jsonRpc | Attestation proofs fetched |
 | [/api/v0/partnerRpc/verus.verifyEndorsementSigned](#verify-endorsement-signed) | jsonRpc | Verify endorsement signed |
+| [/api/v0/partnerRpc/verus.verifyEndorsementsSigned](#verify-endorsements-signed) | jsonRpc | Verify endorsements signed |
 | [/api/v0/partnerRpc/verus.transferIdentity](#transfer-identity) | jsonRpc | Transfer identity |
 | [/api/v0/partnerRpc/verus.nftMinted](#nft-minted) | jsonRpc | Nft minted |
 | [/api/v0/partnerRpc/verus.paymentReady](#payment-ready) | jsonRpc | Payment ready |
 | [/api/v0/partnerRpc/verus.currencyReady](#currency-ready) | jsonRpc | Currency ready |
+| [/api/v0/partnerRpc/verus.provisionStarted](#provision-started) | jsonRpc | Provision started |
+| [/api/v0/partnerRpc/verus.provisionEnded](#provision-ended) | jsonRpc | Provision ended |
+| [/api/v0/partnerRpc/verus.valuLightProvisionStarted](#valu-light-provision-started) | jsonRpc | Valu light provision started |
+| [/api/v0/partnerRpc/verus.valuLightProvisionEnded](#valu-light-provision-ended) | jsonRpc | Valu light provision ended |
+| [/api/v0/partnerRpc/verus.paymentStatus](#payment-status) | jsonRpc | Payment status |
+| [/api/v0/partnerRpc/verus.identityGrantingStatus](#identity-granting-status) | jsonRpc | Identity granting status |
+| [/api/v0/partnerRpc/verus.timelockResult](#timelock-result) | jsonRpc | Timelock result |
+| [/api/v0/partnerRpc/verus.revokeOrRecoveryActionProof](#revoke-or-recovery-action-proof) | jsonRpc | Revoke or recovery action proof |
+| [/api/v0/partnerRpc/verus.agentIdCreated](#agent-id-created) | jsonRpc | Agent id created |
+| [/api/v0/partnerRpc/verus.agentBalances](#agent-balances) | jsonRpc | Agent balances |
 
 <br>
 
@@ -255,6 +266,12 @@
     "identityName": string <span color="#1b1ef7"> // Verus identity that signed the message</span>
     "iAddress": string <span color="#1b1ef7"> // Verus identity IAddress that signed the message</span>
     "signature": string <span color="#1b1ef7"> // Verus verification signature</span>
+    "verifyLink": { <span color="#1b1ef7"> // for social account verification</span>
+        "hash": string
+        "identityName": string
+        "signature": string
+        "verifyLink": string
+    }
 }
 </pre>
 
@@ -404,6 +421,46 @@
 
 <br>
 
+<a name="verify-endorsements-signed"></a>
+
+### Verify endorsements signed
+
+**Method:** jsonRpc
+
+**HTTP Method:** POST
+
+**Path:** /api/v0/partnerRpc/verus.verifyEndorsementsSigned
+
+**Description:** Endpoint is used by crypto server to verify multiple endorsements signed by Verus user.
+
+**Request:** 
+
+<pre>
+{
+    "challengeId": string
+    "identityName": string
+    "signatures": [{
+        "version": int
+        "systemid": string
+        "referenceid": string
+        "hashtype": int
+        "signaturehash": string
+        "identityid": string
+        "signaturetype": int
+        "signature": string
+    }]
+    "error": string
+}
+</pre>
+
+**Response:** 
+
+<pre>
+{ empty }
+</pre>
+
+<br>
+
 <a name="transfer-identity"></a>
 
 ### Transfer identity
@@ -504,6 +561,303 @@
 {
     "error": string <span color="#1b1ef7"> // Error message if any</span>
     "challengeId": string <span color="#1b1ef7"> // ID related to the namespace/currency setup</span>
+}
+</pre>
+
+**Response:** 
+
+<pre>
+{ empty }
+</pre>
+
+<br>
+
+<a name="provision-started"></a>
+
+### Provision started
+
+**Method:** jsonRpc
+
+**HTTP Method:** POST
+
+**Path:** /api/v0/partnerRpc/verus.provisionStarted
+
+**Request:** 
+
+<pre>
+{
+    "challengeId": string <span color="#1b1ef7"> // challenge id is unique for each challenge</span>
+    "error": string <span color="#1b1ef7"> // not empty when challenge failed</span>
+}
+</pre>
+
+**Response:** 
+
+<pre>
+{ empty }
+</pre>
+
+<br>
+
+<a name="provision-ended"></a>
+
+### Provision ended
+
+**Method:** jsonRpc
+
+**HTTP Method:** POST
+
+**Path:** /api/v0/partnerRpc/verus.provisionEnded
+
+**Request:** 
+
+<pre>
+{
+    "challengeId": string <span color="#1b1ef7"> // challenge id is unique for each challenge</span>
+    "txid": string <span color="#1b1ef7"> // transaction id</span>
+    "error": string <span color="#1b1ef7"> // not empty when challenge failed</span>
+    "identity": { <span color="#1b1ef7"> // identity created by the provisioning transaction, present when provisioning succeeded</span>
+        "address": string <span color="#1b1ef7"> // Verus identity iAddress</span>
+        "name": string <span color="#1b1ef7"> // Verus identity name</span>
+    }
+}
+</pre>
+
+**Response:** 
+
+<pre>
+{ empty }
+</pre>
+
+<br>
+
+<a name="valu-light-provision-started"></a>
+
+### Valu light provision started
+
+**Method:** jsonRpc
+
+**HTTP Method:** POST
+
+**Path:** /api/v0/partnerRpc/verus.valuLightProvisionStarted
+
+**Description:** Callback for an identity queued via valuLight:provisionIdentity.
+
+**Request:** 
+
+<pre>
+{
+    "challengeId": string <span color="#1b1ef7"> // challenge id is unique for each challenge</span>
+    "error": string <span color="#1b1ef7"> // not empty when the job failed before its name commitment went out</span>
+}
+</pre>
+
+**Response:** 
+
+<pre>
+{ empty }
+</pre>
+
+<br>
+
+<a name="valu-light-provision-ended"></a>
+
+### Valu light provision ended
+
+**Method:** jsonRpc
+
+**HTTP Method:** POST
+
+**Path:** /api/v0/partnerRpc/verus.valuLightProvisionEnded
+
+**Description:** Callback for an identity queued via valuLight:provisionIdentity.
+
+**Request:** 
+
+<pre>
+{
+    "challengeId": string <span color="#1b1ef7"> // challenge id is unique for each challenge</span>
+    "txid": string <span color="#1b1ef7"> // registration transaction id; empty when it never registered</span>
+    "error": string <span color="#1b1ef7"> // not empty when the job failed</span>
+    "identity": { <span color="#1b1ef7"> // identity created by the provisioning transaction, present when provisioning succeeded</span>
+        "address": string <span color="#1b1ef7"> // Verus identity iAddress</span>
+        "name": string <span color="#1b1ef7"> // Verus identity name</span>
+    }
+}
+</pre>
+
+**Response:** 
+
+<pre>
+{ empty }
+</pre>
+
+<br>
+
+<a name="payment-status"></a>
+
+### Payment status
+
+**Method:** jsonRpc
+
+**HTTP Method:** POST
+
+**Path:** /api/v0/partnerRpc/verus.paymentStatus
+
+**Request:** 
+
+<pre>
+{
+    "challengeId": string
+    "status": string
+    "blockchainTransactionId": string
+}
+</pre>
+
+**Response:** 
+
+<pre>
+{ empty }
+</pre>
+
+<br>
+
+<a name="identity-granting-status"></a>
+
+### Identity granting status
+
+**Method:** jsonRpc
+
+**HTTP Method:** POST
+
+**Path:** /api/v0/partnerRpc/verus.identityGrantingStatus
+
+**Description:** Callback to notify about status of ambassador identity granting status.
+
+**Request:** 
+
+<pre>
+{
+    "identity": string
+    "place": string
+    "id": string
+    "token": string
+    "status": string
+    "error": string
+}
+</pre>
+
+**Response:** 
+
+<pre>
+{ empty }
+</pre>
+
+<br>
+
+<a name="timelock-result"></a>
+
+### Timelock result
+
+**Method:** jsonRpc
+
+**HTTP Method:** POST
+
+**Path:** /api/v0/partnerRpc/verus.timelockResult
+
+**Request:** 
+
+<pre>
+{
+    "challengeId": string <span color="#1b1ef7"> // challenge id is unique for each challenge</span>
+    "error": string <span color="#1b1ef7"> // not empty when challenge failed</span>
+}
+</pre>
+
+**Response:** 
+
+<pre>
+{ empty }
+</pre>
+
+<br>
+
+<a name="revoke-or-recovery-action-proof"></a>
+
+### Revoke or recovery action proof
+
+**Method:** jsonRpc
+
+**HTTP Method:** POST
+
+**Path:** /api/v0/partnerRpc/verus.revokeOrRecoveryActionProof
+
+**Request:** 
+
+<pre>
+{
+    "error": string
+    "status": bool
+    "challengeId": string
+    "identity": string
+    "action": string <span color="#1b1ef7"> // revoke/recovery</span>
+}
+</pre>
+
+**Response:** 
+
+<pre>
+{ empty }
+</pre>
+
+<br>
+
+<a name="agent-id-created"></a>
+
+### Agent id created
+
+**Method:** jsonRpc
+
+**HTTP Method:** POST
+
+**Path:** /api/v0/partnerRpc/verus.agentIdCreated
+
+**Request:** 
+
+<pre>
+{
+    "challengeId": string
+    "identityName": string
+    "iAddress": string
+    "error": string
+}
+</pre>
+
+**Response:** 
+
+<pre>
+{ empty }
+</pre>
+
+<br>
+
+<a name="agent-balances"></a>
+
+### Agent balances
+
+**Method:** jsonRpc
+
+**HTTP Method:** POST
+
+**Path:** /api/v0/partnerRpc/verus.agentBalances
+
+**Request:** 
+
+<pre>
+{
+    "challengeId": string
+    "balances": map[string]float <span color="#1b1ef7"> // map of balance name (e.g., i-address) to balance value</span>
+    "error": string
 }
 </pre>
 

@@ -15,6 +15,7 @@
 | ~~[videochat:unsubscribeFromPlaygroundVideochat](#unsubscribe-from-playground-videochat)~~ | websocket | Unsubscribe from playground videochat |
 | ~~[videochat:status](#videochat-status-deprecated)~~ | websocket | Videochat status: deprecated |
 | [videochat:getStatus](#videochat-status) | websocket | Videochat status |
+| [videochat:getRaisedHands](#get-raised-hands) | websocket | Get raised hands |
 | [videochat:getTokenForVideochat](#get-token-for-new-videochat) | websocket | Get token for new videochat |
 | [videochat:getTokenForPropConference](#get-token-for-prop-conference) | websocket | Get token for prop conference |
 | [videochat:getTokenForDirectVideochat](#get-token-for-direct-videochat) | websocket | Get token for direct videochat |
@@ -27,6 +28,7 @@
 | [videochat:onConnection](#on-participant-connected-to-videochat) | websocket | On participant connected to videochat |
 | [videochat:onDisconnection](#on-participant-disconnected-from-videochat) | websocket | On participant disconnected from videochat |
 | [videochat:endVideochat](#end-videochat) | websocket | End videochat |
+| [videochat:transfer](#transfer-videochat) | websocket | Transfer videochat |
 | [videochat:userGoesToBackgroundMode](#videochat-user-goes-to-background-mode) | websocket | Videochat user goes to background mode |
 | [videochat:userReturnsFromBackgroundMode](#videochat-user-returns-from-background-mode) | websocket | Videochat user returns from background mode |
 | [videochat:changeParticipantPermissions](#change-videochat-participant-permissions) | websocket | Change videochat participant permissions |
@@ -43,6 +45,12 @@
 | [videochat:turnOffUserOption](#turn-off-user-option) | websocket | Turn off user option |
 | [videochat:startLiveStream](#videochat-start-live-stream) | websocket | Videochat start live stream |
 | [videochat:stopLiveStream](#videochat-stop-live-stream) | websocket | Videochat stop live stream |
+| [videochat:startLiveStreamOnly](#videochat-start-live-stream-only) | websocket | Videochat start live stream only |
+| [videochat:startRecording](#videochat-start-recording) | websocket | Videochat start recording |
+| [videochat:stopRecording](#videochat-stop-recording) | websocket | Videochat stop recording |
+| [videochat:setSettings](#videochat-set-settings) | websocket | Videochat set settings |
+| [videochat:deleteSettings](#videochat-delete-settings) | websocket | Videochat delete settings |
+| [videochat:getSettings](#videochat-get-settings) | websocket | Videochat get settings |
 | [videochat:getVideochatInfoOfRoomProps](#get-videochat-info-of-room-props) | websocket | Get videochat info of room props |
 | [videochat:broadcastAction](#videochat-broadcast-action) | websocket | Videochat broadcast action |
 | [videochat:requestLastBroadcastAction](#videochat-request-last-broadcast-action) | websocket | Videochat request last broadcast action |
@@ -53,6 +61,7 @@
 | ~~[videochat:videochatStarted](#videochat-started-event-deprecated)~~ | websocketEvent | Videochat started event: deprecated |
 | [videochat:videochatEnded](#videochat-ended-event) | websocketEvent | Videochat ended event |
 | [videochat:videochatStatusUpdated](#videochat-status-updated-event) | websocketEvent | Videochat status updated event |
+| [videochat:sourceChanged](#videochat-source-changed-event) | websocketEvent | Videochat source changed event |
 | [videochat:identityConnected](#videochat-identity-connected-event) | websocketEvent | Videochat identity connected event |
 | [videochat:identityDisconnected](#videochat-identity-disconnected-event) | websocketEvent | Videochat identity disconnected event |
 | ~~[videochat:participantConnected](#participant-connected-event)~~ | websocketEvent | Participant connected event |
@@ -70,6 +79,8 @@
 | [videochat:turnOffUserOption](#videochat-turn-off-option-event) | websocketEvent | Videochat turn off option event |
 | [videochat:liveStreamStarted](#videochat-live-stream-started-event) | websocketEvent | Videochat live stream started event |
 | [videochat:liveStreamStopped](#videochat-live-stream-stopped-event) | websocketEvent | Videochat live stream stopped event |
+| [videochat:recordingStarted](#videochat-recording-started-event) | websocketEvent | Videochat recording started event |
+| [videochat:recordingStopped](#videochat-recording-stopped-event) | websocketEvent | Videochat recording stopped event |
 | [videochat:propVideochatCountChanged](#prop-videochat-count-changed-event) | websocketEvent | Prop videochat count changed event |
 | [videochat:action](#videochat-action-event) | websocketEvent | Videochat action event |
 | [videochat:customDataUpdated](#videochat-custom-data-updated-event) | websocketEvent | Videochat custom data updated event |
@@ -139,6 +150,7 @@ X-Session-Id: sessionToken
         "propId": string <span color="#1b1ef7"> // if videochatId is empty (requires roomId)</span>
         "playgroundId": string <span color="#1b1ef7"> // if videochatId is empty (requires roomId)</span>
         "groupId": string <span color="#1b1ef7"> // if videochatId is empty</span>
+        "userId": string <span color="#1b1ef7"> // if videochatId is empty (in case of direct videochat)</span>
     }
     "event": { "id": string, "date": timestamp }
 }
@@ -174,6 +186,7 @@ X-Session-Id: sessionToken
         "propId": string <span color="#1b1ef7"> // if videochatId is empty (requires roomId)</span>
         "playgroundId": string <span color="#1b1ef7"> // if videochatId is empty (requires roomId)</span>
         "groupId": string <span color="#1b1ef7"> // if videochatId is empty</span>
+        "userId": string <span color="#1b1ef7"> // if videochatId is empty (in case of direct videochat)</span>
     }
     "event": { "id": string, "date": timestamp }
 }
@@ -290,6 +303,7 @@ X-Session-Id: sessionToken
                 "groupId": string
                 "playgroundId": string
                 "speedDatingId": string
+                "userIds": [ string ]
             }
             "videochatId": string
             "videochatMode": string <span color="#1b1ef7"> // videochat/conference/networkConference</span>
@@ -302,6 +316,7 @@ X-Session-Id: sessionToken
             "isPresentationActive": bool <span color="#1b1ef7"> // videochat has active presentation ongoing</span>
             "isPresenterOnlyMode": bool <span color="#1b1ef7"> // show only presenter in videochat</span>
             "isStreamEnabled": bool <span color="#1b1ef7"> // videochat could be could be streamed to listeners</span>
+            "isRecordingEnabled": bool <span color="#1b1ef7"> // videochat is currently being recorded to MUX</span>
             "streamPlaybackUrl": string <span color="#1b1ef7"> // videochat live stream playback url</span>
             "isMuted": bool <span color="#1b1ef7"> // participants are muted by moderator</span>
             "videochatLimit": int <span color="#1b1ef7"> // amount of identities allowed in videochat (0 means unlimited)</span>
@@ -317,6 +332,7 @@ X-Session-Id: sessionToken
                     "connectionStatus": int <span color="#1b1ef7"> // show connection status: 1 - active, 2 - in-background</span>
                     "microphoneStatus": int <span color="#1b1ef7"> // show device microphone status</span>
                     "handStatus": int <span color="#1b1ef7"> // show if user wants to attract attention of the presenter/moderator</span>
+                    "handStatusUpdated": timestamp <span color="#1b1ef7"> // hand status last updated timestamp, used to order raised hands</span>
                 }]
                 "identities": [ string ] <span color="#1b1ef7"> // DEPRECATED</span>
                 "uids": [ int ] <span color="#1b1ef7"> // DEPRECATED</span>
@@ -420,6 +436,7 @@ X-Session-Id: sessionToken
                 "groupId": string
                 "playgroundId": string
                 "speedDatingId": string
+                "userIds": [ string ]
             }
             "videochatId": string
             "videochatMode": string <span color="#1b1ef7"> // videochat/conference/networkConference</span>
@@ -432,6 +449,7 @@ X-Session-Id: sessionToken
             "isPresentationActive": bool <span color="#1b1ef7"> // videochat has active presentation ongoing</span>
             "isPresenterOnlyMode": bool <span color="#1b1ef7"> // show only presenter in videochat</span>
             "isStreamEnabled": bool <span color="#1b1ef7"> // videochat could be could be streamed to listeners</span>
+            "isRecordingEnabled": bool <span color="#1b1ef7"> // videochat is currently being recorded to MUX</span>
             "streamPlaybackUrl": string <span color="#1b1ef7"> // videochat live stream playback url</span>
             "isMuted": bool <span color="#1b1ef7"> // participants are muted by moderator</span>
             "videochatLimit": int <span color="#1b1ef7"> // amount of identities allowed in videochat (0 means unlimited)</span>
@@ -447,6 +465,7 @@ X-Session-Id: sessionToken
                     "connectionStatus": int <span color="#1b1ef7"> // show connection status: 1 - active, 2 - in-background</span>
                     "microphoneStatus": int <span color="#1b1ef7"> // show device microphone status</span>
                     "handStatus": int <span color="#1b1ef7"> // show if user wants to attract attention of the presenter/moderator</span>
+                    "handStatusUpdated": timestamp <span color="#1b1ef7"> // hand status last updated timestamp, used to order raised hands</span>
                 }]
                 "identities": [ string ] <span color="#1b1ef7"> // DEPRECATED</span>
                 "uids": [ int ] <span color="#1b1ef7"> // DEPRECATED</span>
@@ -495,6 +514,7 @@ X-Session-Id: sessionToken
         "propId": string <span color="#1b1ef7"> // if videochatId is empty (requires roomId)</span>
         "playgroundId": string <span color="#1b1ef7"> // if videochatId is empty (requires roomId)</span>
         "groupId": string <span color="#1b1ef7"> // if videochatId is empty</span>
+        "userId": string <span color="#1b1ef7"> // if videochatId is empty (in case of direct videochat)</span>
     }
     "event": { "id": string, "date": timestamp }
 }
@@ -515,6 +535,7 @@ X-Session-Id: sessionToken
                 "groupId": string
                 "playgroundId": string
                 "speedDatingId": string
+                "userIds": [ string ]
             }
             "videochatId": string
             "videochatMode": string <span color="#1b1ef7"> // videochat/conference/networkConference</span>
@@ -527,6 +548,7 @@ X-Session-Id: sessionToken
             "isPresentationActive": bool <span color="#1b1ef7"> // videochat has active presentation ongoing</span>
             "isPresenterOnlyMode": bool <span color="#1b1ef7"> // show only presenter in videochat</span>
             "isStreamEnabled": bool <span color="#1b1ef7"> // videochat could be could be streamed to listeners</span>
+            "isRecordingEnabled": bool <span color="#1b1ef7"> // videochat is currently being recorded to MUX</span>
             "streamPlaybackUrl": string <span color="#1b1ef7"> // videochat live stream playback url</span>
             "isMuted": bool <span color="#1b1ef7"> // participants are muted by moderator</span>
             "videochatLimit": int <span color="#1b1ef7"> // amount of identities allowed in videochat (0 means unlimited)</span>
@@ -549,6 +571,7 @@ X-Session-Id: sessionToken
                 "connectionStatus": int <span color="#1b1ef7"> // show connection status: 1 - active, 2 - in-background</span>
                 "microphoneStatus": int <span color="#1b1ef7"> // show device microphone status</span>
                 "handStatus": int <span color="#1b1ef7"> // show if user wants to attract attention of the presenter/moderator</span>
+                "handStatusUpdated": timestamp <span color="#1b1ef7"> // hand status last updated timestamp, used to order raised hands</span>
             }]
             "counter": int <span color="#1b1ef7"> // total users in videochat</span>
             "promotionRequests": [ string ] <span color="#1b1ef7"> // list of user ids</span>
@@ -566,6 +589,45 @@ X-Session-Id: sessionToken
 
 <br>
 
+<a name="get-raised-hands"></a>
+
+### Get raised hands
+
+**Method:** websocket
+
+**Endpoint:** videochat:getRaisedHands
+
+**Description:** Returns identities that currently have their hand raised, ordered by the time they raised it (earliest first).
+
+**Request:** 
+
+<pre>
+{
+    "data": {
+        "videochatId": string
+    }
+    "event": { "id": string, "date": timestamp }
+}
+</pre>
+
+**Response:** 
+
+<pre>
+{
+    "data": {
+        "raisedHands": [{
+            "userId": string
+            "identity": string
+            "handStatus": int
+            "handStatusUpdated": timestamp
+        }]
+    }
+    "error": { "status": bool, "code": int, "message": string }
+}
+</pre>
+
+<br>
+
 <a name="get-token-for-new-videochat"></a>
 
 ### Get token for new videochat
@@ -574,7 +636,7 @@ X-Session-Id: sessionToken
 
 **Endpoint:** videochat:getTokenForVideochat
 
-**Description:** Api returns identity and token for **room** or **group** videochat. Creates new videochat if it does not exist. 
+**Description:** Api returns identity and token for **room**, **prop** or **group** videochat. Creates new videochat if it does not exist. 
 
 Token should be used only once. Each time client wants to connect to videochat, it should request new token. 
 
@@ -592,6 +654,7 @@ Api could return following errors:
     "data": {
         "room": string
         "roomId": string
+        "propId": string <span color="#1b1ef7"> // requires roomId</span>
         "groupId": string
     }
     "event": { "id": string, "date": timestamp }
@@ -1126,6 +1189,44 @@ Api could return following errors:
 
 <br>
 
+<a name="transfer-videochat"></a>
+
+### Transfer videochat
+
+**Method:** websocket
+
+**Endpoint:** videochat:transfer
+
+**Description:** Moves an active direct videochat to a new source (e.g. escalating a direct call into a newly created group), keeping the same videochatId, participants and engine session. Only direct videochats can be transferred. Caller must already be an active participant of the videochat, and have permission to join/start a videochat at the new source.
+
+**Request:** 
+
+<pre>
+{
+    "data": {
+        "videochatId": string <span color="#1b1ef7"> // the active videochat to move</span>
+        "newSource": { <span color="#1b1ef7"> // target to transfer the videochat to</span>
+            "roomId": string
+            "propId": string
+            "playgroundId": string
+            "groupId": string
+            "userId": string
+        }
+    }
+    "event": { "id": string, "date": timestamp }
+}
+</pre>
+
+**Response:** 
+
+<pre>
+{
+    "error": { "status": bool, "code": int, "message": string }
+}
+</pre>
+
+<br>
+
 <a name="videochat-user-goes-to-background-mode"></a>
 
 ### Videochat user goes to background mode
@@ -1632,7 +1733,7 @@ Videochat options:
 
 **Endpoint:** videochat:startLiveStream
 
-**Description:** Videochat moderator can call this api to start MUX live stream.
+**Description:** Videochat moderator can call this api to start MUX live stream and recording.
 
 **Request:** 
 
@@ -1663,7 +1764,7 @@ Videochat options:
 
 **Endpoint:** videochat:stopLiveStream
 
-**Description:** Videochat moderator can call this api to stop MUX live stream.
+**Description:** Videochat moderator can call this api to stop MUX live stream (also stops recording if active).
 
 **Request:** 
 
@@ -1680,6 +1781,241 @@ Videochat options:
 
 <pre>
 {
+    "error": { "status": bool, "code": int, "message": string }
+}
+</pre>
+
+<br>
+
+<a name="videochat-start-live-stream-only"></a>
+
+### Videochat start live stream only
+
+**Method:** websocket
+
+**Endpoint:** videochat:startLiveStreamOnly
+
+**Description:** Videochat moderator can call this api to start MUX live stream without recording.
+
+**Request:** 
+
+<pre>
+{
+    "data": {
+        "videochatId": string
+    }
+    "event": { "id": string, "date": timestamp }
+}
+</pre>
+
+**Response:** 
+
+<pre>
+{
+    "error": { "status": bool, "code": int, "message": string }
+}
+</pre>
+
+<br>
+
+<a name="videochat-start-recording"></a>
+
+### Videochat start recording
+
+**Method:** websocket
+
+**Endpoint:** videochat:startRecording
+
+**Description:** Videochat moderator can call this api to start MUX recording on an active live stream.
+
+**Request:** 
+
+<pre>
+{
+    "data": {
+        "videochatId": string
+    }
+    "event": { "id": string, "date": timestamp }
+}
+</pre>
+
+**Response:** 
+
+<pre>
+{
+    "error": { "status": bool, "code": int, "message": string }
+}
+</pre>
+
+<br>
+
+<a name="videochat-stop-recording"></a>
+
+### Videochat stop recording
+
+**Method:** websocket
+
+**Endpoint:** videochat:stopRecording
+
+**Description:** Videochat moderator can call this api to stop MUX recording without stopping the live stream.
+
+**Request:** 
+
+<pre>
+{
+    "data": {
+        "videochatId": string
+    }
+    "event": { "id": string, "date": timestamp }
+}
+</pre>
+
+**Response:** 
+
+<pre>
+{
+    "error": { "status": bool, "code": int, "message": string }
+}
+</pre>
+
+<br>
+
+<a name="videochat-set-settings"></a>
+
+### Videochat set settings
+
+**Method:** websocket
+
+**Endpoint:** videochat:setSettings
+
+**Request:** 
+
+<pre>
+{
+    "data": {
+        "videochatId": string
+        "roomId": string <span color="#1b1ef7"> // if videochatId is empty</span>
+        "propId": string <span color="#1b1ef7"> // if videochatId is empty (requires roomId)</span>
+        "playgroundId": string <span color="#1b1ef7"> // if videochatId is empty (requires roomId)</span>
+        "groupId": string <span color="#1b1ef7"> // if videochatId is empty</span>
+        "userId": string <span color="#1b1ef7"> // if videochatId is empty (in case of direct videochat)</span>
+        "settings": {
+            "videochatMode": string <span color="#1b1ef7"> // videochat/conference</span>
+            "videochatType": string <span color="#1b1ef7"> // twilio only (peer-to-peer/group/group-small)</span>
+            "videochatEngine": string <span color="#1b1ef7"> // twilio/agora/livekit</span>
+            "videochatInitUser": string <span color="#1b1ef7"> // who can start the videochat (any/manager)</span>
+            "excludeListeners": bool <span color="#1b1ef7"> // don't show non-promoted videochat users</span>
+            "usePresentationBoard": bool <span color="#1b1ef7"> // use presentation board as share screen media</span>
+            "enableStreaming": bool <span color="#1b1ef7"> // enable videochat streaming to non participants</span>
+            "notificationMode": int <span color="#1b1ef7"> // notification mode for videochat events</span>
+            "autoPromotion": {
+                "useCustomSettings": bool <span color="#1b1ef7"> // if false, videochat will use server default settings</span>
+                "autoPromotionLimit": int <span color="#1b1ef7"> // limit of participants with automatic voice permissions</span>
+                "autoDemoteOnLimit": bool <span color="#1b1ef7"> // demote participants that were automatically promoted</span>
+            }
+            "limitSettings": {
+                "useCustomSettings": bool <span color="#1b1ef7"> // if false, videochat will use server default settings</span>
+                "videochatLimit": int <span color="#1b1ef7"> // amount of identities allowed in videochat (0 means unlimited)</span>
+            }
+        }
+    }
+    "event": { "id": string, "date": timestamp }
+}
+</pre>
+
+**Response:** 
+
+<pre>
+{
+    "error": { "status": bool, "code": int, "message": string }
+}
+</pre>
+
+<br>
+
+<a name="videochat-delete-settings"></a>
+
+### Videochat delete settings
+
+**Method:** websocket
+
+**Endpoint:** videochat:deleteSettings
+
+**Request:** 
+
+<pre>
+{
+    "data": {
+        "videochatId": string
+        "roomId": string <span color="#1b1ef7"> // if videochatId is empty</span>
+        "propId": string <span color="#1b1ef7"> // if videochatId is empty (requires roomId)</span>
+        "playgroundId": string <span color="#1b1ef7"> // if videochatId is empty (requires roomId)</span>
+        "groupId": string <span color="#1b1ef7"> // if videochatId is empty</span>
+        "userId": string <span color="#1b1ef7"> // if videochatId is empty (in case of direct videochat)</span>
+    }
+    "event": { "id": string, "date": timestamp }
+}
+</pre>
+
+**Response:** 
+
+<pre>
+{
+    "error": { "status": bool, "code": int, "message": string }
+}
+</pre>
+
+<br>
+
+<a name="videochat-get-settings"></a>
+
+### Videochat get settings
+
+**Method:** websocket
+
+**Endpoint:** videochat:getSettings
+
+**Request:** 
+
+<pre>
+{
+    "data": {
+        "videochatId": string
+        "roomId": string <span color="#1b1ef7"> // if videochatId is empty</span>
+        "propId": string <span color="#1b1ef7"> // if videochatId is empty (requires roomId)</span>
+        "playgroundId": string <span color="#1b1ef7"> // if videochatId is empty (requires roomId)</span>
+        "groupId": string <span color="#1b1ef7"> // if videochatId is empty</span>
+        "userId": string <span color="#1b1ef7"> // if videochatId is empty (in case of direct videochat)</span>
+    }
+    "event": { "id": string, "date": timestamp }
+}
+</pre>
+
+**Response:** 
+
+<pre>
+{
+    "data": {
+        "settings": {
+            "videochatMode": string <span color="#1b1ef7"> // videochat/conference</span>
+            "videochatType": string <span color="#1b1ef7"> // twilio only (peer-to-peer/group/group-small)</span>
+            "videochatEngine": string <span color="#1b1ef7"> // twilio/agora/livekit</span>
+            "videochatInitUser": string <span color="#1b1ef7"> // who can start the videochat (any/manager)</span>
+            "excludeListeners": bool <span color="#1b1ef7"> // don't show non-promoted videochat users</span>
+            "usePresentationBoard": bool <span color="#1b1ef7"> // use presentation board as share screen media</span>
+            "enableStreaming": bool <span color="#1b1ef7"> // enable videochat streaming to non participants</span>
+            "notificationMode": int <span color="#1b1ef7"> // notification mode for videochat events</span>
+            "autoPromotion": {
+                "useCustomSettings": bool <span color="#1b1ef7"> // if false, videochat will use server default settings</span>
+                "autoPromotionLimit": int <span color="#1b1ef7"> // limit of participants with automatic voice permissions</span>
+                "autoDemoteOnLimit": bool <span color="#1b1ef7"> // demote participants that were automatically promoted</span>
+            }
+            "limitSettings": {
+                "useCustomSettings": bool <span color="#1b1ef7"> // if false, videochat will use server default settings</span>
+                "videochatLimit": int <span color="#1b1ef7"> // amount of identities allowed in videochat (0 means unlimited)</span>
+            }
+        }
+    }
     "error": { "status": bool, "code": int, "message": string }
 }
 </pre>
@@ -1923,6 +2259,7 @@ Videochat options:
             "groupId": string
             "playgroundId": string
             "speedDatingId": string
+            "userIds": [ string ]
         }
         "videochatId": string
         "videochatMode": string <span color="#1b1ef7"> // videochat/conference/networkConference</span>
@@ -1935,6 +2272,7 @@ Videochat options:
         "isPresentationActive": bool <span color="#1b1ef7"> // videochat has active presentation ongoing</span>
         "isPresenterOnlyMode": bool <span color="#1b1ef7"> // show only presenter in videochat</span>
         "isStreamEnabled": bool <span color="#1b1ef7"> // videochat could be could be streamed to listeners</span>
+        "isRecordingEnabled": bool <span color="#1b1ef7"> // videochat is currently being recorded to MUX</span>
         "streamPlaybackUrl": string <span color="#1b1ef7"> // videochat live stream playback url</span>
         "isMuted": bool <span color="#1b1ef7"> // participants are muted by moderator</span>
         "videochatLimit": int <span color="#1b1ef7"> // amount of identities allowed in videochat (0 means unlimited)</span>
@@ -1957,6 +2295,7 @@ Videochat options:
             "connectionStatus": int <span color="#1b1ef7"> // show connection status: 1 - active, 2 - in-background</span>
             "microphoneStatus": int <span color="#1b1ef7"> // show device microphone status</span>
             "handStatus": int <span color="#1b1ef7"> // show if user wants to attract attention of the presenter/moderator</span>
+            "handStatusUpdated": timestamp <span color="#1b1ef7"> // hand status last updated timestamp, used to order raised hands</span>
         }]
         "counter": int <span color="#1b1ef7"> // total users in videochat</span>
         "promotionRequests": [ string ] <span color="#1b1ef7"> // list of user ids</span>
@@ -1995,6 +2334,7 @@ Videochat options:
             "groupId": string
             "playgroundId": string
             "speedDatingId": string
+            "userIds": [ string ]
         }
         "videochatId": string
         "videochatMode": string <span color="#1b1ef7"> // videochat/conference/networkConference</span>
@@ -2007,6 +2347,7 @@ Videochat options:
         "isPresentationActive": bool <span color="#1b1ef7"> // videochat has active presentation ongoing</span>
         "isPresenterOnlyMode": bool <span color="#1b1ef7"> // show only presenter in videochat</span>
         "isStreamEnabled": bool <span color="#1b1ef7"> // videochat could be could be streamed to listeners</span>
+        "isRecordingEnabled": bool <span color="#1b1ef7"> // videochat is currently being recorded to MUX</span>
         "streamPlaybackUrl": string <span color="#1b1ef7"> // videochat live stream playback url</span>
         "isMuted": bool <span color="#1b1ef7"> // participants are muted by moderator</span>
         "videochatLimit": int <span color="#1b1ef7"> // amount of identities allowed in videochat (0 means unlimited)</span>
@@ -2022,6 +2363,7 @@ Videochat options:
                 "connectionStatus": int <span color="#1b1ef7"> // show connection status: 1 - active, 2 - in-background</span>
                 "microphoneStatus": int <span color="#1b1ef7"> // show device microphone status</span>
                 "handStatus": int <span color="#1b1ef7"> // show if user wants to attract attention of the presenter/moderator</span>
+                "handStatusUpdated": timestamp <span color="#1b1ef7"> // hand status last updated timestamp, used to order raised hands</span>
             }]
             "identities": [ string ] <span color="#1b1ef7"> // DEPRECATED</span>
             "uids": [ int ] <span color="#1b1ef7"> // DEPRECATED</span>
@@ -2091,6 +2433,7 @@ Videochat options:
             "groupId": string
             "playgroundId": string
             "speedDatingId": string
+            "userIds": [ string ]
         }
         "videochatId": string
         "videochatMode": string <span color="#1b1ef7"> // videochat/conference/networkConference</span>
@@ -2103,9 +2446,33 @@ Videochat options:
         "isPresentationActive": bool <span color="#1b1ef7"> // videochat has active presentation ongoing</span>
         "isPresenterOnlyMode": bool <span color="#1b1ef7"> // show only presenter in videochat</span>
         "isStreamEnabled": bool <span color="#1b1ef7"> // videochat could be could be streamed to listeners</span>
+        "isRecordingEnabled": bool <span color="#1b1ef7"> // videochat is currently being recorded to MUX</span>
         "streamPlaybackUrl": string <span color="#1b1ef7"> // videochat live stream playback url</span>
         "isMuted": bool <span color="#1b1ef7"> // participants are muted by moderator</span>
         "videochatLimit": int <span color="#1b1ef7"> // amount of identities allowed in videochat (0 means unlimited)</span>
+    }
+    "error": { "status": bool, "code": int, "message": string }
+}
+</pre>
+
+<br>
+
+<a name="videochat-source-changed-event"></a>
+
+### Videochat source changed event
+
+**Event:** videochat:sourceChanged
+
+**Description:** Event is sent to videochat participants when the videochat is transferred to a new source (e.g. a direct call escalated into a group call). VideochatId and the engine session stay the same.
+
+**Data:** 
+
+<pre>
+{
+    "data": {
+        "videochatId": string
+        "oldSource": string
+        "newSource": string
     }
     "error": { "status": bool, "code": int, "message": string }
 }
@@ -2146,6 +2513,7 @@ Videochat options:
         "connectionStatus": int <span color="#1b1ef7"> // show connection status: 1 - active, 2 - in-background</span>
         "microphoneStatus": int <span color="#1b1ef7"> // show device microphone status</span>
         "handStatus": int <span color="#1b1ef7"> // show if user wants to attract attention of the presenter/moderator</span>
+        "handStatusUpdated": timestamp <span color="#1b1ef7"> // hand status last updated timestamp, used to order raised hands</span>
     }
     "error": { "status": bool, "code": int, "message": string }
 }
@@ -2206,6 +2574,7 @@ Videochat options:
                 "connectionStatus": int <span color="#1b1ef7"> // show connection status: 1 - active, 2 - in-background</span>
                 "microphoneStatus": int <span color="#1b1ef7"> // show device microphone status</span>
                 "handStatus": int <span color="#1b1ef7"> // show if user wants to attract attention of the presenter/moderator</span>
+                "handStatusUpdated": timestamp <span color="#1b1ef7"> // hand status last updated timestamp, used to order raised hands</span>
             }]
             "identities": [ string ] <span color="#1b1ef7"> // DEPRECATED</span>
             "uids": [ int ] <span color="#1b1ef7"> // DEPRECATED</span>
@@ -2257,6 +2626,7 @@ Videochat options:
                 "connectionStatus": int <span color="#1b1ef7"> // show connection status: 1 - active, 2 - in-background</span>
                 "microphoneStatus": int <span color="#1b1ef7"> // show device microphone status</span>
                 "handStatus": int <span color="#1b1ef7"> // show if user wants to attract attention of the presenter/moderator</span>
+                "handStatusUpdated": timestamp <span color="#1b1ef7"> // hand status last updated timestamp, used to order raised hands</span>
             }]
             "identities": [ string ] <span color="#1b1ef7"> // DEPRECATED</span>
             "uids": [ int ] <span color="#1b1ef7"> // DEPRECATED</span>
@@ -2306,6 +2676,7 @@ Videochat options:
                 "connectionStatus": int <span color="#1b1ef7"> // show connection status: 1 - active, 2 - in-background</span>
                 "microphoneStatus": int <span color="#1b1ef7"> // show device microphone status</span>
                 "handStatus": int <span color="#1b1ef7"> // show if user wants to attract attention of the presenter/moderator</span>
+                "handStatusUpdated": timestamp <span color="#1b1ef7"> // hand status last updated timestamp, used to order raised hands</span>
             }]
             "identities": [ string ] <span color="#1b1ef7"> // DEPRECATED</span>
             "uids": [ int ] <span color="#1b1ef7"> // DEPRECATED</span>
@@ -2353,6 +2724,7 @@ Videochat options:
                 "connectionStatus": int <span color="#1b1ef7"> // show connection status: 1 - active, 2 - in-background</span>
                 "microphoneStatus": int <span color="#1b1ef7"> // show device microphone status</span>
                 "handStatus": int <span color="#1b1ef7"> // show if user wants to attract attention of the presenter/moderator</span>
+                "handStatusUpdated": timestamp <span color="#1b1ef7"> // hand status last updated timestamp, used to order raised hands</span>
             }]
             "identities": [ string ] <span color="#1b1ef7"> // DEPRECATED</span>
             "uids": [ int ] <span color="#1b1ef7"> // DEPRECATED</span>
@@ -2400,6 +2772,7 @@ Videochat options:
                 "connectionStatus": int <span color="#1b1ef7"> // show connection status: 1 - active, 2 - in-background</span>
                 "microphoneStatus": int <span color="#1b1ef7"> // show device microphone status</span>
                 "handStatus": int <span color="#1b1ef7"> // show if user wants to attract attention of the presenter/moderator</span>
+                "handStatusUpdated": timestamp <span color="#1b1ef7"> // hand status last updated timestamp, used to order raised hands</span>
             }]
             "identities": [ string ] <span color="#1b1ef7"> // DEPRECATED</span>
             "uids": [ int ] <span color="#1b1ef7"> // DEPRECATED</span>
@@ -2452,6 +2825,7 @@ Videochat options:
         "connectionStatus": int <span color="#1b1ef7"> // show connection status: 1 - active, 2 - in-background</span>
         "microphoneStatus": int <span color="#1b1ef7"> // show device microphone status</span>
         "handStatus": int <span color="#1b1ef7"> // show if user wants to attract attention of the presenter/moderator</span>
+        "handStatusUpdated": timestamp <span color="#1b1ef7"> // hand status last updated timestamp, used to order raised hands</span>
     }
     "error": { "status": bool, "code": int, "message": string }
 }
@@ -2643,6 +3017,44 @@ Videochat options:
 
 <br>
 
+<a name="videochat-recording-started-event"></a>
+
+### Videochat recording started event
+
+**Event:** videochat:recordingStarted
+
+**Data:** 
+
+<pre>
+{
+    "data": {
+        "videochatId": string
+    }
+    "error": { "status": bool, "code": int, "message": string }
+}
+</pre>
+
+<br>
+
+<a name="videochat-recording-stopped-event"></a>
+
+### Videochat recording stopped event
+
+**Event:** videochat:recordingStopped
+
+**Data:** 
+
+<pre>
+{
+    "data": {
+        "videochatId": string
+    }
+    "error": { "status": bool, "code": int, "message": string }
+}
+</pre>
+
+<br>
+
 <a name="prop-videochat-count-changed-event"></a>
 
 ### Prop videochat count changed event
@@ -2729,6 +3141,7 @@ Videochat options:
     "avatar3D": { <span color="#1b1ef7"> // field is not returned if empty</span>
         "assetId": string
         "assetSkins": map[string]string <span color="#1b1ef7"> // map of selected skins per variants</span>
+        "avatarResourceId": string <span color="#1b1ef7"> // resource id (in case of avatar uploaded to user3DAvatar belonging)</span>
         "avatarUrl": string <span color="#1b1ef7"> // url to gbl file (Ready Player Me)</span>
         "avatarUserId": string <span color="#1b1ef7"> // user id for session recovery (Ready Player Me)</span>
     }

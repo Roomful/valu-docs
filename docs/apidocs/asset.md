@@ -1707,6 +1707,7 @@ Google bucket upload link
     "encryptionVersion": string <span color="#1b1ef7"> // encryption version, like 'verus.v1'</span>
     "encryptionEpoch": int <span color="#1b1ef7"> // epoch defines key bundle that was used for encryption</span>
     "encryptionEpk": string <span color="#1b1ef7"> // ephemeral public key that should be used to decrypt cypher data</span>
+    "userId": string <span color="#1b1ef7"> // user id of resource author</span>
     "belonging": string <span color="#1b1ef7"> // determines resource location in the system in a way 'belongingType:belongingPath(networkId)'</span>
     "status": string <span color="#1b1ef7"> // pending/processing/ready/failed</span>
     "metadata": {
@@ -1730,6 +1731,7 @@ Google bucket upload link
         "amazon": { <a href="#resource-data-amazon">resource data amazon structure</a> }
         "imdb": { <a href="#resource-data-imdb">resource data imdb structure</a> }
         "youtube": { <a href="#resource-data-youtube">resource data youtube structure</a> }
+        "vimeo": { <a href="#resource-data-vimeo">resource data vimeo structure</a> }
         "pinterest": { <a href="#resource-data-pinterest">resource data pinterest structure</a> }
         "pixabay": { <a href="#resource-data-pixabay">resource data pixabay structure</a> }
         "facebook": { <a href="#resource-data-facebook">resource data facebook structure</a> }
@@ -1739,8 +1741,9 @@ Google bucket upload link
         "thumbnailUrl": string
         "downloadUrl": string
         "directory": { <a href="#resource-data-directory">resource data directory structure</a> }
-        "channel": { <a href="#channel-data">channel data structure</a> }
         "googleDrive": { <a href="#google-drive">google drive structure</a> }
+        "channel": { <a href="#channel-data">channel data structure</a> }
+        "enrichment": { <a href="#enrichment-data">enrichment data structure</a> }
     }
     "customParams": map[string]{ custom structure } <span color="#1b1ef7"> // client defined parameters</span>
     "actions": [{ <a href="#programmatic-action-with-children">programmatic action with children structure</a> }] <span color="#1b1ef7"> // custom programmatic actions from users</span>
@@ -1877,6 +1880,19 @@ Google bucket upload link
 
 <br>
 
+<a name="resource-data-vimeo"></a>
+
+#### Resource Data Vimeo
+
+<pre>
+{
+    "videoUrl": string
+    "formatId": string
+}
+</pre>
+
+<br>
+
 <a name="resource-data-pinterest"></a>
 
 #### Resource Data Pinterest
@@ -1940,6 +1956,7 @@ Google bucket upload link
     "assetId": string
     "playbackUrl": string
     "masterUrl": string
+    "createdAt": int
 }
 </pre>
 
@@ -1951,7 +1968,7 @@ Google bucket upload link
 
 <pre>
 {
-    "generationModel": string <span color="#1b1ef7"> // the model used for image generation [dall-e-3]</span>
+    "generationModel": string <span color="#1b1ef7"> // the model used for image generation [gpt-image-2, gpt-image-1.5, gpt-image-1, gpt-image-1-mini]; defaults to gpt-image-2</span>
     "prompt": string <span color="#1b1ef7"> // a text description of the desired image</span>
     "revisedPrompt": string <span color="#1b1ef7"> // the prompt that was used to generate the image, if there was any revision to the prompt</span>
     "url": string <span color="#1b1ef7"> // the URL of the generated image</span>
@@ -1973,6 +1990,20 @@ Google bucket upload link
 
 <br>
 
+<a name="google-drive"></a>
+
+#### Google Drive
+
+<pre>
+{
+    "fileId": string
+    "name": string
+    "mimeType": string
+}
+</pre>
+
+<br>
+
 <a name="channel-data"></a>
 
 #### Channel Data
@@ -1988,15 +2019,18 @@ Google bucket upload link
 
 <br>
 
-<a name="google-drive"></a>
+<a name="enrichment-data"></a>
 
-#### Google Drive
+#### Enrichment Data
 
 <pre>
 {
-    "fileId": string
-    "name": string
-    "mimeType": string
+    "categories": [ string ]
+    "enrichedAt": timestamp
+    "enrichmentStatus": string
+    "language": string
+    "qualityScore": int
+    "tags": [ string ]
 }
 </pre>
 

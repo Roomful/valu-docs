@@ -10,19 +10,24 @@ Channel API handles textchat conversations between users.
 
 | Endpoint | Method | Description |
 |-----|-----|-----|
+| [/api/v0/channel/listMessages/{channelId}](#list-channel-messages-web-request-) | webRequest | List channel messages (web request) |
 | [channel:getDirectChannel](#get-direct-channel) | websocket | Get direct channel |
 | [channel:getChannelForRoom](#get-channel-for-room) | websocket | Get channel for room |
 | [channel:getChannelForProp](#get-channel-for-prop) | websocket | Get channel for prop |
 | [channel:getChannelForDirectAI](#get-channel-for-direct-ai) | websocket | Get channel for direct aI |
 | [channel:getChannelForRoomAI](#get-channel-for-room-ai) | websocket | Get channel for room aI |
+| [channel:spawnDirectAIAgentChannel](#spawn-direct-ai-agent-channel) | websocket | Spawn direct aI agent channel |
 | [channel:getUserNotesChannel](#get-user-notes-channel) | websocket | Get user notes channel |
 | [channel:getGroupChannel](#get-group-channel) | websocket | Get group channel |
 | [channel:getChannelForCommunityPost](#get-channel-for-community-post) | websocket | Get channel for community post |
 | [channel:getChannelForUserPosts](#get-channel-for-user-posts) | websocket | Get channel for user posts |
 | [channel:getThreadChannelForMessage](#get-thread-channel-for-message) | websocket | Get thread channel for message |
+| [channel:getChannelBySource](#get-channel-by-source) | websocket | Get channel by source |
 | [channel:getChannelById](#get-channel-by-id) | websocket | Get channel by id |
 | [channel:searchUserChannels](#search-user-channels) | websocket | Search user channels |
 | [channel:getCountOfUnreadChannels](#get-count-of-unread-channels) | websocket | Get count of unread channels |
+| [channel:deleteSpawnChannel](#delete-spawn-channel) | websocket | Delete spawn channel |
+| [channel:updateTitle](#update-channel-title) | websocket | Update channel title |
 | [channel:setHighAlert](#set-channel-to-high-alert) | websocket | Set channel to high alert |
 | [channel:pin](#pin-channel) | websocket | Pin channel |
 | [channel:createMessage](#create-channel-message) | websocket | Create channel message |
@@ -39,6 +44,7 @@ Channel API handles textchat conversations between users.
 | [channel:getLastMessage](#get-last-channel-message) | websocket | Get last channel message |
 | [channel:listMessages](#list-channel-messages) | websocket | List channel messages |
 | [channel:listMessagesWithEngagement](#list-channel-messages-with-engagement) | websocket | List channel messages with engagement |
+| [channel:searchMessages](#search-channel-messages) | websocket | Search channel messages |
 | [channel:setChannelLastReadMessage](#set-channel-last-read-message) | websocket | Set channel last read message |
 | [channel:setVoteForMessage](#set-vote-for-channel-message) | websocket | Set vote for channel message |
 | [channel:createPollMessage](#create-channel-poll-message) | websocket | Create channel poll message |
@@ -74,6 +80,154 @@ Channel API handles textchat conversations between users.
 | [channel:onSubChannelUpdated](#on-sub-channel-updated-event) | websocketEvent | On sub channel updated event |
 | ~~[channel:onEpochCreated](#on-channel-encryption-epoch-created-event)~~ | websocketEvent | On channel encryption epoch created event |
 | [channel:onLastEpochUpdated](#on-last-epoch-updated-event) | websocketEvent | On last epoch updated event |
+
+<br>
+
+<a name="list-channel-messages-web-request-"></a>
+
+### List channel messages (web request)
+
+**HTTP Method:** GET
+
+**Path:** /api/v0/channel/listMessages/{channelId}
+
+**Parameters:** 
+
+subChannelId: string
+
+messageId: string
+
+direction: string (before, after, bilateral, single)
+
+limit: int
+
+**Request:** 
+
+<pre>
+{ empty }
+</pre>
+
+**Response:** 
+
+<pre>
+{
+    "data": {
+        "messages": [{
+            "channelId": string
+            "bucketId": string
+            "messageId": string
+            "authorId": string
+            "agentId": string
+            "networkId": string
+            "created": timestamp
+            "updated": timestamp
+            "messageType": int <span color="#1b1ef7"> // 0 - my, 1 - user, 3 - system, 4 - system JSON, 6 - request JSON, 7 - endorsement JSON, 8 - activity JSON, 9 - card JSON, 100-199 - AI messages</span>
+            "messageBody": string
+            "messageTitle": string
+            "isBlocked": bool
+            "isDeleted": bool
+            "attachments": [{
+                "resourceId": string
+                "fileName": string
+                "fileSize": int
+                "contentType": string
+                "durationFloat": float
+                "updated": timestamp
+                "encryptionVersion": string <span color="#1b1ef7"> // encryption version, like 'verus.v1'</span>
+                "encryptionEpoch": int <span color="#1b1ef7"> // epoch defines key bundle that was used for encryption</span>
+                "encryptionEpk": string <span color="#1b1ef7"> // ephemeral public key that should be used to decrypt cypher data</span>
+            }]
+            "replyMessage": {
+                "channelId": string
+                "messageId": string
+                "authorId": string
+                "created": timestamp
+                "messageType": int
+                "messageBody": string
+                "attachments": [{
+                    "resourceId": string
+                    "fileName": string
+                    "fileSize": int
+                    "contentType": string
+                    "durationFloat": float
+                    "updated": timestamp
+                    "encryptionVersion": string <span color="#1b1ef7"> // encryption version, like 'verus.v1'</span>
+                    "encryptionEpoch": int <span color="#1b1ef7"> // epoch defines key bundle that was used for encryption</span>
+                    "encryptionEpk": string <span color="#1b1ef7"> // ephemeral public key that should be used to decrypt cypher data</span>
+                }]
+                "encryptionVersion": string <span color="#1b1ef7"> // encryption version, like 'verus.v1'</span>
+                "encryptionEpoch": int <span color="#1b1ef7"> // epoch defines key bundle that was used for encryption</span>
+                "encryptionEpk": string <span color="#1b1ef7"> // ephemeral public key that should be used to decrypt cypher data</span>
+            }
+            "forwardMessage": {
+                "channelId": string
+                "messageId": string
+                "authorId": string
+                "created": timestamp
+                "messageType": int
+                "messageBody": string
+                "attachments": [{
+                    "resourceId": string
+                    "fileName": string
+                    "fileSize": int
+                    "contentType": string
+                    "durationFloat": float
+                    "updated": timestamp
+                    "encryptionVersion": string <span color="#1b1ef7"> // encryption version, like 'verus.v1'</span>
+                    "encryptionEpoch": int <span color="#1b1ef7"> // epoch defines key bundle that was used for encryption</span>
+                    "encryptionEpk": string <span color="#1b1ef7"> // ephemeral public key that should be used to decrypt cypher data</span>
+                }]
+                "encryptionVersion": string <span color="#1b1ef7"> // encryption version, like 'verus.v1'</span>
+                "encryptionEpoch": int <span color="#1b1ef7"> // epoch defines key bundle that was used for encryption</span>
+                "encryptionEpk": string <span color="#1b1ef7"> // ephemeral public key that should be used to decrypt cypher data</span>
+            }
+            "subChannelPath": string
+            "subChannelTitles": [ string ]
+            "options": [ string ]
+            "customParams": map[string]{ custom structure }
+            "reactions": {
+                "counters": [{ <span color="#1b1ef7"> // counter per reaction, in descending order</span>
+                    "emoji": string
+                    "count": int
+                }]
+                "userEmoji": string <span color="#1b1ef7"> // user's emoji reaction to the message</span>
+            }
+            "pollId": string
+            "userPoll": {
+                "poll": { <span color="#1b1ef7"> // channel's poll</span>
+                    "id": string
+                    "channelId": string <span color="#1b1ef7"> // the channel the poll is in</span>
+                    "question": string <span color="#1b1ef7"> // question/description of the poll</span>
+                    "isMultiSelect": bool <span color="#1b1ef7"> // allow the users to select multiple choices</span>
+                    "isAnonymous": bool <span color="#1b1ef7"> // can users see who voted for what</span>
+                    "created": timestamp <span color="#1b1ef7"> // the time when poll was created</span>
+                    "closingTime": timestamp <span color="#1b1ef7"> // users cannot vote after the closing time, defaults to one day</span>
+                    "options": [ string ] <span color="#1b1ef7"> // list of options which the channel users vote for</span>
+                    "voteCounters": [ int ] <span color="#1b1ef7"> // calculated number of votes per option respectively</span>
+                }
+                "vote": { <span color="#1b1ef7"> // user's vote in the poll'</span>
+                    "pollId": string
+                    "userId": string
+                    "options": [ string ] <span color="#1b1ef7"> // list of options the user voted for</span>
+                }
+            }
+            "threadChannelId": string
+            "threadMessageCount": int
+            "viewCount": int
+            "upVoteCount": int
+            "downVoteCount": int
+            "encryptionVersion": string <span color="#1b1ef7"> // encryption version, like 'verus.v1'</span>
+            "encryptionEpoch": int <span color="#1b1ef7"> // epoch defines key bundle that was used for encryption</span>
+            "encryptionEpk": string <span color="#1b1ef7"> // ephemeral public key that should be used to decrypt cypher data</span>
+        }]
+        "hasNext": bool <span color="#1b1ef7"> // true if channel has newer messages and 'afterMessageId' cursor applied</span>
+        "hasPrevious": bool <span color="#1b1ef7"> // true if channel has older messages and 'afterMessageId' cursor not applied</span>
+        "total": int <span color="#1b1ef7"> // total amount of channel messages</span>
+        "channelSource": string <span color="#1b1ef7"> // channel source (belonging) string</span>
+    }
+    "error": { "status": bool, "code": int, "message": string }
+}
+</pre>
 
 <br>
 
@@ -131,6 +285,9 @@ Channel API handles textchat conversations between users.
             }
             "isHighAlert": bool <span color="#1b1ef7"> // is channel set on high alert</span>
             "isPinned": bool <span color="#1b1ef7"> // indicates if the channel was pinned by the user</span>
+            "spawnUnreadCount": int <span color="#1b1ef7"> // count of unread AI agent spawned channels from this direct channel / not returned if empty</span>
+            "spawnParentId": string <span color="#1b1ef7"> // parent channel id for spawned channel / not returned if empty</span>
+            "spawnLastMessageTs": timestamp <span color="#1b1ef7"> // timestamp of last message in spawned channels</span>
         }
     }
     "error": { "status": bool, "code": int, "message": string }
@@ -193,6 +350,9 @@ Channel API handles textchat conversations between users.
             }
             "isHighAlert": bool <span color="#1b1ef7"> // is channel set on high alert</span>
             "isPinned": bool <span color="#1b1ef7"> // indicates if the channel was pinned by the user</span>
+            "spawnUnreadCount": int <span color="#1b1ef7"> // count of unread AI agent spawned channels from this direct channel / not returned if empty</span>
+            "spawnParentId": string <span color="#1b1ef7"> // parent channel id for spawned channel / not returned if empty</span>
+            "spawnLastMessageTs": timestamp <span color="#1b1ef7"> // timestamp of last message in spawned channels</span>
         }
     }
     "error": { "status": bool, "code": int, "message": string }
@@ -256,6 +416,9 @@ Channel API handles textchat conversations between users.
             }
             "isHighAlert": bool <span color="#1b1ef7"> // is channel set on high alert</span>
             "isPinned": bool <span color="#1b1ef7"> // indicates if the channel was pinned by the user</span>
+            "spawnUnreadCount": int <span color="#1b1ef7"> // count of unread AI agent spawned channels from this direct channel / not returned if empty</span>
+            "spawnParentId": string <span color="#1b1ef7"> // parent channel id for spawned channel / not returned if empty</span>
+            "spawnLastMessageTs": timestamp <span color="#1b1ef7"> // timestamp of last message in spawned channels</span>
         }
     }
     "error": { "status": bool, "code": int, "message": string }
@@ -318,6 +481,9 @@ Channel API handles textchat conversations between users.
             }
             "isHighAlert": bool <span color="#1b1ef7"> // is channel set on high alert</span>
             "isPinned": bool <span color="#1b1ef7"> // indicates if the channel was pinned by the user</span>
+            "spawnUnreadCount": int <span color="#1b1ef7"> // count of unread AI agent spawned channels from this direct channel / not returned if empty</span>
+            "spawnParentId": string <span color="#1b1ef7"> // parent channel id for spawned channel / not returned if empty</span>
+            "spawnLastMessageTs": timestamp <span color="#1b1ef7"> // timestamp of last message in spawned channels</span>
         }
     }
     "error": { "status": bool, "code": int, "message": string }
@@ -382,6 +548,76 @@ Channel API handles textchat conversations between users.
             }
             "isHighAlert": bool <span color="#1b1ef7"> // is channel set on high alert</span>
             "isPinned": bool <span color="#1b1ef7"> // indicates if the channel was pinned by the user</span>
+            "spawnUnreadCount": int <span color="#1b1ef7"> // count of unread AI agent spawned channels from this direct channel / not returned if empty</span>
+            "spawnParentId": string <span color="#1b1ef7"> // parent channel id for spawned channel / not returned if empty</span>
+            "spawnLastMessageTs": timestamp <span color="#1b1ef7"> // timestamp of last message in spawned channels</span>
+        }
+    }
+    "error": { "status": bool, "code": int, "message": string }
+}
+</pre>
+
+<br>
+
+<a name="spawn-direct-ai-agent-channel"></a>
+
+### Spawn direct aI agent channel
+
+**Method:** websocket
+
+**Endpoint:** channel:spawnDirectAIAgentChannel
+
+**Description:** Api creates a channel spawned by an AI agent from a parent direct channel. Api subscribes user socket to broadcast events of the spawned channel. Spawned channel unread state is reflected on the parent direct channel.
+
+**Request:** 
+
+<pre>
+{
+    "data": {
+        "channelId": string <span color="#1b1ef7"> // origin direct channel id for spawning</span>
+        "agentId": string <span color="#1b1ef7"> // identifier of the AI agent spawning the channel</span>
+        "title": string <span color="#1b1ef7"> // optional channel title</span>
+    }
+    "event": { "id": string, "date": timestamp }
+}
+</pre>
+
+**Response:** 
+
+<pre>
+{
+    "data": {
+        "channel": {
+            "sourceString": string <span color="#1b1ef7"> // textchat channel belonging source</span>
+            "channelId": string <span color="#1b1ef7"> // textchat channel id</span>
+            "title": string <span color="#1b1ef7"> // channel title</span>
+            "settings": map[string]{ custom structure } <span color="#1b1ef7"> // channel settings, like permissions for community channel</span>
+            "contentDirectoryId": string <span color="#1b1ef7"> // content directory resource id, for CMS</span>
+            "options": [ string ] <span color="#1b1ef7"> // additional options for a channel, like 'events' or 'booth'</span>
+            "lastEpoch": int <span color="#1b1ef7"> // last encryption epoch number for a channel</span>
+            "needNewEpoch": bool <span color="#1b1ef7"> // flag to point that channel encryption epoch should be changed on next message</span>
+            "thumbnailId": string <span color="#1b1ef7"> // channel thumbnail resource id</span>
+            "totalCount": int <span color="#1b1ef7"> // total count of messages in a channel</span>
+            "unreadCount": int <span color="#1b1ef7"> // count of unread messages for current participant / not returned if empty</span>
+            "subChannelCount": int <span color="#1b1ef7"> // amount of first level subchannels in a channel (if present)</span>
+            "lastReadTs": timestamp <span color="#1b1ef7"> // last read timestamp for current participant / not returned if empty</span>
+            "opponentLastReadTs": timestamp <span color="#1b1ef7"> // last read timestamp for opponent (only for direct channels) / not returned if empty</span>
+            "lastMessage": { <span color="#1b1ef7"> // last message in a channel / not returned if empty</span>
+                "messageId": string
+                "created": timestamp
+                "authorId": string
+                "authorName": string
+                "messageBody": string
+                "messageContentType": int <span color="#1b1ef7"> // 0 - text, 1 - blocked, 2 - deleted, 3 - request JSON, 4 - endorsement JSON, 5 - activity JSON, 6 - card JSON, 7 - system JSON, 8 - poll, 9 - forward, 10 - file attachment, 11 - image, 12 - video, 13 - audio</span>
+                "encryptionVersion": string <span color="#1b1ef7"> // encryption version, like 'verus.v1'</span>
+                "encryptionEpoch": int <span color="#1b1ef7"> // epoch defines key bundle that was used for encryption</span>
+                "encryptionEpk": string <span color="#1b1ef7"> // ephemeral public key that should be used to decrypt cypher data</span>
+            }
+            "isHighAlert": bool <span color="#1b1ef7"> // is channel set on high alert</span>
+            "isPinned": bool <span color="#1b1ef7"> // indicates if the channel was pinned by the user</span>
+            "spawnUnreadCount": int <span color="#1b1ef7"> // count of unread AI agent spawned channels from this direct channel / not returned if empty</span>
+            "spawnParentId": string <span color="#1b1ef7"> // parent channel id for spawned channel / not returned if empty</span>
+            "spawnLastMessageTs": timestamp <span color="#1b1ef7"> // timestamp of last message in spawned channels</span>
         }
     }
     "error": { "status": bool, "code": int, "message": string }
@@ -439,6 +675,9 @@ Channel API handles textchat conversations between users.
             }
             "isHighAlert": bool <span color="#1b1ef7"> // is channel set on high alert</span>
             "isPinned": bool <span color="#1b1ef7"> // indicates if the channel was pinned by the user</span>
+            "spawnUnreadCount": int <span color="#1b1ef7"> // count of unread AI agent spawned channels from this direct channel / not returned if empty</span>
+            "spawnParentId": string <span color="#1b1ef7"> // parent channel id for spawned channel / not returned if empty</span>
+            "spawnLastMessageTs": timestamp <span color="#1b1ef7"> // timestamp of last message in spawned channels</span>
         }
     }
     "error": { "status": bool, "code": int, "message": string }
@@ -501,6 +740,9 @@ Channel API handles textchat conversations between users.
             }
             "isHighAlert": bool <span color="#1b1ef7"> // is channel set on high alert</span>
             "isPinned": bool <span color="#1b1ef7"> // indicates if the channel was pinned by the user</span>
+            "spawnUnreadCount": int <span color="#1b1ef7"> // count of unread AI agent spawned channels from this direct channel / not returned if empty</span>
+            "spawnParentId": string <span color="#1b1ef7"> // parent channel id for spawned channel / not returned if empty</span>
+            "spawnLastMessageTs": timestamp <span color="#1b1ef7"> // timestamp of last message in spawned channels</span>
         }
     }
     "error": { "status": bool, "code": int, "message": string }
@@ -565,6 +807,9 @@ Channel API handles textchat conversations between users.
             }
             "isHighAlert": bool <span color="#1b1ef7"> // is channel set on high alert</span>
             "isPinned": bool <span color="#1b1ef7"> // indicates if the channel was pinned by the user</span>
+            "spawnUnreadCount": int <span color="#1b1ef7"> // count of unread AI agent spawned channels from this direct channel / not returned if empty</span>
+            "spawnParentId": string <span color="#1b1ef7"> // parent channel id for spawned channel / not returned if empty</span>
+            "spawnLastMessageTs": timestamp <span color="#1b1ef7"> // timestamp of last message in spawned channels</span>
         }
     }
     "error": { "status": bool, "code": int, "message": string }
@@ -622,6 +867,9 @@ Channel API handles textchat conversations between users.
             }
             "isHighAlert": bool <span color="#1b1ef7"> // is channel set on high alert</span>
             "isPinned": bool <span color="#1b1ef7"> // indicates if the channel was pinned by the user</span>
+            "spawnUnreadCount": int <span color="#1b1ef7"> // count of unread AI agent spawned channels from this direct channel / not returned if empty</span>
+            "spawnParentId": string <span color="#1b1ef7"> // parent channel id for spawned channel / not returned if empty</span>
+            "spawnLastMessageTs": timestamp <span color="#1b1ef7"> // timestamp of last message in spawned channels</span>
         }
     }
     "error": { "status": bool, "code": int, "message": string }
@@ -685,6 +933,85 @@ Channel API handles textchat conversations between users.
             }
             "isHighAlert": bool <span color="#1b1ef7"> // is channel set on high alert</span>
             "isPinned": bool <span color="#1b1ef7"> // indicates if the channel was pinned by the user</span>
+            "spawnUnreadCount": int <span color="#1b1ef7"> // count of unread AI agent spawned channels from this direct channel / not returned if empty</span>
+            "spawnParentId": string <span color="#1b1ef7"> // parent channel id for spawned channel / not returned if empty</span>
+            "spawnLastMessageTs": timestamp <span color="#1b1ef7"> // timestamp of last message in spawned channels</span>
+        }
+    }
+    "error": { "status": bool, "code": int, "message": string }
+}
+</pre>
+
+<br>
+
+<a name="get-channel-by-source"></a>
+
+### Get channel by source
+
+**Method:** websocket
+
+**Endpoint:** channel:getChannelBySource
+
+**Description:** Api returns textchat channel by its source. Api subscribes user socket to broadcast events of channel.
+
+Channel source examples:
+* room:{networkId}:{roomId}
+* group:{networkId}:{groupId}
+* userPosts:{userId}
+* userAIAgent:{userId}:{aiAgentId}
+* communityAll:{networkId}:{communityId}
+* communityAdmin:{networkId}:{communityId}
+
+
+
+**Request:** 
+
+<pre>
+{
+    "data": {
+        "channelSource": string <span color="#1b1ef7"> // channel source (belonging) string</span>
+        "title": string <span color="#1b1ef7"> // optional, used to set channel title on creation</span>
+    }
+    "event": { "id": string, "date": timestamp }
+}
+</pre>
+
+**Response:** 
+
+<pre>
+{
+    "data": {
+        "channel": {
+            "sourceString": string <span color="#1b1ef7"> // textchat channel belonging source</span>
+            "channelId": string <span color="#1b1ef7"> // textchat channel id</span>
+            "title": string <span color="#1b1ef7"> // channel title</span>
+            "settings": map[string]{ custom structure } <span color="#1b1ef7"> // channel settings, like permissions for community channel</span>
+            "contentDirectoryId": string <span color="#1b1ef7"> // content directory resource id, for CMS</span>
+            "options": [ string ] <span color="#1b1ef7"> // additional options for a channel, like 'events' or 'booth'</span>
+            "lastEpoch": int <span color="#1b1ef7"> // last encryption epoch number for a channel</span>
+            "needNewEpoch": bool <span color="#1b1ef7"> // flag to point that channel encryption epoch should be changed on next message</span>
+            "thumbnailId": string <span color="#1b1ef7"> // channel thumbnail resource id</span>
+            "totalCount": int <span color="#1b1ef7"> // total count of messages in a channel</span>
+            "unreadCount": int <span color="#1b1ef7"> // count of unread messages for current participant / not returned if empty</span>
+            "subChannelCount": int <span color="#1b1ef7"> // amount of first level subchannels in a channel (if present)</span>
+            "lastReadTs": timestamp <span color="#1b1ef7"> // last read timestamp for current participant / not returned if empty</span>
+            "opponentLastReadTs": timestamp <span color="#1b1ef7"> // last read timestamp for opponent (only for direct channels) / not returned if empty</span>
+            "lastMessage": { <span color="#1b1ef7"> // last message in a channel / not returned if empty</span>
+                "messageId": string
+                "created": timestamp
+                "authorId": string
+                "authorName": string
+                "messageBody": string
+                "messageContentType": int <span color="#1b1ef7"> // 0 - text, 1 - blocked, 2 - deleted, 3 - request JSON, 4 - endorsement JSON, 5 - activity JSON, 6 - card JSON, 7 - system JSON, 8 - poll, 9 - forward, 10 - file attachment, 11 - image, 12 - video, 13 - audio</span>
+                "encryptionVersion": string <span color="#1b1ef7"> // encryption version, like 'verus.v1'</span>
+                "encryptionEpoch": int <span color="#1b1ef7"> // epoch defines key bundle that was used for encryption</span>
+                "encryptionEpk": string <span color="#1b1ef7"> // ephemeral public key that should be used to decrypt cypher data</span>
+            }
+            "isHighAlert": bool <span color="#1b1ef7"> // is channel set on high alert</span>
+            "isPinned": bool <span color="#1b1ef7"> // indicates if the channel was pinned by the user</span>
+            "spawnUnreadCount": int <span color="#1b1ef7"> // count of unread AI agent spawned channels from this direct channel / not returned if empty</span>
+            "spawnParentId": string <span color="#1b1ef7"> // parent channel id for spawned channel / not returned if empty</span>
+            "spawnLastMessageTs": timestamp <span color="#1b1ef7"> // timestamp of last message in spawned channels</span>
         }
     }
     "error": { "status": bool, "code": int, "message": string }
@@ -747,6 +1074,9 @@ Channel API handles textchat conversations between users.
             }
             "isHighAlert": bool <span color="#1b1ef7"> // is channel set on high alert</span>
             "isPinned": bool <span color="#1b1ef7"> // indicates if the channel was pinned by the user</span>
+            "spawnUnreadCount": int <span color="#1b1ef7"> // count of unread AI agent spawned channels from this direct channel / not returned if empty</span>
+            "spawnParentId": string <span color="#1b1ef7"> // parent channel id for spawned channel / not returned if empty</span>
+            "spawnLastMessageTs": timestamp <span color="#1b1ef7"> // timestamp of last message in spawned channels</span>
         }
     }
     "error": { "status": bool, "code": int, "message": string }
@@ -772,9 +1102,11 @@ Filter could be one of the following:
 * unread - return all unread channels 
 * direct - return direct channels 
 * group - return all non-direct channels 
+* groups - return channel for groups 
 * allWithinRoom - return all non-direct channels within the room 
 * rooms - return only room channels 
 * noProps - return all channels (excluding prop channels) 
+* spawned - return channels spawned by parent channel 
 
 
 
@@ -783,9 +1115,9 @@ Filter could be one of the following:
 <pre>
 {
     "data": {
-        "channelsFilter": string <span color="#1b1ef7"> // all/group/groups/unread/direct/rooms/allWithinRoom/noProps</span>
+        "channelsFilter": string <span color="#1b1ef7"> // all/group/groups/unread/direct/rooms/allWithinRoom/noProps/spawned</span>
         "query": string <span color="#1b1ef7"> // search query</span>
-        "sourceId": string <span color="#1b1ef7"> // in case if filter requires some source, like roomId</span>
+        "sourceId": string <span color="#1b1ef7"> // in case if filter requires some source, like room id or parent channel id</span>
         "afterChannelId": string <span color="#1b1ef7"> // pagination cursor, get channels after this channel id</span>
         "limit": int <span color="#1b1ef7"> // max number of channels to return (1-100)</span>
     }
@@ -826,6 +1158,9 @@ Filter could be one of the following:
             }
             "isHighAlert": bool <span color="#1b1ef7"> // is channel set on high alert</span>
             "isPinned": bool <span color="#1b1ef7"> // indicates if the channel was pinned by the user</span>
+            "spawnUnreadCount": int <span color="#1b1ef7"> // count of unread AI agent spawned channels from this direct channel / not returned if empty</span>
+            "spawnParentId": string <span color="#1b1ef7"> // parent channel id for spawned channel / not returned if empty</span>
+            "spawnLastMessageTs": timestamp <span color="#1b1ef7"> // timestamp of last message in spawned channels</span>
         }]
         "total": int <span color="#1b1ef7"> // total amount of channels</span>
         "hasNext": bool <span color="#1b1ef7"> // there are more channels to fetch</span>
@@ -860,6 +1195,65 @@ Filter could be one of the following:
         "unreadChannelCount": int <span color="#1b1ef7"> // amount of user channels with unread messages</span>
         "highAlertCount": int <span color="#1b1ef7"> // amount of user channels on high alert with unread messages'</span>
     }
+    "error": { "status": bool, "code": int, "message": string }
+}
+</pre>
+
+<br>
+
+<a name="delete-spawn-channel"></a>
+
+### Delete spawn channel
+
+**Method:** websocket
+
+**Endpoint:** channel:deleteSpawnChannel
+
+**Request:** 
+
+<pre>
+{
+    "data": {
+        "channelId": string <span color="#1b1ef7"> // textchat channel id</span>
+    }
+    "event": { "id": string, "date": timestamp }
+}
+</pre>
+
+**Response:** 
+
+<pre>
+{
+    "error": { "status": bool, "code": int, "message": string }
+}
+</pre>
+
+<br>
+
+<a name="update-channel-title"></a>
+
+### Update channel title
+
+**Method:** websocket
+
+**Endpoint:** channel:updateTitle
+
+**Request:** 
+
+<pre>
+{
+    "data": {
+        "channelId": string
+        "title": string
+    }
+    "event": { "id": string, "date": timestamp }
+}
+</pre>
+
+**Response:** 
+
+<pre>
+{
     "error": { "status": bool, "code": int, "message": string }
 }
 </pre>
@@ -953,6 +1347,9 @@ Filter could be one of the following:
             }
             "isHighAlert": bool <span color="#1b1ef7"> // is channel set on high alert</span>
             "isPinned": bool <span color="#1b1ef7"> // indicates if the channel was pinned by the user</span>
+            "spawnUnreadCount": int <span color="#1b1ef7"> // count of unread AI agent spawned channels from this direct channel / not returned if empty</span>
+            "spawnParentId": string <span color="#1b1ef7"> // parent channel id for spawned channel / not returned if empty</span>
+            "spawnLastMessageTs": timestamp <span color="#1b1ef7"> // timestamp of last message in spawned channels</span>
         }
     }
     "error": { "status": bool, "code": int, "message": string }
@@ -978,15 +1375,18 @@ Filter could be one of the following:
     "data": {
         "channelId": string <span color="#1b1ef7"> // textchat channel id</span>
         "subChannelId": string <span color="#1b1ef7"> // subchannel id, if message is sent to subchannel</span>
+        "agentId": string <span color="#1b1ef7"> // in case if message is sent by AI agent on behalf of user</span>
         "messageBody": string <span color="#1b1ef7"> // content of message</span>
         "messageTitle": string <span color="#1b1ef7"> // message title (for posts)</span>
         "messageType": int <span color="#1b1ef7"> // type of message</span>
         "attachmentIds": [ string ] <span color="#1b1ef7"> // ids of resources that will be attached to the message (must be pre-uploaded using upload session)</span>
         "options": [ string ] <span color="#1b1ef7"> // custom options, like 'event:{eventId}'</span>
+        "customParams": map[string]{ custom structure } <span color="#1b1ef7"> // custom parameters provided by client</span>
         "replyMessageId": string <span color="#1b1ef7"> // message id of origin message for reply</span>
         "forwardChannelId": string <span color="#1b1ef7"> // channel id of origin message for forward</span>
         "forwardMessageId": string <span color="#1b1ef7"> // message id of origin message for forward</span>
         "forwardBody": string <span color="#1b1ef7"> // body of forwarded message</span>
+        "forwardAttachmentIds": [ string ] <span color="#1b1ef7"> // ids of link resources that will be attached to the forwarded message (must be pre-uploaded using upload session)</span>
         "forwardEncryption": { <span color="#1b1ef7"> // encryption forwarded message body</span>
             "encryptionVersion": string <span color="#1b1ef7"> // encryption version, like 'verus.v1'</span>
             "encryptionEpoch": int <span color="#1b1ef7"> // epoch defines key bundle that was used for encryption</span>
@@ -1010,6 +1410,7 @@ Filter could be one of the following:
             "bucketId": string
             "messageId": string
             "authorId": string
+            "agentId": string
             "networkId": string
             "created": timestamp
             "updated": timestamp
@@ -1024,6 +1425,7 @@ Filter could be one of the following:
                 "fileSize": int
                 "contentType": string
                 "durationFloat": float
+                "updated": timestamp
                 "encryptionVersion": string <span color="#1b1ef7"> // encryption version, like 'verus.v1'</span>
                 "encryptionEpoch": int <span color="#1b1ef7"> // epoch defines key bundle that was used for encryption</span>
                 "encryptionEpk": string <span color="#1b1ef7"> // ephemeral public key that should be used to decrypt cypher data</span>
@@ -1041,6 +1443,7 @@ Filter could be one of the following:
                     "fileSize": int
                     "contentType": string
                     "durationFloat": float
+                    "updated": timestamp
                     "encryptionVersion": string <span color="#1b1ef7"> // encryption version, like 'verus.v1'</span>
                     "encryptionEpoch": int <span color="#1b1ef7"> // epoch defines key bundle that was used for encryption</span>
                     "encryptionEpk": string <span color="#1b1ef7"> // ephemeral public key that should be used to decrypt cypher data</span>
@@ -1062,6 +1465,7 @@ Filter could be one of the following:
                     "fileSize": int
                     "contentType": string
                     "durationFloat": float
+                    "updated": timestamp
                     "encryptionVersion": string <span color="#1b1ef7"> // encryption version, like 'verus.v1'</span>
                     "encryptionEpoch": int <span color="#1b1ef7"> // epoch defines key bundle that was used for encryption</span>
                     "encryptionEpk": string <span color="#1b1ef7"> // ephemeral public key that should be used to decrypt cypher data</span>
@@ -1073,6 +1477,7 @@ Filter could be one of the following:
             "subChannelPath": string
             "subChannelTitles": [ string ]
             "options": [ string ]
+            "customParams": map[string]{ custom structure }
             "reactions": {
                 "counters": [{ <span color="#1b1ef7"> // counter per reaction, in descending order</span>
                     "emoji": string
@@ -1170,6 +1575,7 @@ Filter could be one of the following:
         "channelId": string
         "messageId": string
         "attachmentIds": [ string ]
+        "doNotUpdateDate": bool <span color="#1b1ef7"> // if true, updated date will remain unchanged</span>
     }
     "event": { "id": string, "date": timestamp }
 }
@@ -1203,6 +1609,7 @@ Filter could be one of the following:
         "channelId": string
         "messageId": string
         "attachmentIds": [ string ]
+        "doNotUpdateDate": bool <span color="#1b1ef7"> // if true, updated date will remain unchanged</span>
     }
     "event": { "id": string, "date": timestamp }
 }
@@ -1478,6 +1885,7 @@ Filter could be one of the following:
             "bucketId": string
             "messageId": string
             "authorId": string
+            "agentId": string
             "networkId": string
             "created": timestamp
             "updated": timestamp
@@ -1492,6 +1900,7 @@ Filter could be one of the following:
                 "fileSize": int
                 "contentType": string
                 "durationFloat": float
+                "updated": timestamp
                 "encryptionVersion": string <span color="#1b1ef7"> // encryption version, like 'verus.v1'</span>
                 "encryptionEpoch": int <span color="#1b1ef7"> // epoch defines key bundle that was used for encryption</span>
                 "encryptionEpk": string <span color="#1b1ef7"> // ephemeral public key that should be used to decrypt cypher data</span>
@@ -1509,6 +1918,7 @@ Filter could be one of the following:
                     "fileSize": int
                     "contentType": string
                     "durationFloat": float
+                    "updated": timestamp
                     "encryptionVersion": string <span color="#1b1ef7"> // encryption version, like 'verus.v1'</span>
                     "encryptionEpoch": int <span color="#1b1ef7"> // epoch defines key bundle that was used for encryption</span>
                     "encryptionEpk": string <span color="#1b1ef7"> // ephemeral public key that should be used to decrypt cypher data</span>
@@ -1530,6 +1940,7 @@ Filter could be one of the following:
                     "fileSize": int
                     "contentType": string
                     "durationFloat": float
+                    "updated": timestamp
                     "encryptionVersion": string <span color="#1b1ef7"> // encryption version, like 'verus.v1'</span>
                     "encryptionEpoch": int <span color="#1b1ef7"> // epoch defines key bundle that was used for encryption</span>
                     "encryptionEpk": string <span color="#1b1ef7"> // ephemeral public key that should be used to decrypt cypher data</span>
@@ -1541,6 +1952,7 @@ Filter could be one of the following:
             "subChannelPath": string
             "subChannelTitles": [ string ]
             "options": [ string ]
+            "customParams": map[string]{ custom structure }
             "reactions": {
                 "counters": [{ <span color="#1b1ef7"> // counter per reaction, in descending order</span>
                     "emoji": string
@@ -1635,7 +2047,7 @@ Field `event` could be one of:
         "beforeMessageId": string <span color="#1b1ef7"> // deprecated. pagination cursor, get messages before this message id</span>
         "afterMessageId": string <span color="#1b1ef7"> // deprecated. pagination cursor, get messages after this message id</span>
         "messageId": string <span color="#1b1ef7"> // pagination cursor, skip to start from the beginning</span>
-        "direction": string <span color="#1b1ef7"> // pagination direction: before (default), after, bilateral</span>
+        "direction": string <span color="#1b1ef7"> // pagination direction: before (default), after, bilateral (both before and after), single (single message)</span>
         "limit": int <span color="#1b1ef7"> // max number of messages to return (1-100)</span>
     }
     "event": { "id": string, "date": timestamp }
@@ -1652,6 +2064,7 @@ Field `event` could be one of:
             "bucketId": string
             "messageId": string
             "authorId": string
+            "agentId": string
             "networkId": string
             "created": timestamp
             "updated": timestamp
@@ -1666,6 +2079,7 @@ Field `event` could be one of:
                 "fileSize": int
                 "contentType": string
                 "durationFloat": float
+                "updated": timestamp
                 "encryptionVersion": string <span color="#1b1ef7"> // encryption version, like 'verus.v1'</span>
                 "encryptionEpoch": int <span color="#1b1ef7"> // epoch defines key bundle that was used for encryption</span>
                 "encryptionEpk": string <span color="#1b1ef7"> // ephemeral public key that should be used to decrypt cypher data</span>
@@ -1683,6 +2097,7 @@ Field `event` could be one of:
                     "fileSize": int
                     "contentType": string
                     "durationFloat": float
+                    "updated": timestamp
                     "encryptionVersion": string <span color="#1b1ef7"> // encryption version, like 'verus.v1'</span>
                     "encryptionEpoch": int <span color="#1b1ef7"> // epoch defines key bundle that was used for encryption</span>
                     "encryptionEpk": string <span color="#1b1ef7"> // ephemeral public key that should be used to decrypt cypher data</span>
@@ -1704,6 +2119,7 @@ Field `event` could be one of:
                     "fileSize": int
                     "contentType": string
                     "durationFloat": float
+                    "updated": timestamp
                     "encryptionVersion": string <span color="#1b1ef7"> // encryption version, like 'verus.v1'</span>
                     "encryptionEpoch": int <span color="#1b1ef7"> // epoch defines key bundle that was used for encryption</span>
                     "encryptionEpk": string <span color="#1b1ef7"> // ephemeral public key that should be used to decrypt cypher data</span>
@@ -1715,6 +2131,7 @@ Field `event` could be one of:
             "subChannelPath": string
             "subChannelTitles": [ string ]
             "options": [ string ]
+            "customParams": map[string]{ custom structure }
             "reactions": {
                 "counters": [{ <span color="#1b1ef7"> // counter per reaction, in descending order</span>
                     "emoji": string
@@ -1782,7 +2199,7 @@ Field `event` could be one of:
         "beforeMessageId": string <span color="#1b1ef7"> // deprecated. pagination cursor, get messages before this message id</span>
         "afterMessageId": string <span color="#1b1ef7"> // deprecated. pagination cursor, get messages after this message id</span>
         "messageId": string <span color="#1b1ef7"> // pagination cursor, skip to start from the beginning</span>
-        "direction": string <span color="#1b1ef7"> // pagination direction: before (default), after, bilateral</span>
+        "direction": string <span color="#1b1ef7"> // pagination direction: before (default), after, bilateral (both before and after), single (single message)</span>
         "limit": int <span color="#1b1ef7"> // max number of messages to return (1-100)</span>
     }
     "event": { "id": string, "date": timestamp }
@@ -1799,6 +2216,7 @@ Field `event` could be one of:
             "bucketId": string
             "messageId": string
             "authorId": string
+            "agentId": string
             "networkId": string
             "created": timestamp
             "updated": timestamp
@@ -1813,6 +2231,7 @@ Field `event` could be one of:
                 "fileSize": int
                 "contentType": string
                 "durationFloat": float
+                "updated": timestamp
                 "encryptionVersion": string <span color="#1b1ef7"> // encryption version, like 'verus.v1'</span>
                 "encryptionEpoch": int <span color="#1b1ef7"> // epoch defines key bundle that was used for encryption</span>
                 "encryptionEpk": string <span color="#1b1ef7"> // ephemeral public key that should be used to decrypt cypher data</span>
@@ -1830,6 +2249,7 @@ Field `event` could be one of:
                     "fileSize": int
                     "contentType": string
                     "durationFloat": float
+                    "updated": timestamp
                     "encryptionVersion": string <span color="#1b1ef7"> // encryption version, like 'verus.v1'</span>
                     "encryptionEpoch": int <span color="#1b1ef7"> // epoch defines key bundle that was used for encryption</span>
                     "encryptionEpk": string <span color="#1b1ef7"> // ephemeral public key that should be used to decrypt cypher data</span>
@@ -1851,6 +2271,7 @@ Field `event` could be one of:
                     "fileSize": int
                     "contentType": string
                     "durationFloat": float
+                    "updated": timestamp
                     "encryptionVersion": string <span color="#1b1ef7"> // encryption version, like 'verus.v1'</span>
                     "encryptionEpoch": int <span color="#1b1ef7"> // epoch defines key bundle that was used for encryption</span>
                     "encryptionEpk": string <span color="#1b1ef7"> // ephemeral public key that should be used to decrypt cypher data</span>
@@ -1862,6 +2283,7 @@ Field `event` could be one of:
             "subChannelPath": string
             "subChannelTitles": [ string ]
             "options": [ string ]
+            "customParams": map[string]{ custom structure }
             "reactions": {
                 "counters": [{ <span color="#1b1ef7"> // counter per reaction, in descending order</span>
                     "emoji": string
@@ -1901,6 +2323,171 @@ Field `event` could be one of:
         "hasPrevious": bool <span color="#1b1ef7"> // true if channel has older messages and 'afterMessageId' cursor not applied</span>
         "total": int <span color="#1b1ef7"> // total amount of channel messages</span>
         "channelSource": string <span color="#1b1ef7"> // channel source (belonging) string</span>
+        "userVotes": map[string]int <span color="#1b1ef7"> // user votes per message id (if set)</span>
+    }
+    "error": { "status": bool, "code": int, "message": string }
+}
+</pre>
+
+<br>
+
+<a name="search-channel-messages"></a>
+
+### Search channel messages
+
+**Method:** websocket
+
+**Endpoint:** channel:searchMessages
+
+**Description:** Api searches messages across community channels. Results are ranked by relevance when a text query is provided, or by message creation time (newest first) when a text query is empty.
+
+Scope — exactly one (`channelIds`, `communityIds` or `networkIds`) must be non-empty.
+
+Optional filters:
+* `query`      — full-text search across message body and title
+* `authorIds`  — restrict to messages written by any of the listed user ids
+* `tags`       — restrict to messages that carry ALL the listed option tags
+* `dateFrom`   — lower bound on message creation time (inclusive)
+* `dateTo`     — upper bound on message creation time (inclusive)
+* `limit`      — maximum number of results per page (1–100; defaults to 20)
+
+
+
+**Request:** 
+
+<pre>
+{
+    "data": {
+        "channelIds": [ string ] <span color="#1b1ef7"> // search within selected channels</span>
+        "communityIds": [ string ] <span color="#1b1ef7"> // search across all channels of selected communities</span>
+        "networkIds": [ string ] <span color="#1b1ef7"> // search across all community channels in selected networks</span>
+        "query": string <span color="#1b1ef7"> // full-text search query</span>
+        "authorIds": [ string ] <span color="#1b1ef7"> // filter by one or more author user ids</span>
+        "tags": [ string ] <span color="#1b1ef7"> // filter by message options/tags (AND — all must match)</span>
+        "dateFrom": timestamp <span color="#1b1ef7"> // filter messages created at or after this timestamp</span>
+        "dateTo": timestamp <span color="#1b1ef7"> // filter messages created at or before this timestamp</span>
+        "cursor": string <span color="#1b1ef7"> // opaque cursor from previous response; omit for first page</span>
+        "limit": int <span color="#1b1ef7"> // max results to return (1-100)</span>
+    }
+    "event": { "id": string, "date": timestamp }
+}
+</pre>
+
+**Response:** 
+
+<pre>
+{
+    "data": {
+        "messages": [{
+            "channelId": string
+            "bucketId": string
+            "messageId": string
+            "authorId": string
+            "agentId": string
+            "networkId": string
+            "created": timestamp
+            "updated": timestamp
+            "messageType": int <span color="#1b1ef7"> // 0 - my, 1 - user, 3 - system, 4 - system JSON, 6 - request JSON, 7 - endorsement JSON, 8 - activity JSON, 9 - card JSON, 100-199 - AI messages</span>
+            "messageBody": string
+            "messageTitle": string
+            "isBlocked": bool
+            "isDeleted": bool
+            "attachments": [{
+                "resourceId": string
+                "fileName": string
+                "fileSize": int
+                "contentType": string
+                "durationFloat": float
+                "updated": timestamp
+                "encryptionVersion": string <span color="#1b1ef7"> // encryption version, like 'verus.v1'</span>
+                "encryptionEpoch": int <span color="#1b1ef7"> // epoch defines key bundle that was used for encryption</span>
+                "encryptionEpk": string <span color="#1b1ef7"> // ephemeral public key that should be used to decrypt cypher data</span>
+            }]
+            "replyMessage": {
+                "channelId": string
+                "messageId": string
+                "authorId": string
+                "created": timestamp
+                "messageType": int
+                "messageBody": string
+                "attachments": [{
+                    "resourceId": string
+                    "fileName": string
+                    "fileSize": int
+                    "contentType": string
+                    "durationFloat": float
+                    "updated": timestamp
+                    "encryptionVersion": string <span color="#1b1ef7"> // encryption version, like 'verus.v1'</span>
+                    "encryptionEpoch": int <span color="#1b1ef7"> // epoch defines key bundle that was used for encryption</span>
+                    "encryptionEpk": string <span color="#1b1ef7"> // ephemeral public key that should be used to decrypt cypher data</span>
+                }]
+                "encryptionVersion": string <span color="#1b1ef7"> // encryption version, like 'verus.v1'</span>
+                "encryptionEpoch": int <span color="#1b1ef7"> // epoch defines key bundle that was used for encryption</span>
+                "encryptionEpk": string <span color="#1b1ef7"> // ephemeral public key that should be used to decrypt cypher data</span>
+            }
+            "forwardMessage": {
+                "channelId": string
+                "messageId": string
+                "authorId": string
+                "created": timestamp
+                "messageType": int
+                "messageBody": string
+                "attachments": [{
+                    "resourceId": string
+                    "fileName": string
+                    "fileSize": int
+                    "contentType": string
+                    "durationFloat": float
+                    "updated": timestamp
+                    "encryptionVersion": string <span color="#1b1ef7"> // encryption version, like 'verus.v1'</span>
+                    "encryptionEpoch": int <span color="#1b1ef7"> // epoch defines key bundle that was used for encryption</span>
+                    "encryptionEpk": string <span color="#1b1ef7"> // ephemeral public key that should be used to decrypt cypher data</span>
+                }]
+                "encryptionVersion": string <span color="#1b1ef7"> // encryption version, like 'verus.v1'</span>
+                "encryptionEpoch": int <span color="#1b1ef7"> // epoch defines key bundle that was used for encryption</span>
+                "encryptionEpk": string <span color="#1b1ef7"> // ephemeral public key that should be used to decrypt cypher data</span>
+            }
+            "subChannelPath": string
+            "subChannelTitles": [ string ]
+            "options": [ string ]
+            "customParams": map[string]{ custom structure }
+            "reactions": {
+                "counters": [{ <span color="#1b1ef7"> // counter per reaction, in descending order</span>
+                    "emoji": string
+                    "count": int
+                }]
+                "userEmoji": string <span color="#1b1ef7"> // user's emoji reaction to the message</span>
+            }
+            "pollId": string
+            "userPoll": {
+                "poll": { <span color="#1b1ef7"> // channel's poll</span>
+                    "id": string
+                    "channelId": string <span color="#1b1ef7"> // the channel the poll is in</span>
+                    "question": string <span color="#1b1ef7"> // question/description of the poll</span>
+                    "isMultiSelect": bool <span color="#1b1ef7"> // allow the users to select multiple choices</span>
+                    "isAnonymous": bool <span color="#1b1ef7"> // can users see who voted for what</span>
+                    "created": timestamp <span color="#1b1ef7"> // the time when poll was created</span>
+                    "closingTime": timestamp <span color="#1b1ef7"> // users cannot vote after the closing time, defaults to one day</span>
+                    "options": [ string ] <span color="#1b1ef7"> // list of options which the channel users vote for</span>
+                    "voteCounters": [ int ] <span color="#1b1ef7"> // calculated number of votes per option respectively</span>
+                }
+                "vote": { <span color="#1b1ef7"> // user's vote in the poll'</span>
+                    "pollId": string
+                    "userId": string
+                    "options": [ string ] <span color="#1b1ef7"> // list of options the user voted for</span>
+                }
+            }
+            "threadChannelId": string
+            "threadMessageCount": int
+            "viewCount": int
+            "upVoteCount": int
+            "downVoteCount": int
+            "encryptionVersion": string <span color="#1b1ef7"> // encryption version, like 'verus.v1'</span>
+            "encryptionEpoch": int <span color="#1b1ef7"> // epoch defines key bundle that was used for encryption</span>
+            "encryptionEpk": string <span color="#1b1ef7"> // ephemeral public key that should be used to decrypt cypher data</span>
+        }]
+        "total": int
+        "nextCursor": string <span color="#1b1ef7"> // pass as cursor in the next request; empty means no more pages</span>
         "userVotes": map[string]int <span color="#1b1ef7"> // user votes per message id (if set)</span>
     }
     "error": { "status": bool, "code": int, "message": string }
@@ -2012,6 +2599,7 @@ Field `event` could be one of:
             "bucketId": string
             "messageId": string
             "authorId": string
+            "agentId": string
             "networkId": string
             "created": timestamp
             "updated": timestamp
@@ -2026,6 +2614,7 @@ Field `event` could be one of:
                 "fileSize": int
                 "contentType": string
                 "durationFloat": float
+                "updated": timestamp
                 "encryptionVersion": string <span color="#1b1ef7"> // encryption version, like 'verus.v1'</span>
                 "encryptionEpoch": int <span color="#1b1ef7"> // epoch defines key bundle that was used for encryption</span>
                 "encryptionEpk": string <span color="#1b1ef7"> // ephemeral public key that should be used to decrypt cypher data</span>
@@ -2043,6 +2632,7 @@ Field `event` could be one of:
                     "fileSize": int
                     "contentType": string
                     "durationFloat": float
+                    "updated": timestamp
                     "encryptionVersion": string <span color="#1b1ef7"> // encryption version, like 'verus.v1'</span>
                     "encryptionEpoch": int <span color="#1b1ef7"> // epoch defines key bundle that was used for encryption</span>
                     "encryptionEpk": string <span color="#1b1ef7"> // ephemeral public key that should be used to decrypt cypher data</span>
@@ -2064,6 +2654,7 @@ Field `event` could be one of:
                     "fileSize": int
                     "contentType": string
                     "durationFloat": float
+                    "updated": timestamp
                     "encryptionVersion": string <span color="#1b1ef7"> // encryption version, like 'verus.v1'</span>
                     "encryptionEpoch": int <span color="#1b1ef7"> // epoch defines key bundle that was used for encryption</span>
                     "encryptionEpk": string <span color="#1b1ef7"> // ephemeral public key that should be used to decrypt cypher data</span>
@@ -2075,6 +2666,7 @@ Field `event` could be one of:
             "subChannelPath": string
             "subChannelTitles": [ string ]
             "options": [ string ]
+            "customParams": map[string]{ custom structure }
             "reactions": {
                 "counters": [{ <span color="#1b1ef7"> // counter per reaction, in descending order</span>
                     "emoji": string
@@ -2310,6 +2902,12 @@ Field `event` could be one of:
         "resources": [{ <a href="#resource">resource structure</a> }]
         "nextCursor": string
         "hasMore": bool
+        "permissions": {
+            "get": bool <span color="#1b1ef7"> // permission to fetch single item from belonging</span>
+            "list": bool <span color="#1b1ef7"> // permission to list items within belonging</span>
+            "create": bool <span color="#1b1ef7"> // permission to add item to belonging</span>
+            "update": bool <span color="#1b1ef7"> // permission to update item within belonging</span>
+        }
     }
     "error": { "status": bool, "code": int, "message": string }
 }
@@ -2905,6 +3503,7 @@ Api returns map of userId -> zAddress for all channel participants. If user does
             "bucketId": string
             "messageId": string
             "authorId": string
+            "agentId": string
             "networkId": string
             "created": timestamp
             "updated": timestamp
@@ -2919,6 +3518,7 @@ Api returns map of userId -> zAddress for all channel participants. If user does
                 "fileSize": int
                 "contentType": string
                 "durationFloat": float
+                "updated": timestamp
                 "encryptionVersion": string <span color="#1b1ef7"> // encryption version, like 'verus.v1'</span>
                 "encryptionEpoch": int <span color="#1b1ef7"> // epoch defines key bundle that was used for encryption</span>
                 "encryptionEpk": string <span color="#1b1ef7"> // ephemeral public key that should be used to decrypt cypher data</span>
@@ -2936,6 +3536,7 @@ Api returns map of userId -> zAddress for all channel participants. If user does
                     "fileSize": int
                     "contentType": string
                     "durationFloat": float
+                    "updated": timestamp
                     "encryptionVersion": string <span color="#1b1ef7"> // encryption version, like 'verus.v1'</span>
                     "encryptionEpoch": int <span color="#1b1ef7"> // epoch defines key bundle that was used for encryption</span>
                     "encryptionEpk": string <span color="#1b1ef7"> // ephemeral public key that should be used to decrypt cypher data</span>
@@ -2957,6 +3558,7 @@ Api returns map of userId -> zAddress for all channel participants. If user does
                     "fileSize": int
                     "contentType": string
                     "durationFloat": float
+                    "updated": timestamp
                     "encryptionVersion": string <span color="#1b1ef7"> // encryption version, like 'verus.v1'</span>
                     "encryptionEpoch": int <span color="#1b1ef7"> // epoch defines key bundle that was used for encryption</span>
                     "encryptionEpk": string <span color="#1b1ef7"> // ephemeral public key that should be used to decrypt cypher data</span>
@@ -2968,6 +3570,7 @@ Api returns map of userId -> zAddress for all channel participants. If user does
             "subChannelPath": string
             "subChannelTitles": [ string ]
             "options": [ string ]
+            "customParams": map[string]{ custom structure }
             "reactions": {
                 "counters": [{ <span color="#1b1ef7"> // counter per reaction, in descending order</span>
                     "emoji": string
@@ -3004,6 +3607,7 @@ Api returns map of userId -> zAddress for all channel participants. If user does
             "encryptionEpk": string <span color="#1b1ef7"> // ephemeral public key that should be used to decrypt cypher data</span>
         }
         "isLastMessage": bool <span color="#1b1ef7"> // true, if the last message in the channel</span>
+        "spawnParentId": string <span color="#1b1ef7"> // parent channel id for spawned channel</span>
     }
     "error": { "status": bool, "code": int, "message": string }
 }
@@ -3056,6 +3660,7 @@ Api returns map of userId -> zAddress for all channel participants. If user does
             "bucketId": string
             "messageId": string
             "authorId": string
+            "agentId": string
             "networkId": string
             "created": timestamp
             "updated": timestamp
@@ -3070,6 +3675,7 @@ Api returns map of userId -> zAddress for all channel participants. If user does
                 "fileSize": int
                 "contentType": string
                 "durationFloat": float
+                "updated": timestamp
                 "encryptionVersion": string <span color="#1b1ef7"> // encryption version, like 'verus.v1'</span>
                 "encryptionEpoch": int <span color="#1b1ef7"> // epoch defines key bundle that was used for encryption</span>
                 "encryptionEpk": string <span color="#1b1ef7"> // ephemeral public key that should be used to decrypt cypher data</span>
@@ -3087,6 +3693,7 @@ Api returns map of userId -> zAddress for all channel participants. If user does
                     "fileSize": int
                     "contentType": string
                     "durationFloat": float
+                    "updated": timestamp
                     "encryptionVersion": string <span color="#1b1ef7"> // encryption version, like 'verus.v1'</span>
                     "encryptionEpoch": int <span color="#1b1ef7"> // epoch defines key bundle that was used for encryption</span>
                     "encryptionEpk": string <span color="#1b1ef7"> // ephemeral public key that should be used to decrypt cypher data</span>
@@ -3108,6 +3715,7 @@ Api returns map of userId -> zAddress for all channel participants. If user does
                     "fileSize": int
                     "contentType": string
                     "durationFloat": float
+                    "updated": timestamp
                     "encryptionVersion": string <span color="#1b1ef7"> // encryption version, like 'verus.v1'</span>
                     "encryptionEpoch": int <span color="#1b1ef7"> // epoch defines key bundle that was used for encryption</span>
                     "encryptionEpk": string <span color="#1b1ef7"> // ephemeral public key that should be used to decrypt cypher data</span>
@@ -3119,6 +3727,7 @@ Api returns map of userId -> zAddress for all channel participants. If user does
             "subChannelPath": string
             "subChannelTitles": [ string ]
             "options": [ string ]
+            "customParams": map[string]{ custom structure }
             "reactions": {
                 "counters": [{ <span color="#1b1ef7"> // counter per reaction, in descending order</span>
                     "emoji": string
@@ -3155,6 +3764,7 @@ Api returns map of userId -> zAddress for all channel participants. If user does
             "encryptionEpk": string <span color="#1b1ef7"> // ephemeral public key that should be used to decrypt cypher data</span>
         }
         "isLastMessage": bool <span color="#1b1ef7"> // true, if the last message in the channel</span>
+        "spawnParentId": string <span color="#1b1ef7"> // parent channel id for spawned channel</span>
     }
     "error": { "status": bool, "code": int, "message": string }
 }
@@ -3182,6 +3792,7 @@ Api returns map of userId -> zAddress for all channel participants. If user does
             "bucketId": string
             "messageId": string
             "authorId": string
+            "agentId": string
             "networkId": string
             "created": timestamp
             "updated": timestamp
@@ -3196,6 +3807,7 @@ Api returns map of userId -> zAddress for all channel participants. If user does
                 "fileSize": int
                 "contentType": string
                 "durationFloat": float
+                "updated": timestamp
                 "encryptionVersion": string <span color="#1b1ef7"> // encryption version, like 'verus.v1'</span>
                 "encryptionEpoch": int <span color="#1b1ef7"> // epoch defines key bundle that was used for encryption</span>
                 "encryptionEpk": string <span color="#1b1ef7"> // ephemeral public key that should be used to decrypt cypher data</span>
@@ -3213,6 +3825,7 @@ Api returns map of userId -> zAddress for all channel participants. If user does
                     "fileSize": int
                     "contentType": string
                     "durationFloat": float
+                    "updated": timestamp
                     "encryptionVersion": string <span color="#1b1ef7"> // encryption version, like 'verus.v1'</span>
                     "encryptionEpoch": int <span color="#1b1ef7"> // epoch defines key bundle that was used for encryption</span>
                     "encryptionEpk": string <span color="#1b1ef7"> // ephemeral public key that should be used to decrypt cypher data</span>
@@ -3234,6 +3847,7 @@ Api returns map of userId -> zAddress for all channel participants. If user does
                     "fileSize": int
                     "contentType": string
                     "durationFloat": float
+                    "updated": timestamp
                     "encryptionVersion": string <span color="#1b1ef7"> // encryption version, like 'verus.v1'</span>
                     "encryptionEpoch": int <span color="#1b1ef7"> // epoch defines key bundle that was used for encryption</span>
                     "encryptionEpk": string <span color="#1b1ef7"> // ephemeral public key that should be used to decrypt cypher data</span>
@@ -3245,6 +3859,7 @@ Api returns map of userId -> zAddress for all channel participants. If user does
             "subChannelPath": string
             "subChannelTitles": [ string ]
             "options": [ string ]
+            "customParams": map[string]{ custom structure }
             "reactions": {
                 "counters": [{ <span color="#1b1ef7"> // counter per reaction, in descending order</span>
                     "emoji": string
@@ -3281,6 +3896,7 @@ Api returns map of userId -> zAddress for all channel participants. If user does
             "encryptionEpk": string <span color="#1b1ef7"> // ephemeral public key that should be used to decrypt cypher data</span>
         }
         "isLastMessage": bool <span color="#1b1ef7"> // true, if the last message in the channel</span>
+        "spawnParentId": string <span color="#1b1ef7"> // parent channel id for spawned channel</span>
     }
     "error": { "status": bool, "code": int, "message": string }
 }
@@ -3308,6 +3924,7 @@ Api returns map of userId -> zAddress for all channel participants. If user does
             "bucketId": string
             "messageId": string
             "authorId": string
+            "agentId": string
             "networkId": string
             "created": timestamp
             "updated": timestamp
@@ -3322,6 +3939,7 @@ Api returns map of userId -> zAddress for all channel participants. If user does
                 "fileSize": int
                 "contentType": string
                 "durationFloat": float
+                "updated": timestamp
                 "encryptionVersion": string <span color="#1b1ef7"> // encryption version, like 'verus.v1'</span>
                 "encryptionEpoch": int <span color="#1b1ef7"> // epoch defines key bundle that was used for encryption</span>
                 "encryptionEpk": string <span color="#1b1ef7"> // ephemeral public key that should be used to decrypt cypher data</span>
@@ -3339,6 +3957,7 @@ Api returns map of userId -> zAddress for all channel participants. If user does
                     "fileSize": int
                     "contentType": string
                     "durationFloat": float
+                    "updated": timestamp
                     "encryptionVersion": string <span color="#1b1ef7"> // encryption version, like 'verus.v1'</span>
                     "encryptionEpoch": int <span color="#1b1ef7"> // epoch defines key bundle that was used for encryption</span>
                     "encryptionEpk": string <span color="#1b1ef7"> // ephemeral public key that should be used to decrypt cypher data</span>
@@ -3360,6 +3979,7 @@ Api returns map of userId -> zAddress for all channel participants. If user does
                     "fileSize": int
                     "contentType": string
                     "durationFloat": float
+                    "updated": timestamp
                     "encryptionVersion": string <span color="#1b1ef7"> // encryption version, like 'verus.v1'</span>
                     "encryptionEpoch": int <span color="#1b1ef7"> // epoch defines key bundle that was used for encryption</span>
                     "encryptionEpk": string <span color="#1b1ef7"> // ephemeral public key that should be used to decrypt cypher data</span>
@@ -3371,6 +3991,7 @@ Api returns map of userId -> zAddress for all channel participants. If user does
             "subChannelPath": string
             "subChannelTitles": [ string ]
             "options": [ string ]
+            "customParams": map[string]{ custom structure }
             "reactions": {
                 "counters": [{ <span color="#1b1ef7"> // counter per reaction, in descending order</span>
                     "emoji": string
@@ -3407,6 +4028,7 @@ Api returns map of userId -> zAddress for all channel participants. If user does
             "encryptionEpk": string <span color="#1b1ef7"> // ephemeral public key that should be used to decrypt cypher data</span>
         }
         "isLastMessage": bool <span color="#1b1ef7"> // true, if the last message in the channel</span>
+        "spawnParentId": string <span color="#1b1ef7"> // parent channel id for spawned channel</span>
     }
     "error": { "status": bool, "code": int, "message": string }
 }
@@ -3717,6 +4339,7 @@ Api returns map of userId -> zAddress for all channel participants. If user does
     "encryptionVersion": string <span color="#1b1ef7"> // encryption version, like 'verus.v1'</span>
     "encryptionEpoch": int <span color="#1b1ef7"> // epoch defines key bundle that was used for encryption</span>
     "encryptionEpk": string <span color="#1b1ef7"> // ephemeral public key that should be used to decrypt cypher data</span>
+    "userId": string <span color="#1b1ef7"> // user id of resource author</span>
     "belonging": string <span color="#1b1ef7"> // determines resource location in the system in a way 'belongingType:belongingPath(networkId)'</span>
     "status": string <span color="#1b1ef7"> // pending/processing/ready/failed</span>
     "metadata": {
@@ -3740,6 +4363,7 @@ Api returns map of userId -> zAddress for all channel participants. If user does
         "amazon": { <a href="#resource-data-amazon">resource data amazon structure</a> }
         "imdb": { <a href="#resource-data-imdb">resource data imdb structure</a> }
         "youtube": { <a href="#resource-data-youtube">resource data youtube structure</a> }
+        "vimeo": { <a href="#resource-data-vimeo">resource data vimeo structure</a> }
         "pinterest": { <a href="#resource-data-pinterest">resource data pinterest structure</a> }
         "pixabay": { <a href="#resource-data-pixabay">resource data pixabay structure</a> }
         "facebook": { <a href="#resource-data-facebook">resource data facebook structure</a> }
@@ -3749,8 +4373,9 @@ Api returns map of userId -> zAddress for all channel participants. If user does
         "thumbnailUrl": string
         "downloadUrl": string
         "directory": { <a href="#resource-data-directory">resource data directory structure</a> }
-        "channel": { <a href="#channel-data">channel data structure</a> }
         "googleDrive": { <a href="#google-drive">google drive structure</a> }
+        "channel": { <a href="#channel-data">channel data structure</a> }
+        "enrichment": { <a href="#enrichment-data">enrichment data structure</a> }
     }
     "customParams": map[string]{ custom structure } <span color="#1b1ef7"> // client defined parameters</span>
     "actions": [{ <a href="#programmatic-action-with-children">programmatic action with children structure</a> }] <span color="#1b1ef7"> // custom programmatic actions from users</span>
@@ -3887,6 +4512,19 @@ Api returns map of userId -> zAddress for all channel participants. If user does
 
 <br>
 
+<a name="resource-data-vimeo"></a>
+
+#### Resource Data Vimeo
+
+<pre>
+{
+    "videoUrl": string
+    "formatId": string
+}
+</pre>
+
+<br>
+
 <a name="resource-data-pinterest"></a>
 
 #### Resource Data Pinterest
@@ -3950,6 +4588,7 @@ Api returns map of userId -> zAddress for all channel participants. If user does
     "assetId": string
     "playbackUrl": string
     "masterUrl": string
+    "createdAt": int
 }
 </pre>
 
@@ -3961,7 +4600,7 @@ Api returns map of userId -> zAddress for all channel participants. If user does
 
 <pre>
 {
-    "generationModel": string <span color="#1b1ef7"> // the model used for image generation [dall-e-3]</span>
+    "generationModel": string <span color="#1b1ef7"> // the model used for image generation [gpt-image-2, gpt-image-1.5, gpt-image-1, gpt-image-1-mini]; defaults to gpt-image-2</span>
     "prompt": string <span color="#1b1ef7"> // a text description of the desired image</span>
     "revisedPrompt": string <span color="#1b1ef7"> // the prompt that was used to generate the image, if there was any revision to the prompt</span>
     "url": string <span color="#1b1ef7"> // the URL of the generated image</span>
@@ -3983,6 +4622,20 @@ Api returns map of userId -> zAddress for all channel participants. If user does
 
 <br>
 
+<a name="google-drive"></a>
+
+#### Google Drive
+
+<pre>
+{
+    "fileId": string
+    "name": string
+    "mimeType": string
+}
+</pre>
+
+<br>
+
 <a name="channel-data"></a>
 
 #### Channel Data
@@ -3998,15 +4651,18 @@ Api returns map of userId -> zAddress for all channel participants. If user does
 
 <br>
 
-<a name="google-drive"></a>
+<a name="enrichment-data"></a>
 
-#### Google Drive
+#### Enrichment Data
 
 <pre>
 {
-    "fileId": string
-    "name": string
-    "mimeType": string
+    "categories": [ string ]
+    "enrichedAt": timestamp
+    "enrichmentStatus": string
+    "language": string
+    "qualityScore": int
+    "tags": [ string ]
 }
 </pre>
 

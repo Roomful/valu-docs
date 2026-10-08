@@ -58,6 +58,7 @@
 | [auth:verusLinkIdLoginTestnetExt](#link-verus-account-with-verus-id-login-verus-testnet-) | websocket | Link Verus account with Verus ID Login (VERUS TESTNET) |
 | [auth:verusLinkPersonaAccount](#link-valuverse-persona-using-verus-id-login) | websocket | Link Valuverse persona using Verus ID Login |
 | [auth:verusSimulateVerusIdLoginResponse](#simulate-verus-id-login-response-valuverse-testnet-) | websocket | Simulate Verus Id login response (VALUVERSE TESTNET) |
+| [auth:testChabadUniverseCredentials](#test-chabad-universe-credentials) | websocket | Test chabad universe credentials |
 | [auth:verusAuthSuccess](#verus-authorization-success-event) | websocketEvent | Verus authorization success event |
 | [auth:verusAuthError](#verus-authorization-error-event) | websocketEvent | Verus authorization error event |
 | [auth:verusLinkSuccess](#verus-link-account-success-event) | websocketEvent | Verus link account success event |
@@ -678,6 +679,8 @@ Available providers:
 * `epam`
 * `epam.social`
 * `merkos302`
+* `merkos302new`
+* `merkos302staging`
 
 In case when `epam.social` provider is selected, client must also select one of epam social networks (**socialId**): `google`, `facebook`, `linkedin`
 
@@ -738,6 +741,7 @@ X-Device-Id: deviceId
 
 <pre>
 {
+    "user_id": string
     "session_token": string
     "is_new": bool
     "need_verification": bool
@@ -948,6 +952,7 @@ X-Device-Id: deviceId
 
 <pre>
 {
+    "user_id": string
     "session_token": string
     "is_new": bool
     "need_verification": bool
@@ -987,6 +992,7 @@ X-Socket-Id: socketId // send anonymousAuthorized event after login (alternative
 
 <pre>
 {
+    "user_id": string
     "session_token": string
     "is_new": bool
     "need_verification": bool
@@ -1023,6 +1029,7 @@ X-Socket-Id: socketId // send anonymousAuthorized event after login (alternative
 <pre>
 {
     "data": {
+        "user_id": string
         "session_token": string
         "is_new": bool
         "need_verification": bool
@@ -1069,6 +1076,7 @@ X-Network: networkId // Creates session within provided network
 
 <pre>
 {
+    "user_id": string
     "session_token": string
     "is_new": bool
     "need_verification": bool
@@ -1112,6 +1120,7 @@ X-Network: networkId // Creates session within provided network
 <pre>
 {
     "data": {
+        "user_id": string
         "session_token": string
         "is_new": bool
         "need_verification": bool
@@ -1158,6 +1167,7 @@ X-Network: networkId // Creates session within provided network
 
 <pre>
 {
+    "user_id": string
     "session_token": string
     "is_new": bool
     "need_verification": bool
@@ -1201,6 +1211,7 @@ X-Network: networkId // Creates session within provided network
 <pre>
 {
     "data": {
+        "user_id": string
         "session_token": string
         "is_new": bool
         "need_verification": bool
@@ -1493,6 +1504,7 @@ map[string]{ custom structure }
 <pre>
 {
     "data": {
+        "user_id": string
         "session_token": string
         "is_new": bool
         "need_verification": bool
@@ -1523,6 +1535,7 @@ map[string]{ custom structure }
         "publicKey": string <span color="#1b1ef7"> // public key to securely fetch scoped root key from Verus wallet using RSA encryption</span>
         "zAddress": string <span color="#1b1ef7"> // zAddress to securely fetch scoped root key from Verus wallet using zAddess encryption</span>
         "encVersion": string <span color="#1b1ef7"> // encryption version, like 'verus.v0'</span>
+        "networkId": string
     }
     "event": { "id": string, "date": timestamp }
 }
@@ -1562,6 +1575,7 @@ map[string]{ custom structure }
         "publicKey": string <span color="#1b1ef7"> // public key to securely fetch scoped root key from Verus wallet using RSA encryption</span>
         "zAddress": string <span color="#1b1ef7"> // zAddress to securely fetch scoped root key from Verus wallet using zAddess encryption</span>
         "encVersion": string <span color="#1b1ef7"> // encryption version, like 'verus.v0'</span>
+        "networkId": string
     }
     "event": { "id": string, "date": timestamp }
 }
@@ -1601,6 +1615,7 @@ map[string]{ custom structure }
         "publicKey": string <span color="#1b1ef7"> // public key to securely fetch scoped root key from Verus wallet using RSA encryption</span>
         "zAddress": string <span color="#1b1ef7"> // zAddress to securely fetch scoped root key from Verus wallet using zAddess encryption</span>
         "encVersion": string <span color="#1b1ef7"> // encryption version, like 'verus.v0'</span>
+        "networkId": string
     }
     "event": { "id": string, "date": timestamp }
 }
@@ -1789,6 +1804,38 @@ map[string]{ custom structure }
     "data": {
         "challengeId": string
         "deepLink": string
+    }
+    "event": { "id": string, "date": timestamp }
+}
+</pre>
+
+**Response:** 
+
+<pre>
+{
+    "error": { "status": bool, "code": int, "message": string }
+}
+</pre>
+
+<br>
+
+<a name="test-chabad-universe-credentials"></a>
+
+### Test chabad universe credentials
+
+**Method:** websocket
+
+**Endpoint:** auth:testChabadUniverseCredentials
+
+**Description:** Test Chabad Universe credentials by sending a test request to the Chabad Universe API. This endpoint requires the user to have superadmin permissions.
+
+**Request:** 
+
+<pre>
+{
+    "data": {
+        "userId": string
+        "credentials": [ string ]
     }
     "event": { "id": string, "date": timestamp }
 }

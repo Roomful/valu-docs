@@ -6,20 +6,31 @@
 
 | Endpoint | Method | Description |
 |-----|-----|-----|
+| [/api/v0/resource/meetingInvitation/{meetingId}](#get-ics-file-for-meeting-invitation) | webRequest | Get ICS file for meeting invitation |
+| [/api/v0/resource/meetingSeriesInvitation/{seriesId}](#get-ics-file-for-meeting-series-invitation) | webRequest | Get ICS file for meeting series invitation |
+| [/api/v0/resource/meetingSeriesOccurrenceInvitation/{seriesId}/{originalStartDate}](#get-ics-file-for-meeting-series-occurrence-invitation) | webRequest | Get ICS file for meeting series occurrence invitation |
 | ~~[meeting:create](#create-meeting-deprecated)~~ | websocket | Create meeting: deprecated |
 | ~~[meeting:update](#update-meeting-deprecated)~~ | websocket | Update meeting: deprecated |
 | ~~[meeting:delete](#delete-meeting-deprecated)~~ | websocket | Delete meeting: deprecated |
 | ~~[meeting:get](#get-meeting-deprecated)~~ | websocket | Get meeting: deprecated |
 | ~~[meeting:checkPropHasMeetingsOrSocialSessions](#check-prop-has-meetings-or-social-sessions)~~ | websocket | Check prop has meetings or social sessions |
-| [meeting:listUserMeetingCounts](#list-user-meeting-counts) | websocket | List user meeting counts |
+| ~~[meeting:listUserMeetingCounts](#list-user-meeting-counts)~~ | websocket | List user meeting counts |
 | ~~[meeting:listUserMeetingsInDateRange](#list-user-meetings-in-date-range)~~ | websocket | List user meetings in date range |
+| [meeting:getMeetingSeriesOccurrence](#get-meeting-series-occurrence) | websocket | Get meeting series occurrence |
+| [meeting:updateMeetingSeriesOccurrence](#update-meeting-series-occurrence) | websocket | Update meeting series occurrence |
+| [meeting:cancelMeetingSeriesOccurrence](#cancel-meeting-series-occurrence) | websocket | Cancel meeting series occurrence |
+| [meeting:deleteMeetingSeriesOccurrence](#delete-meeting-series-occurrence) | websocket | Delete meeting series occurrence |
 | [meeting:acceptMeetingRequest](#accept-meeting-request) | websocket | Accept meeting request |
 | [meeting:declineMeetingRequest](#decline-meeting-request) | websocket | Decline meeting request |
 | [meeting:createMeeting](#create-meeting) | websocket | Create meeting |
+| [meeting:createMeetingSeries](#create-meeting-series) | websocket | Create meeting series |
 | [meeting:updateMeeting](#update-meeting) | websocket | Update meeting |
+| [meeting:updateMeetingSeries](#update-meeting-series) | websocket | Update meeting series |
 | [meeting:deleteMeeting](#delete-meeting) | websocket | Delete meeting |
+| [meeting:deleteMeetingSeries](#delete-meeting-series) | websocket | Delete meeting series |
 | [meeting:getMeeting](#get-meeting) | websocket | Get meeting |
 | [meeting:listUserMeetings](#list-user-meetings) | websocket | List user meetings |
+| [meeting:listMeetingOccurrences](#list-meeting-occurrences) | websocket | List meeting occurrences |
 | [meeting:getTimeSlotsForMeeting](#get-time-slots-for-meeting) | websocket | Get time slots for meeting |
 | [meeting:getMeetingTimeSlotsForMonth](#get-meeting-time-slots-for-month) | websocket | Get meeting time slots for month |
 | [meeting:setUserAvailability](#set-user-availability) | websocket | Set user availability |
@@ -30,8 +41,82 @@
 | ~~[meeting:meetingUpdated](#on-meeting-updated-event)~~ | websocketEvent | On meeting updated event |
 | ~~[meeting:meetingDeleted](#on-meeting-deleted-event)~~ | websocketEvent | On meeting deleted event |
 | [meeting:onMeetingCreated](#on-meeting-created-event) | websocketEvent | On meeting created event |
+| [meeting:onMeetingSeriesCreated](#on-meeting-series-created-event) | websocketEvent | On meeting series created event |
 | [meeting:onMeetingDeleted](#on-meeting-deleted-event) | websocketEvent | On meeting deleted event |
+| [meeting:onMeetingSeriesDeleted](#on-meeting-series-deleted-event) | websocketEvent | On meeting series deleted event |
 | [meeting:onMeetingUpdated](#on-meeting-updated-event) | websocketEvent | On meeting updated event |
+| [meeting:onMeetingSeriesUpdated](#on-meeting-series-updated-event) | websocketEvent | On meeting series updated event |
+| [meeting:onMeetingSeriesOccurrenceUpdated](#on-meeting-series-occurrence-updated-event) | websocketEvent | On meeting series occurrence updated event |
+
+<br>
+
+<a name="get-ics-file-for-meeting-invitation"></a>
+
+### Get ICS file for meeting invitation
+
+**HTTP Method:** GET
+
+**Path:** /api/v0/resource/meetingInvitation/{meetingId}
+
+**Request:** 
+
+<pre>
+{ empty }
+</pre>
+
+**Response:** 
+
+<pre>
+ICS file
+</pre>
+
+<br>
+
+<a name="get-ics-file-for-meeting-series-invitation"></a>
+
+### Get ICS file for meeting series invitation
+
+**HTTP Method:** GET
+
+**Path:** /api/v0/resource/meetingSeriesInvitation/{seriesId}
+
+**Request:** 
+
+<pre>
+{ empty }
+</pre>
+
+**Response:** 
+
+<pre>
+ICS file
+</pre>
+
+<br>
+
+<a name="get-ics-file-for-meeting-series-occurrence-invitation"></a>
+
+### Get ICS file for meeting series occurrence invitation
+
+**HTTP Method:** GET
+
+**Path:** /api/v0/resource/meetingSeriesOccurrenceInvitation/{seriesId}/{originalStartDate}
+
+**Parameters:** 
+
+originalStartDate: Unix timestamp of the occurrence start date
+
+**Request:** 
+
+<pre>
+{ empty }
+</pre>
+
+**Response:** 
+
+<pre>
+ICS file
+</pre>
 
 <br>
 
@@ -312,6 +397,8 @@
 
 **Endpoint:** meeting:listUserMeetingCounts
 
+**<span color="red">DEPRECATED</span>** 
+
 **Description:** API lists counts of meetings per day.
 
 **Request:** 
@@ -400,6 +487,181 @@
             }]
         }]
     }
+    "error": { "status": bool, "code": int, "message": string }
+}
+</pre>
+
+<br>
+
+<a name="get-meeting-series-occurrence"></a>
+
+### Get meeting series occurrence
+
+**Method:** websocket
+
+**Endpoint:** meeting:getMeetingSeriesOccurrence
+
+**Description:** API returns a single occurrence of a recurring meeting series. The occurrence is identified by seriesId + originalStartDate (the rrule-generated start date). If the occurrence was overridden, the returned data reflects the override (or its cancelled state).
+
+**Request:** 
+
+<pre>
+{
+    "data": {
+        "seriesId": string
+        "originalStartDate": timestamp <span color="#1b1ef7"> // rrule-generated start date that identifies the occurrence</span>
+    }
+    "event": { "id": string, "date": timestamp }
+}
+</pre>
+
+**Response:** 
+
+<pre>
+{
+    "data": {
+        "meeting": {
+            "userId": string
+            "status": string
+            "meetingId": string
+            "startDate": timestamp
+            "endDate": timestamp
+            "seriesId": string <span color="#1b1ef7"> // id of recurring meeting series</span>
+            "rrule": string <span color="#1b1ef7"> // recurrence rule in RFC 5545 format</span>
+            "dtstart": string <span color="#1b1ef7"> // start date of the first occurrence in RFC 5545 format</span>
+            "duration": int <span color="#1b1ef7"> // duration of each meeting occurrence in seconds</span>
+            "seriesStartDate": timestamp <span color="#1b1ef7"> // start date of the first meeting in the series (UTC)</span>
+            "seriesEndDate": timestamp <span color="#1b1ef7"> // date when series should end, max value, if not set (UTC)</span>
+            "created": timestamp
+            "subject": string
+            "description": string
+            "color": { <a href="#rgba">rgba structure</a> }
+            "isValid": bool <span color="#1b1ef7"> // not valid if source was deleted</span>
+            "organizerId": string <span color="#1b1ef7"> // user id of the organizer</span>
+            "participantIds": [ string ] <span color="#1b1ef7"> // list of user ids of participants, including organizer</span>
+            "sourceString": string
+            "sourceType": string
+            "sourcePk": string
+            "networkId": string
+            "originalStartDate": timestamp <span color="#1b1ef7"> // original rrule-generated start date; identifies the occurrence within the series for override operations</span>
+            "isCancelled": bool <span color="#1b1ef7"> // true when this occurrence was individually cancelled; the occurrence is still returned so the client can display and restore it</span>
+        }
+    }
+    "error": { "status": bool, "code": int, "message": string }
+}
+</pre>
+
+<br>
+
+<a name="update-meeting-series-occurrence"></a>
+
+### Update meeting series occurrence
+
+**Method:** websocket
+
+**Endpoint:** meeting:updateMeetingSeriesOccurrence
+
+**Description:** API updates a single occurrence of a recurring meeting series without affecting other occurrences. The occurrence is identified by seriesId + originalStartDate (the rrule-generated start date). Provide updated subject, description, color, and optionally new start/end dates.
+
+**Request:** 
+
+<pre>
+{
+    "data": {
+        "seriesId": string
+        "originalStartDate": timestamp <span color="#1b1ef7"> // rrule-generated start date that identifies the occurrence</span>
+        "subject": string
+        "description": string
+        "color": { <a href="#rgba">rgba structure</a> }
+        "startDate": timestamp
+        "endDate": timestamp
+    }
+    "event": { "id": string, "date": timestamp }
+}
+</pre>
+
+**Response:** 
+
+<pre>
+{
+    "data": {
+        "seriesId": string
+        "originalStartDate": timestamp
+        "override": { <span color="#1b1ef7"> // null means the override was removed and the occurrence reverts to series defaults</span>
+            "seriesId": string
+            "originalStartDate": timestamp <span color="#1b1ef7"> // rrule-generated start date that identifies this occurrence</span>
+            "isCancelled": bool <span color="#1b1ef7"> // if true, this occurrence is cancelled</span>
+            "subject": string
+            "description": string
+            "color": { <a href="#rgba">rgba structure</a> }
+            "startDate": timestamp <span color="#1b1ef7"> // overridden start date; zero means use series-generated date</span>
+            "endDate": timestamp <span color="#1b1ef7"> // overridden end date; zero means use series-generated date</span>
+        }
+    }
+    "error": { "status": bool, "code": int, "message": string }
+}
+</pre>
+
+<br>
+
+<a name="cancel-meeting-series-occurrence"></a>
+
+### Cancel meeting series occurrence
+
+**Method:** websocket
+
+**Endpoint:** meeting:cancelMeetingSeriesOccurrence
+
+**Description:** API cancels a single occurrence of a recurring meeting series without affecting other occurrences. The occurrence is identified by seriesId + originalStartDate (the rrule-generated start date).
+
+**Request:** 
+
+<pre>
+{
+    "data": {
+        "seriesId": string
+        "originalStartDate": timestamp <span color="#1b1ef7"> // rrule-generated start date that identifies the occurrence</span>
+    }
+    "event": { "id": string, "date": timestamp }
+}
+</pre>
+
+**Response:** 
+
+<pre>
+{
+    "error": { "status": bool, "code": int, "message": string }
+}
+</pre>
+
+<br>
+
+<a name="delete-meeting-series-occurrence"></a>
+
+### Delete meeting series occurrence
+
+**Method:** websocket
+
+**Endpoint:** meeting:deleteMeetingSeriesOccurrence
+
+**Description:** API removes the override for a single occurrence, restoring it to default series behavior.
+
+**Request:** 
+
+<pre>
+{
+    "data": {
+        "seriesId": string
+        "originalStartDate": timestamp <span color="#1b1ef7"> // rrule-generated start date that identifies the occurrence</span>
+    }
+    "event": { "id": string, "date": timestamp }
+}
+</pre>
+
+**Response:** 
+
+<pre>
+{
     "error": { "status": bool, "code": int, "message": string }
 }
 </pre>
@@ -513,6 +775,8 @@ API will create "Meeting" requests to all invited users.
     "data": {
         "meeting": {
             "meetingId": string
+            "startDate": timestamp
+            "endDate": timestamp
             "created": timestamp
             "subject": string
             "description": string
@@ -524,8 +788,76 @@ API will create "Meeting" requests to all invited users.
             "sourceType": string
             "sourcePk": string
             "networkId": string
-            "startDate": timestamp
-            "endDate": timestamp
+        }
+    }
+    "error": { "status": bool, "code": int, "message": string }
+}
+</pre>
+
+<br>
+
+<a name="create-meeting-series"></a>
+
+### Create meeting series
+
+**Method:** websocket
+
+**Endpoint:** meeting:createMeetingSeries
+
+**Description:** API creates meeting series in a provided location. 
+
+API will create "MeetingSeries" requests to all invited users. 
+
+* All invited users will have "received" status for meeting; 
+
+* By accepting request invited user will receive "accepted" status for meeting; 
+
+* By declining request invited user will receive "declined" status for meeting; 
+
+
+
+**Request:** 
+
+<pre>
+{
+    "data": {
+        "sourceType": string <span color="#1b1ef7"> // room/prop/group/direct</span>
+        "sourceIds": [ string ] <span color="#1b1ef7"> // roomId/roomId+propId/groupId/userId</span>
+        "subject": string
+        "description": string
+        "color": { <a href="#rgba">rgba structure</a> }
+        "invitedUserIds": [ string ]
+        "rrule": string <span color="#1b1ef7"> // recurrence rule in RFC 5545 format</span>
+        "dtstart": string <span color="#1b1ef7"> // start date of the first occurrence in RFC 5545 format</span>
+        "duration": int <span color="#1b1ef7"> // duration of each meeting occurrence in seconds</span>
+    }
+    "event": { "id": string, "date": timestamp }
+}
+</pre>
+
+**Response:** 
+
+<pre>
+{
+    "data": {
+        "meeting": {
+            "seriesId": string <span color="#1b1ef7"> // id of recurring meeting series</span>
+            "rrule": string <span color="#1b1ef7"> // recurrence rule in RFC 5545 format</span>
+            "dtstart": string <span color="#1b1ef7"> // start date of the first occurrence in RFC 5545 format</span>
+            "duration": int <span color="#1b1ef7"> // duration of each meeting occurrence in seconds</span>
+            "seriesStartDate": timestamp <span color="#1b1ef7"> // start date of the first meeting in the series (UTC)</span>
+            "seriesEndDate": timestamp <span color="#1b1ef7"> // date when series should end, max value, if not set (UTC)</span>
+            "created": timestamp
+            "subject": string
+            "description": string
+            "color": { <a href="#rgba">rgba structure</a> }
+            "isValid": bool <span color="#1b1ef7"> // not valid if source was deleted</span>
+            "organizerId": string <span color="#1b1ef7"> // user id of the organizer</span>
+            "participantIds": [ string ] <span color="#1b1ef7"> // list of user ids of participants, including organizer</span>
+            "sourceString": string
+            "sourceType": string
+            "sourcePk": string
+            "networkId": string
         }
     }
     "error": { "status": bool, "code": int, "message": string }
@@ -565,6 +897,8 @@ API will create "Meeting" requests to all invited users.
     "data": {
         "meeting": {
             "meetingId": string
+            "startDate": timestamp
+            "endDate": timestamp
             "created": timestamp
             "subject": string
             "description": string
@@ -576,8 +910,62 @@ API will create "Meeting" requests to all invited users.
             "sourceType": string
             "sourcePk": string
             "networkId": string
-            "startDate": timestamp
-            "endDate": timestamp
+        }
+    }
+    "error": { "status": bool, "code": int, "message": string }
+}
+</pre>
+
+<br>
+
+<a name="update-meeting-series"></a>
+
+### Update meeting series
+
+**Method:** websocket
+
+**Endpoint:** meeting:updateMeetingSeries
+
+**Request:** 
+
+<pre>
+{
+    "data": {
+        "seriesId": string
+        "subject": string
+        "description": string
+        "color": { <a href="#rgba">rgba structure</a> }
+        "rrule": string <span color="#1b1ef7"> // recurrence rule in RFC 5545 format</span>
+        "dtstart": string <span color="#1b1ef7"> // start date of the first occurrence in RFC 5545 format</span>
+        "duration": int <span color="#1b1ef7"> // duration of each meeting occurrence in seconds</span>
+    }
+    "event": { "id": string, "date": timestamp }
+}
+</pre>
+
+**Response:** 
+
+<pre>
+{
+    "data": {
+        "meeting": {
+            "seriesId": string <span color="#1b1ef7"> // id of recurring meeting series</span>
+            "rrule": string <span color="#1b1ef7"> // recurrence rule in RFC 5545 format</span>
+            "dtstart": string <span color="#1b1ef7"> // start date of the first occurrence in RFC 5545 format</span>
+            "duration": int <span color="#1b1ef7"> // duration of each meeting occurrence in seconds</span>
+            "seriesStartDate": timestamp <span color="#1b1ef7"> // start date of the first meeting in the series (UTC)</span>
+            "seriesEndDate": timestamp <span color="#1b1ef7"> // date when series should end, max value, if not set (UTC)</span>
+            "created": timestamp
+            "subject": string
+            "description": string
+            "color": { <a href="#rgba">rgba structure</a> }
+            "isValid": bool <span color="#1b1ef7"> // not valid if source was deleted</span>
+            "organizerId": string <span color="#1b1ef7"> // user id of the organizer</span>
+            "participantIds": [ string ] <span color="#1b1ef7"> // list of user ids of participants, including organizer</span>
+            "sourceString": string
+            "sourceType": string
+            "sourcePk": string
+            "networkId": string
         }
     }
     "error": { "status": bool, "code": int, "message": string }
@@ -600,6 +988,35 @@ API will create "Meeting" requests to all invited users.
 {
     "data": {
         "meetingId": string
+    }
+    "event": { "id": string, "date": timestamp }
+}
+</pre>
+
+**Response:** 
+
+<pre>
+{
+    "error": { "status": bool, "code": int, "message": string }
+}
+</pre>
+
+<br>
+
+<a name="delete-meeting-series"></a>
+
+### Delete meeting series
+
+**Method:** websocket
+
+**Endpoint:** meeting:deleteMeetingSeries
+
+**Request:** 
+
+<pre>
+{
+    "data": {
+        "seriesId": string
     }
     "event": { "id": string, "date": timestamp }
 }
@@ -641,6 +1058,8 @@ API will create "Meeting" requests to all invited users.
     "data": {
         "meeting": {
             "meetingId": string
+            "startDate": timestamp
+            "endDate": timestamp
             "created": timestamp
             "subject": string
             "description": string
@@ -652,8 +1071,6 @@ API will create "Meeting" requests to all invited users.
             "sourceType": string
             "sourcePk": string
             "networkId": string
-            "startDate": timestamp
-            "endDate": timestamp
         }
     }
     "error": { "status": bool, "code": int, "message": string }
@@ -695,6 +1112,8 @@ API will create "Meeting" requests to all invited users.
             "userId": string
             "status": string
             "meetingId": string
+            "startDate": timestamp
+            "endDate": timestamp
             "created": timestamp
             "subject": string
             "description": string
@@ -706,8 +1125,68 @@ API will create "Meeting" requests to all invited users.
             "sourceType": string
             "sourcePk": string
             "networkId": string
+        }]
+    }
+    "error": { "status": bool, "code": int, "message": string }
+}
+</pre>
+
+<br>
+
+<a name="list-meeting-occurrences"></a>
+
+### List meeting occurrences
+
+**Method:** websocket
+
+**Endpoint:** meeting:listMeetingOccurrences
+
+**Description:** API lists meeting occurrences (single meetings and meeting series occurrences) in provided date range.
+
+**Request:** 
+
+<pre>
+{
+    "data": {
+        "startDate": timestamp
+        "endDate": timestamp
+        "sourceType": string <span color="#1b1ef7"> // filter meetings by source: network/room/prop/group/direct</span>
+        "sourceIds": [ string ] <span color="#1b1ef7"> // networkId/roomId/roomId+propId/groupId/userId</span>
+    }
+    "event": { "id": string, "date": timestamp }
+}
+</pre>
+
+**Response:** 
+
+<pre>
+{
+    "data": {
+        "meetings": [{
+            "userId": string
+            "status": string
+            "meetingId": string
             "startDate": timestamp
             "endDate": timestamp
+            "seriesId": string <span color="#1b1ef7"> // id of recurring meeting series</span>
+            "rrule": string <span color="#1b1ef7"> // recurrence rule in RFC 5545 format</span>
+            "dtstart": string <span color="#1b1ef7"> // start date of the first occurrence in RFC 5545 format</span>
+            "duration": int <span color="#1b1ef7"> // duration of each meeting occurrence in seconds</span>
+            "seriesStartDate": timestamp <span color="#1b1ef7"> // start date of the first meeting in the series (UTC)</span>
+            "seriesEndDate": timestamp <span color="#1b1ef7"> // date when series should end, max value, if not set (UTC)</span>
+            "created": timestamp
+            "subject": string
+            "description": string
+            "color": { <a href="#rgba">rgba structure</a> }
+            "isValid": bool <span color="#1b1ef7"> // not valid if source was deleted</span>
+            "organizerId": string <span color="#1b1ef7"> // user id of the organizer</span>
+            "participantIds": [ string ] <span color="#1b1ef7"> // list of user ids of participants, including organizer</span>
+            "sourceString": string
+            "sourceType": string
+            "sourcePk": string
+            "networkId": string
+            "originalStartDate": timestamp <span color="#1b1ef7"> // original rrule-generated start date; identifies the occurrence within the series for override operations</span>
+            "isCancelled": bool <span color="#1b1ef7"> // true when this occurrence was individually cancelled; the occurrence is still returned so the client can display and restore it</span>
         }]
     }
     "error": { "status": bool, "code": int, "message": string }
@@ -1083,6 +1562,8 @@ LocalDate parameter indicates with what date server should work.
     "data": {
         "meeting": {
             "meetingId": string
+            "startDate": timestamp
+            "endDate": timestamp
             "created": timestamp
             "subject": string
             "description": string
@@ -1094,8 +1575,43 @@ LocalDate parameter indicates with what date server should work.
             "sourceType": string
             "sourcePk": string
             "networkId": string
-            "startDate": timestamp
-            "endDate": timestamp
+        }
+    }
+    "error": { "status": bool, "code": int, "message": string }
+}
+</pre>
+
+<br>
+
+<a name="on-meeting-series-created-event"></a>
+
+### On meeting series created event
+
+**Event:** meeting:onMeetingSeriesCreated
+
+**Data:** 
+
+<pre>
+{
+    "data": {
+        "meeting": {
+            "seriesId": string <span color="#1b1ef7"> // id of recurring meeting series</span>
+            "rrule": string <span color="#1b1ef7"> // recurrence rule in RFC 5545 format</span>
+            "dtstart": string <span color="#1b1ef7"> // start date of the first occurrence in RFC 5545 format</span>
+            "duration": int <span color="#1b1ef7"> // duration of each meeting occurrence in seconds</span>
+            "seriesStartDate": timestamp <span color="#1b1ef7"> // start date of the first meeting in the series (UTC)</span>
+            "seriesEndDate": timestamp <span color="#1b1ef7"> // date when series should end, max value, if not set (UTC)</span>
+            "created": timestamp
+            "subject": string
+            "description": string
+            "color": { <a href="#rgba">rgba structure</a> }
+            "isValid": bool <span color="#1b1ef7"> // not valid if source was deleted</span>
+            "organizerId": string <span color="#1b1ef7"> // user id of the organizer</span>
+            "participantIds": [ string ] <span color="#1b1ef7"> // list of user ids of participants, including organizer</span>
+            "sourceString": string
+            "sourceType": string
+            "sourcePk": string
+            "networkId": string
         }
     }
     "error": { "status": bool, "code": int, "message": string }
@@ -1123,6 +1639,25 @@ LocalDate parameter indicates with what date server should work.
 
 <br>
 
+<a name="on-meeting-series-deleted-event"></a>
+
+### On meeting series deleted event
+
+**Event:** meeting:onMeetingSeriesDeleted
+
+**Data:** 
+
+<pre>
+{
+    "data": {
+        "seriesId": string
+    }
+    "error": { "status": bool, "code": int, "message": string }
+}
+</pre>
+
+<br>
+
 <a name="on-meeting-updated-event"></a>
 
 ### On meeting updated event
@@ -1136,6 +1671,8 @@ LocalDate parameter indicates with what date server should work.
     "data": {
         "meeting": {
             "meetingId": string
+            "startDate": timestamp
+            "endDate": timestamp
             "created": timestamp
             "subject": string
             "description": string
@@ -1147,8 +1684,75 @@ LocalDate parameter indicates with what date server should work.
             "sourceType": string
             "sourcePk": string
             "networkId": string
-            "startDate": timestamp
-            "endDate": timestamp
+        }
+    }
+    "error": { "status": bool, "code": int, "message": string }
+}
+</pre>
+
+<br>
+
+<a name="on-meeting-series-updated-event"></a>
+
+### On meeting series updated event
+
+**Event:** meeting:onMeetingSeriesUpdated
+
+**Data:** 
+
+<pre>
+{
+    "data": {
+        "meeting": {
+            "seriesId": string <span color="#1b1ef7"> // id of recurring meeting series</span>
+            "rrule": string <span color="#1b1ef7"> // recurrence rule in RFC 5545 format</span>
+            "dtstart": string <span color="#1b1ef7"> // start date of the first occurrence in RFC 5545 format</span>
+            "duration": int <span color="#1b1ef7"> // duration of each meeting occurrence in seconds</span>
+            "seriesStartDate": timestamp <span color="#1b1ef7"> // start date of the first meeting in the series (UTC)</span>
+            "seriesEndDate": timestamp <span color="#1b1ef7"> // date when series should end, max value, if not set (UTC)</span>
+            "created": timestamp
+            "subject": string
+            "description": string
+            "color": { <a href="#rgba">rgba structure</a> }
+            "isValid": bool <span color="#1b1ef7"> // not valid if source was deleted</span>
+            "organizerId": string <span color="#1b1ef7"> // user id of the organizer</span>
+            "participantIds": [ string ] <span color="#1b1ef7"> // list of user ids of participants, including organizer</span>
+            "sourceString": string
+            "sourceType": string
+            "sourcePk": string
+            "networkId": string
+        }
+    }
+    "error": { "status": bool, "code": int, "message": string }
+}
+</pre>
+
+<br>
+
+<a name="on-meeting-series-occurrence-updated-event"></a>
+
+### On meeting series occurrence updated event
+
+**Event:** meeting:onMeetingSeriesOccurrenceUpdated
+
+**Description:** `override.isCancelled=true` when the occurrence is cancelled. `override.isCancelled=false` when the occurrence details were modified. `override` is null when the occurrence override was deleted (occurrence reverts to series defaults).
+
+**Data:** 
+
+<pre>
+{
+    "data": {
+        "seriesId": string
+        "originalStartDate": timestamp
+        "override": { <span color="#1b1ef7"> // null means the override was removed and the occurrence reverts to series defaults</span>
+            "seriesId": string
+            "originalStartDate": timestamp <span color="#1b1ef7"> // rrule-generated start date that identifies this occurrence</span>
+            "isCancelled": bool <span color="#1b1ef7"> // if true, this occurrence is cancelled</span>
+            "subject": string
+            "description": string
+            "color": { <a href="#rgba">rgba structure</a> }
+            "startDate": timestamp <span color="#1b1ef7"> // overridden start date; zero means use series-generated date</span>
+            "endDate": timestamp <span color="#1b1ef7"> // overridden end date; zero means use series-generated date</span>
         }
     }
     "error": { "status": bool, "code": int, "message": string }
@@ -1197,6 +1801,7 @@ LocalDate parameter indicates with what date server should work.
     "encryptionVersion": string <span color="#1b1ef7"> // encryption version, like 'verus.v1'</span>
     "encryptionEpoch": int <span color="#1b1ef7"> // epoch defines key bundle that was used for encryption</span>
     "encryptionEpk": string <span color="#1b1ef7"> // ephemeral public key that should be used to decrypt cypher data</span>
+    "userId": string <span color="#1b1ef7"> // user id of resource author</span>
     "belonging": string <span color="#1b1ef7"> // determines resource location in the system in a way 'belongingType:belongingPath(networkId)'</span>
     "status": string <span color="#1b1ef7"> // pending/processing/ready/failed</span>
     "metadata": {
@@ -1220,6 +1825,7 @@ LocalDate parameter indicates with what date server should work.
         "amazon": { <a href="#resource-data-amazon">resource data amazon structure</a> }
         "imdb": { <a href="#resource-data-imdb">resource data imdb structure</a> }
         "youtube": { <a href="#resource-data-youtube">resource data youtube structure</a> }
+        "vimeo": { <a href="#resource-data-vimeo">resource data vimeo structure</a> }
         "pinterest": { <a href="#resource-data-pinterest">resource data pinterest structure</a> }
         "pixabay": { <a href="#resource-data-pixabay">resource data pixabay structure</a> }
         "facebook": { <a href="#resource-data-facebook">resource data facebook structure</a> }
@@ -1229,8 +1835,9 @@ LocalDate parameter indicates with what date server should work.
         "thumbnailUrl": string
         "downloadUrl": string
         "directory": { <a href="#resource-data-directory">resource data directory structure</a> }
-        "channel": { <a href="#channel-data">channel data structure</a> }
         "googleDrive": { <a href="#google-drive">google drive structure</a> }
+        "channel": { <a href="#channel-data">channel data structure</a> }
+        "enrichment": { <a href="#enrichment-data">enrichment data structure</a> }
     }
     "customParams": map[string]{ custom structure } <span color="#1b1ef7"> // client defined parameters</span>
     "actions": [{ <a href="#programmatic-action-with-children">programmatic action with children structure</a> }] <span color="#1b1ef7"> // custom programmatic actions from users</span>
@@ -1367,6 +1974,19 @@ LocalDate parameter indicates with what date server should work.
 
 <br>
 
+<a name="resource-data-vimeo"></a>
+
+#### Resource Data Vimeo
+
+<pre>
+{
+    "videoUrl": string
+    "formatId": string
+}
+</pre>
+
+<br>
+
 <a name="resource-data-pinterest"></a>
 
 #### Resource Data Pinterest
@@ -1430,6 +2050,7 @@ LocalDate parameter indicates with what date server should work.
     "assetId": string
     "playbackUrl": string
     "masterUrl": string
+    "createdAt": int
 }
 </pre>
 
@@ -1441,7 +2062,7 @@ LocalDate parameter indicates with what date server should work.
 
 <pre>
 {
-    "generationModel": string <span color="#1b1ef7"> // the model used for image generation [dall-e-3]</span>
+    "generationModel": string <span color="#1b1ef7"> // the model used for image generation [gpt-image-2, gpt-image-1.5, gpt-image-1, gpt-image-1-mini]; defaults to gpt-image-2</span>
     "prompt": string <span color="#1b1ef7"> // a text description of the desired image</span>
     "revisedPrompt": string <span color="#1b1ef7"> // the prompt that was used to generate the image, if there was any revision to the prompt</span>
     "url": string <span color="#1b1ef7"> // the URL of the generated image</span>
@@ -1463,6 +2084,20 @@ LocalDate parameter indicates with what date server should work.
 
 <br>
 
+<a name="google-drive"></a>
+
+#### Google Drive
+
+<pre>
+{
+    "fileId": string
+    "name": string
+    "mimeType": string
+}
+</pre>
+
+<br>
+
 <a name="channel-data"></a>
 
 #### Channel Data
@@ -1478,15 +2113,18 @@ LocalDate parameter indicates with what date server should work.
 
 <br>
 
-<a name="google-drive"></a>
+<a name="enrichment-data"></a>
 
-#### Google Drive
+#### Enrichment Data
 
 <pre>
 {
-    "fileId": string
-    "name": string
-    "mimeType": string
+    "categories": [ string ]
+    "enrichedAt": timestamp
+    "enrichmentStatus": string
+    "language": string
+    "qualityScore": int
+    "tags": [ string ]
 }
 </pre>
 
@@ -1559,6 +2197,7 @@ LocalDate parameter indicates with what date server should work.
     "avatar3D": { <span color="#1b1ef7"> // field is not returned if empty</span>
         "assetId": string
         "assetSkins": map[string]string <span color="#1b1ef7"> // map of selected skins per variants</span>
+        "avatarResourceId": string <span color="#1b1ef7"> // resource id (in case of avatar uploaded to user3DAvatar belonging)</span>
         "avatarUrl": string <span color="#1b1ef7"> // url to gbl file (Ready Player Me)</span>
         "avatarUserId": string <span color="#1b1ef7"> // user id for session recovery (Ready Player Me)</span>
     }
