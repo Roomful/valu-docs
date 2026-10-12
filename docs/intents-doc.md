@@ -1,7 +1,7 @@
 # Intents Reference
 
 > Auto-generated from application and service manifests.  
-> Generated on: 2026-10-09
+> Generated on: 2026-10-12
 
 ## Table of Contents
 
@@ -417,12 +417,15 @@ Open the Merchant Console on one of its tabs. The tab becomes part of the addres
 | Parameter | Type | Required | Description |
 |-----------|------|----------|-------------|
 | `section` | string | Yes | Which tab to open: home, products, bundles, promotions, analytics, store or moderation. |
+| `popup` | boolean | No | true draws the product list over the pane of the app that asked instead of docking the console, so the app the seller came from stays visible behind it. Products is the only tab with a popup form; any other section docks the console as usual. Where the caller is not on screen the popup falls back to a window over the whole page. |
 
 #### `open-products`
 
-Open the seller's product list.
+Open the seller's product list. With `popup` it is drawn over the calling app instead of docking the console.
 
-*No parameters.*
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `popup` | boolean | No | true draws the product list over the pane of the app that asked instead of docking the console, so the app the seller came from stays visible behind it. Products is the only tab with a popup form; any other section docks the console as usual. Where the caller is not on screen the popup falls back to a window over the whole page. |
 
 #### `open-product`
 
@@ -560,17 +563,20 @@ Open My Cart on one of its tabs. The tab becomes part of the address, so the pla
 
 #### `open-cart`
 
-Open the cart. Pass an app id to show only that app's items and check them out on their own.
+Open the cart. Pass an app id to show only that app's items and check them out on their own, and `popup` to draw it over the calling app instead of docking My Cart.
 
 | Parameter | Type | Required | Description |
 |-----------|------|----------|-------------|
 | `appId` | string | No | show only the items added from this app |
+| `popup` | boolean | No | true draws this over the pane of the app that asked instead of docking My Cart, so the app the buyer came from stays visible and usable behind it. Where the caller is not on screen the popup falls back to a window over the whole page. |
 
 #### `open-orders`
 
-Open the order history — every purchase made across Valu apps, with its receipt.
+Open the order history — every purchase made across Valu apps, with its receipt. With `popup` it is drawn over the calling app instead of docking My Cart.
 
-*No parameters.*
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `popup` | boolean | No | true draws this over the pane of the app that asked instead of docking My Cart, so the app the buyer came from stays visible and usable behind it. Where the caller is not on screen the popup falls back to a window over the whole page. |
 
 #### `open-order`
 
@@ -579,6 +585,7 @@ Open one order and show its receipt.
 | Parameter | Type | Required | Description |
 |-----------|------|----------|-------------|
 | `orderId` | string | Yes | the order to show |
+| `popup` | boolean | No | true draws this over the pane of the app that asked instead of docking My Cart, so the app the buyer came from stays visible and usable behind it. Where the caller is not on screen the popup falls back to a window over the whole page. |
 
 #### `open-product`
 
@@ -1126,21 +1133,27 @@ Edit one of the seller's own DRAFT products — one never published, or one the 
 
 #### `open-cart`
 
-Open My Cart for the user, scoped to your app's items.
+Open My Cart for the user, scoped to your app's items. With `popup` it is drawn over your own app instead of docking My Cart — mid-purchase, that keeps the user where they were.
 
-*No parameters.*
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `popup` | boolean | No | true draws the surface over YOUR app's own pane instead of docking the application, so the page the user was on stays visible and usable behind it. Where your app is not on screen it falls back to a window over the whole page. |
 
 #### `open-purchases`
 
-Open the user's order history in My Cart.
+Open the user's order history in My Cart. With `popup` it is drawn over your own app instead of docking My Cart.
 
-*No parameters.*
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `popup` | boolean | No | true draws the surface over YOUR app's own pane instead of docking the application, so the page the user was on stays visible and usable behind it. Where your app is not on screen it falls back to a window over the whole page. |
 
 #### `open-products`
 
-Open the seller's own products in the Merchant Console — the seller's side of `open-cart`. Use it after `create-product`, or for a "My products" link: it shows everything they sell across every app, not just yours, and whether they may sell at all is the platform's decision, not your app's.
+Open the seller's own products in the Merchant Console — the seller's side of `open-cart`. Use it after `create-product`, or for a "My products" link: it shows everything they sell across every app, not just yours, and whether they may sell at all is the platform's decision, not your app's. With `popup` it is drawn over your own app instead of docking the console.
 
-*No parameters.*
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `popup` | boolean | No | true draws the surface over YOUR app's own pane instead of docking the application, so the page the user was on stays visible and usable behind it. Where your app is not on screen it falls back to a window over the whole page. |
 
 ---
 
