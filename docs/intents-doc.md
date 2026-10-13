@@ -1045,7 +1045,7 @@ Search the live products available in the user's current network — the buyer's
 
 #### `get-product`
 
-One product with its price, its parts when it is a bundle, its store, its reviews and whether the current user already owns it. `contents` is what the product holds, as a tree to draw: `{type: "folder", title, items}`, `{type: "file", resourceId, title, kind, contentType, fileSize}` and `{type: "product", productId, title}`. `children` is NOT the content: it is only the products a bundle includes, empty for anything else. `items` is the same content as flat database rows, kept for older callers.
+One product with its price, its parts when it is a bundle, its store, its reviews and whether the current user already owns it. `contents` is what the product holds, as a tree to draw: `{type: "folder", title, items}`, `{type: "file", resourceId, title, kind, contentType, fileSize}` and `{type: "product", productId, title}`. `children` is NOT the content: it is only the products a bundle includes, empty for anything else. `items` is the same content as flat database rows, kept for older callers. A file's `resourceId` (and `resource_id` in items) is null unless the user owns the product or sells it: titles and types are the shop window, the ids open the paid files. For something the user bought, use get-purchase-contents.
 
 | Parameter | Type | Required | Description |
 |-----------|------|----------|-------------|
@@ -1139,6 +1139,39 @@ Edit one of the seller's own DRAFT products — one never published, or one the 
 | `tags` | array | No | the full tag list (replaces the current one): up to 10 tags of up to 24 characters |
 | `imageResourceId` | string | No | the cover: a resource id in the seller's own Media |
 | `items` | array | No | the WHOLE new content: resource ids ("res_1"), named files ({resourceId, title}), folders ({folder: "Unit 1", items: […]}) or other products ({productId}) for a bundle |
+
+#### `list-purchases`
+
+What the signed-in user OWNS — every product they bought, wherever they bought it, as My Cart's Orders tab lists it. Returns `{purchases: [{productId, title, coverResourceId, purchasedAt, orderId, boughtInAppId, isBundlePart, delivered, deletedBySeller}]}`. `delivered` is true once the buyer's own copy is in their Media; `isBundlePart` marks a product that came inside a bundle; a purchase the seller deleted is still theirs.
+
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `thisAppOnly` | boolean | No | true lists only what was bought in YOUR app |
+
+#### `get-purchase-contents`
+
+One purchase opened up: the version the user BOUGHT (frozen at purchase, not the product as it is now), as a tree to draw. Returns `{productId, title, deletedBySeller, contents}`; contents nodes are `{type: "folder", title, items}`, `{type: "file", resourceId, title, kind, contentType, fileSize, deliveredResourceId}` and `{type: "product", productId, title}` (a product inside a bundle — open it with its own get-purchase-contents). `deliveredResourceId` is the buyer's own copy in Media, null until delivered. Refused with code `not_owned` when the user does not own the product — the server decides.
+
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `productId` | string | Yes | a product the user owns, from list-purchases |
+
+#### `preview-purchase`
+
+Open the platform's previewer on what the user bought — the Orders tab's click on a file. Without `resourceId` it shows every file of the purchase in tree order; with one, just that file, which must be in the purchase (its `resourceId` or `deliveredResourceId` from get-purchase-contents). Returns `{success: true, count}`, or `{success: false, code}` with `not_owned`, `not_in_purchase` or `empty`. The previewer is a window over the whole page.
+
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `productId` | string | Yes | a product the user owns |
+| `resourceId` | string | No | one file of that purchase to show |
+
+#### `open-purchase-in-media`
+
+Open a purchase where it lives, in Media's Purchased section — the Orders tab's "Show in Media". The buyer's delivered folder when there is one, otherwise a read-only view of the version they bought. Without `productId`, the whole Purchased section. Media docks beside your app. Returns `{success: true}`, or `{success: false, code: "not_owned"}` without opening anything.
+
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `productId` | string | No | a product the user owns; omit for everything they bought |
 
 #### `open-cart`
 
