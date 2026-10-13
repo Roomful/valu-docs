@@ -1045,7 +1045,7 @@ Search the live products available in the user's current network — the buyer's
 
 #### `get-product`
 
-One product with its price, its parts when it is a bundle, its store, its reviews and whether the current user already owns it.
+One product with its price, its parts when it is a bundle, its store, its reviews and whether the current user already owns it. `contents` is what the product holds, as a tree to draw: `{type: "folder", title, items}`, `{type: "file", resourceId, title, kind, contentType, fileSize}` and `{type: "product", productId, title}`. `children` is NOT the content: it is only the products a bundle includes, empty for anything else. `items` is the same content as flat database rows, kept for older callers.
 
 | Parameter | Type | Required | Description |
 |-----------|------|----------|-------------|
