@@ -1,7 +1,7 @@
 # Intents Reference
 
 > Auto-generated from application and service manifests.  
-> Generated on: 2026-10-12
+> Generated on: 2026-10-13
 
 ## Table of Contents
 
@@ -1031,7 +1031,7 @@ Products, cart and purchases shared across apps. An app lists its own goods and 
 
 #### `list-products`
 
-Search the products YOUR app lists that are available in the user's current network. Products the network or its admins have refused are simply absent from the answer.
+Search the live products available in the user's current network — the buyer's shelf, every seller's goods, not only yours. Products the network or its admins have refused are simply absent from the answer. For the signed-in seller's OWN products, drafts included, use list-seller-products.
 
 | Parameter | Type | Required | Description |
 |-----------|------|----------|-------------|
@@ -1095,6 +1095,15 @@ Create a product for the seller, as a DRAFT. Two ways in. With no params it open
 | `imageResourceId` | string | No | the cover: a resource id in the seller's own Media, e.g. one you generated |
 | `items` | array | No | the content a buyer receives: resource ids ("res_1"), named files ({resourceId, title}), folders ({folder: "Unit 1", items: […]}) or other products ({productId}) for a bundle |
 | `stock` | number | No | how many may be sold; omit for unlimited |
+
+#### `list-seller-products`
+
+Every product the SIGNED-IN user sells, from their own store, so an app can show a seller their own products: live, draft (unlisted ones included), archived and broken, in every network, including ones a network blocked. Unlike list-products, the buyer's shelf of live products allowed here. The store is always the current user's; there is no way to name another. Read-only, newest change first. Returns `{hasStore, products}`; `hasStore` is false (and products empty) when the user has no store. Each product: id, title, description, status, category, tags, priceAmount, priceCurrency, totalPriceAmount, isBundle, coverResourceId, stock (null = unlimited), soldCount, contentCount. Show totalPriceAmount as the price: on a bundle priceAmount is only the seller's part on top of what it includes, and totalPriceAmount is null when the server could not price the bundle.
+
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `status` | string | No | only products in this state |
+| `limit` | number | No | how many to return: 100 by default, up to 500 |
 
 #### `list-my-products`
 
