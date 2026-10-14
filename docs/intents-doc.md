@@ -1,7 +1,7 @@
 # Intents Reference
 
 > Auto-generated from application and service manifests.  
-> Generated on: 2026-10-13
+> Generated on: 2026-10-14
 
 ## Table of Contents
 
@@ -67,6 +67,8 @@ User login flow
 
 Logout from system
 
+**Availability:** Developer
+
 *No parameters.*
 
 ---
@@ -76,6 +78,8 @@ Logout from system
 #### `open-calendar`
 
 Opens the calendar view, optionally filtered by a specific source type (all, room, group, user, or community event).
+
+**Availability:** AI, Developer
 
 | Parameter | Type | Required | Description |
 |-----------|------|----------|-------------|
@@ -95,6 +99,8 @@ Opens the calendar view, optionally filtered by a specific source type (all, roo
 
 Connects to a specific meeting by room, prop, group, or user and manages video chat and presentation settings.
 
+**Availability:** AI, Developer
+
 | Parameter | Type | Required | Description |
 |-----------|------|----------|-------------|
 | `roomId` | string | No | The unique identifier of the room to connect to. |
@@ -108,6 +114,8 @@ Connects to a specific meeting by room, prop, group, or user and manages video c
 
 Leaves the current call only when it is the given prop's call (roomId + propId); otherwise does nothing. Returns {left: boolean}. Used by Metaverse 2D video chat zones.
 
+**Availability:** Developer
+
 | Parameter | Type | Required | Description |
 |-----------|------|----------|-------------|
 | `roomId` | string | Yes | The room of the prop whose call to leave. |
@@ -116,6 +124,8 @@ Leaves the current call only when it is the given prop's call (roomId + propId);
 #### `open-source-picker`
 
 Opens the "Open Videochat from" source picker (Rooms, Groups, Contacts, Textchats) as the inline full-view list. Selecting an item starts a video chat with that source.
+
+**Availability:** AI, Developer
 
 | Parameter | Type | Required | Description |
 |-----------|------|----------|-------------|
@@ -129,6 +139,8 @@ Opens the "Open Videochat from" source picker (Rooms, Groups, Contacts, Textchat
 
 Opens a text chat session based on channel, user, group, room, or prop.
 
+**Availability:** AI, Developer
+
 | Parameter | Type | Required | Description |
 |-----------|------|----------|-------------|
 | `channelId` | string | No | The unique identifier of the text channel to open. |
@@ -141,11 +153,15 @@ Opens a text chat session based on channel, user, group, room, or prop.
 
 Closes the currently open channel and returns to the channel list. Mirrors the toolbar back button used on mobile/narrow layouts.
 
+**Availability:** AI, Developer
+
 *No parameters.*
 
 #### `share-card`
 
 Shares one or more entities into a chat as rich, interactive cards — Rooms, Groups, Communities, Meetings, or Contacts — instead of plain links. Pass "id" for a single card or "ids" for several in one message. All cards in one call must be the SAME cardType (mixed types need separate calls). Posts into the currently open channel by default; pass channelId to target a specific channel.
+
+**Availability:** AI, Developer
 
 | Parameter | Type | Required | Description |
 |-----------|------|----------|-------------|
@@ -159,11 +175,15 @@ Shares one or more entities into a chat as rich, interactive cards — Rooms, Gr
 
 Read-only. Returns a snapshot of what the chat is currently showing — the channels list, an open channel, or both side by side (wide layout) — plus the in-app back action. Lets non-web clients (e.g. the Android device back button) mirror the toolbar back-button navigation. Changes nothing. Returns { view: "list" | "channel" | "list-and-channel", isWide, activeChannelId, openThreadId, threadTakeover, canNavigateBack, backAction: "close-thread" | "close-channel" | null }.
 
+**Availability:** AI, Developer
+
 *No parameters.*
 
 #### `options`
 
 Sets the text‑chat view layout (e.g. wide or narrow mode).
+
+**Availability:** Developer
 
 | Parameter | Type | Required | Description |
 |-----------|------|----------|-------------|
@@ -173,6 +193,8 @@ Sets the text‑chat view layout (e.g. wide or narrow mode).
 
 Opens an AI‑powered chat session scoped to a specific room.
 
+**Availability:** Developer
+
 | Parameter | Type | Required | Description |
 |-----------|------|----------|-------------|
 | `roomId` | string | Yes | The unique identifier of the room in which to start the AI chat. |
@@ -180,6 +202,8 @@ Opens an AI‑powered chat session scoped to a specific room.
 #### `send-message`
 
 Sends a rich text message to a text-chat channel on behalf of an initiator (e.g. an AI agent or automated service). Silent — does NOT open or change the visible chat. Use channelId when you know it; otherwise provide userId for a direct message.
+
+**Availability:** Developer
 
 | Parameter | Type | Required | Description |
 |-----------|------|----------|-------------|
@@ -198,6 +222,8 @@ Manage and chat with your personal connections.
 
 Open the connections view for the specified user
 
+**Availability:** AI, Developer
+
 | Parameter | Type | Required | Description |
 |-----------|------|----------|-------------|
 | `userId` | string | Yes | The unique identifier of the user to display |
@@ -209,6 +235,8 @@ Open the connections view for the specified user
 #### `open-create`
 
 Open the content upload page with an optional upload destination
+
+**Availability:** none (platform-internal)
 
 | Parameter | Type | Required | Description |
 |-----------|------|----------|-------------|
@@ -223,6 +251,8 @@ Open the content upload page with an optional upload destination
 #### `open-edit`
 
 Open the edit page for a specific content item
+
+**Availability:** none (platform-internal)
 
 | Parameter | Type | Required | Description |
 |-----------|------|----------|-------------|
@@ -239,11 +269,15 @@ Open the edit page for a specific content item
 
 Open the search page
 
+**Availability:** none (platform-internal)
+
 *No parameters.*
 
 #### `navigate`
 
 Navigate to a specific route within Content Studio
+
+**Availability:** none (platform-internal)
 
 | Parameter | Type | Required | Description |
 |-----------|------|----------|-------------|
@@ -257,6 +291,8 @@ Navigate to a specific route within Content Studio
 
 Open the content upload page with an optional upload destination
 
+**Availability:** none (platform-internal)
+
 | Parameter | Type | Required | Description |
 |-----------|------|----------|-------------|
 | `roomId` | string | No | ID of the room to upload to |
@@ -270,6 +306,8 @@ Open the content upload page with an optional upload destination
 #### `open-edit`
 
 Open the edit page for a specific content item
+
+**Availability:** none (platform-internal)
 
 | Parameter | Type | Required | Description |
 |-----------|------|----------|-------------|
@@ -286,11 +324,15 @@ Open the edit page for a specific content item
 
 Open the search page
 
+**Availability:** none (platform-internal)
+
 *No parameters.*
 
 #### `navigate`
 
 Navigate to a specific route within Content Studio
+
+**Availability:** none (platform-internal)
 
 | Parameter | Type | Required | Description |
 |-----------|------|----------|-------------|
@@ -303,6 +345,8 @@ Navigate to a specific route within Content Studio
 #### `open`
 
 Opens the groups view and navigates to a specific group.
+
+**Availability:** Developer
 
 | Parameter | Type | Required | Description |
 |-----------|------|----------|-------------|
@@ -318,6 +362,8 @@ Live LLM / agent activity debug panel (your own agents)
 
 Opens the LLM Debug panel and navigates to a specific debug session (chat, agent, or sub-agent) by its session ID.
 
+**Availability:** Developer
+
 | Parameter | Type | Required | Description |
 |-----------|------|----------|-------------|
 | `sessionId` | string | Yes | The LLM debug session ID to open. |
@@ -325,6 +371,8 @@ Opens the LLM Debug panel and navigates to a specific debug session (chat, agent
 #### `open-agent`
 
 Opens the LLM Debug panel and navigates to a specific agent's page by its agent ID (its persistent session). Pass `sessionId` to target one of the agent's runs instead.
+
+**Availability:** Developer
 
 | Parameter | Type | Required | Description |
 |-----------|------|----------|-------------|
@@ -334,6 +382,8 @@ Opens the LLM Debug panel and navigates to a specific agent's page by its agent 
 #### `open-run`
 
 Opens the LLM Debug panel on a specific agent/chatbot RUN by its run id. Pass the entity kind + id and the run id from the originating message.
+
+**Availability:** Developer
 
 | Parameter | Type | Required | Description |
 |-----------|------|----------|-------------|
@@ -351,6 +401,8 @@ Content management module
 
 Open and display the specified chat channel
 
+**Availability:** AI, Developer
+
 | Parameter | Type | Required | Description |
 |-----------|------|----------|-------------|
 | `channelId` | string | Yes | The unique identifier of the chat channel to display |
@@ -358,6 +410,8 @@ Open and display the specified chat channel
 #### `show-folder`
 
 Navigate to and open a specific folder in the CMS by its folder ID
+
+**Availability:** AI, Developer
 
 | Parameter | Type | Required | Description |
 |-----------|------|----------|-------------|
@@ -368,6 +422,8 @@ Navigate to and open a specific folder in the CMS by its folder ID
 
 Reveal a resource in the CMS file browser by its resource ID — navigates to the folder holding it (or to its section root when it is not in a folder), selects it and opens its Edit side panel. Use this when you only have a resource id and want to show the user where that file lives; use preview-resource instead to just view its contents.
 
+**Availability:** AI, Developer
+
 | Parameter | Type | Required | Description |
 |-----------|------|----------|-------------|
 | `resourceId` | string | Yes | The unique identifier of the resource to reveal |
@@ -375,6 +431,8 @@ Reveal a resource in the CMS file browser by its resource ID — navigates to th
 #### `preview-resource`
 
 Open a resource (file) in the CMS preview viewer by its resource ID
+
+**Availability:** AI, Developer
 
 | Parameter | Type | Required | Description |
 |-----------|------|----------|-------------|
@@ -384,11 +442,15 @@ Open a resource (file) in the CMS preview viewer by its resource ID
 
 Navigate to the user's own files in the CMS (the "My Files" / "My Content" view). Use this when the user asks about their files, uploads, or personal content — do not use show-folder for this.
 
+**Availability:** AI, Developer
+
 *No parameters.*
 
 #### `show-application-storage`
 
 Open an application's storage folder in the CMS — the files that app has stored under the current user, shown at Applications › `<app>`. Provide the application id (e.g. "valuguru"). The app must declare `storage: true` in its manifest.
+
+**Availability:** AI, Developer
 
 | Parameter | Type | Required | Description |
 |-----------|------|----------|-------------|
@@ -398,6 +460,8 @@ Open an application's storage folder in the CMS — the files that app has store
 #### `show-community-channel`
 
 Open and display the specified community channel
+
+**Availability:** Developer
 
 | Parameter | Type | Required | Description |
 |-----------|------|----------|-------------|
@@ -414,6 +478,8 @@ Sell in Valu: list products and bundles, choose where they sell, and moderate a 
 
 Open the Merchant Console on one of its tabs. The tab becomes part of the address, so the place it opens on can be linked to and comes back on a reload. Home is the setup checklist until the store can sell, then the overview. Promotions, Analytics and Store need a store; Moderation is for network admins. Bundles opens Products filtered to bundles; the old names overview and api-access still work (Home, Store).
 
+**Availability:** AI, Developer
+
 | Parameter | Type | Required | Description |
 |-----------|------|----------|-------------|
 | `section` | string | Yes | Which tab to open: home, products, bundles, promotions, analytics, store or moderation. |
@@ -423,6 +489,8 @@ Open the Merchant Console on one of its tabs. The tab becomes part of the addres
 
 Open the seller's product list. With `popup` it is drawn over the calling app instead of docking the console.
 
+**Availability:** AI, Developer
+
 | Parameter | Type | Required | Description |
 |-----------|------|----------|-------------|
 | `popup` | boolean | No | true draws the product list over the pane of the app that asked instead of docking the console, so the app the seller came from stays visible behind it. Products is the only tab with a popup form; any other section docks the console as usual. Where the caller is not on screen the popup falls back to a window over the whole page. |
@@ -431,6 +499,8 @@ Open the seller's product list. With `popup` it is drawn over the calling app in
 
 Open one of the seller's own products for editing.
 
+**Availability:** AI, Developer
+
 | Parameter | Type | Required | Description |
 |-----------|------|----------|-------------|
 | `productId` | string | Yes | the product to open |
@@ -438,6 +508,8 @@ Open one of the seller's own products for editing.
 #### `open-moderation`
 
 Open the moderation tab for the current network: who may sell here, what content is allowed, and the sellers waiting for a decision. Network admins only.
+
+**Availability:** Developer
 
 *No parameters.*
 
@@ -449,6 +521,8 @@ Open the moderation tab for the current network: who may sell here, what content
 
 initiate the opening of the Metaverse 3d application with spsific route
 
+**Availability:** AI, Developer
+
 | Parameter | Type | Required | Description |
 |-----------|------|----------|-------------|
 | `route` | string | Yes | The route to set. Defines the current view or action in the application. If not provided, the default application state will open. |
@@ -456,6 +530,8 @@ initiate the opening of the Metaverse 3d application with spsific route
 #### `open-room`
 
 Open a specific room in the ValuVerse 3D environment. Both networkId and roomId are required. Use the networkId provided in context.
+
+**Availability:** AI, Developer
 
 | Parameter | Type | Required | Description |
 |-----------|------|----------|-------------|
@@ -465,6 +541,8 @@ Open a specific room in the ValuVerse 3D environment. Both networkId and roomId 
 #### `preview-prop`
 
 Navigate the camera to a specific prop in a room, opening the Metaverse view. networkId, roomId, and propId are all required. Only call this when the user explicitly asks to show, open, navigate to, or view a prop. Do not call this automatically when listing or describing props.
+
+**Availability:** AI, Developer
 
 | Parameter | Type | Required | Description |
 |-----------|------|----------|-------------|
@@ -482,6 +560,8 @@ See who is in a room hub, join or switch hubs, and create a private hub
 
 Opens the Metaverse 2D app (the 2D room maps and their hubs), optionally preselecting a room. Joining a hub stays a user action.
 
+**Availability:** AI, Developer
+
 | Parameter | Type | Required | Description |
 |-----------|------|----------|-------------|
 | `roomId` | string | No | Room to preselect in the room picker. |
@@ -489,6 +569,8 @@ Opens the Metaverse 2D app (the 2D room maps and their hubs), optionally presele
 #### `enter-room`
 
 Opens the Metaverse 2D app on a room and joins that room's public hub, as picking the room there does (Rooms → Room Info → Go in 2D, the user card → Go in 2D).
+
+**Availability:** Developer
 
 | Parameter | Type | Required | Description |
 |-----------|------|----------|-------------|
@@ -499,6 +581,8 @@ Opens the Metaverse 2D app on a room and joins that room's public hub, as pickin
 
 Brings your agent into a room's hub as its own character: you enter that room in Metaverse 2D (its public hub, or your group's hub in group mode) and the agent appears a metre beside you. Needs the same join rights as you. Use find-people first to choose a room.
 
+**Availability:** AI
+
 | Parameter | Type | Required | Description |
 |-----------|------|----------|-------------|
 | `roomId` | string | Yes | The room to enter. |
@@ -507,11 +591,15 @@ Brings your agent into a room's hub as its own character: you enter that room in
 
 Lists who is in the hub with the agent: userId, name, whether they are your friend or connection, whether they are in 3D, and how many metres they are from the agent. Includes you (isYou).
 
+**Availability:** AI
+
 *No parameters.*
 
 #### `agent-walk-to`
 
 Walks the agent on the room's 2D map, around walls and props: to a person (stopping 1.5 m short, by userId from agent-people) or to a point (x, z in metres). Returns at once with the distance and seconds the walk takes; check agent-status.
+
+**Availability:** AI
 
 | Parameter | Type | Required | Description |
 |-----------|------|----------|-------------|
@@ -523,6 +611,8 @@ Walks the agent on the room's 2D map, around walls and props: to a person (stopp
 
 The agent says a short text in a speech bubble over its character, seen by everyone on the web map of that hub (not by people in 3D yet). At most 140 characters, at most once a second. It speaks in your name, labelled as your agent: keep it friendly and brief.
 
+**Availability:** AI
+
 | Parameter | Type | Required | Description |
 |-----------|------|----------|-------------|
 | `text` | string | Yes | What to say, up to 140 characters. |
@@ -531,17 +621,23 @@ The agent says a short text in a speech bubble over its character, seen by every
 
 The agent's state in Metaverse 2D: whether it is in a hub, its room and hub, its position, and whether it is still walking.
 
+**Availability:** AI
+
 *No parameters.*
 
 #### `agent-leave`
 
 Takes the agent out of the hub.
 
+**Availability:** AI
+
 *No parameters.*
 
 #### `find-people`
 
 Counts the people in each hub of some rooms in this network (default: the room on the map and its linked rooms, at most 9). Needs you to be in a hub. Use it to choose where the agent goes.
+
+**Availability:** AI
 
 | Parameter | Type | Required | Description |
 |-----------|------|----------|-------------|
@@ -557,6 +653,8 @@ Everything you added in any Valu app, in one cart, paid for with one QR scan
 
 Open My Cart on one of its tabs. The tab becomes part of the address, so the place it opens on can be linked to and comes back on a reload.
 
+**Availability:** AI, Developer
+
 | Parameter | Type | Required | Description |
 |-----------|------|----------|-------------|
 | `section` | string | Yes | Which tab to open: discover, cart or orders. |
@@ -565,14 +663,19 @@ Open My Cart on one of its tabs. The tab becomes part of the address, so the pla
 
 Open the cart. Pass an app id to show only that app's items and check them out on their own, and `popup` to draw it over the calling app instead of docking My Cart.
 
+**Availability:** AI, Developer
+
 | Parameter | Type | Required | Description |
 |-----------|------|----------|-------------|
 | `appId` | string | No | show only the items added from this app |
 | `popup` | boolean | No | true draws this over the pane of the app that asked instead of docking My Cart, so the app the buyer came from stays visible and usable behind it. Where the caller is not on screen the popup falls back to a window over the whole page. |
+| `promoCode` | string | No | a discount code to type into the cart and apply, as if the buyer had typed it; they see whether it applies and can remove it. Paying is still their own press of Pay. |
 
 #### `open-orders`
 
 Open the order history — every purchase made across Valu apps, with its receipt. With `popup` it is drawn over the calling app instead of docking My Cart.
+
+**Availability:** AI, Developer
 
 | Parameter | Type | Required | Description |
 |-----------|------|----------|-------------|
@@ -581,6 +684,8 @@ Open the order history — every purchase made across Valu apps, with its receip
 #### `open-order`
 
 Open one order and show its receipt.
+
+**Availability:** AI, Developer
 
 | Parameter | Type | Required | Description |
 |-----------|------|----------|-------------|
@@ -591,18 +696,21 @@ Open one order and show its receipt.
 
 Open a product's page — what it is, what it is made of, what makes up its price, and whether this buyer can buy it.
 
+**Availability:** AI, Developer
+
 | Parameter | Type | Required | Description |
 |-----------|------|----------|-------------|
 | `productId` | string | Yes | the product to show |
 
 #### `add-to-cart`
 
-Add a product to the cart and open it. The server re-checks that the product can be bought in this network before accepting it.
+Add a product to the cart and open it. The item is credited to the app that asks — the platform knows which one, so there is no app to name — or to My Cart itself when the asker is not an app. The server re-checks that the product can be bought in this network before accepting it.
+
+**Availability:** AI, Developer
 
 | Parameter | Type | Required | Description |
 |-----------|------|----------|-------------|
 | `productId` | string | Yes | the product to add |
-| `appId` | string | No | the app the product is being bought from |
 | `qty` | number | No | how many, at least 1 |
 
 ---
@@ -615,11 +723,15 @@ Your user profile
 
 Opens the profile view for the currently signed-in user.
 
+**Availability:** AI, Developer
+
 *No parameters.*
 
 #### `show-user`
 
 Shows the profile view for a specific user, or the current user if no userId is provided.
+
+**Availability:** AI, Developer
 
 | Parameter | Type | Required | Description |
 |-----------|------|----------|-------------|
@@ -628,6 +740,8 @@ Shows the profile view for a specific user, or the current user if no userId is 
 #### `open-profile-with-mode`
 
 Opens the profile view for a user and optionally navigates to a specific mode such as the marketplace.
+
+**Availability:** AI, Developer
 
 | Parameter | Type | Required | Description |
 |-----------|------|----------|-------------|
@@ -641,6 +755,8 @@ Opens the profile view for a user and optionally navigates to a specific mode su
 #### `preview`
 
 Opens the resource viewer to preview a specific resource.
+
+**Availability:** Developer
 
 | Parameter | Type | Required | Description |
 |-----------|------|----------|-------------|
@@ -656,6 +772,8 @@ View and manage rooms
 
 Opens the Rooms app on a chosen list. With no parameter the app simply opens on whatever it was last showing.
 
+**Availability:** AI, Developer
+
 | Parameter | Type | Required | Description |
 |-----------|------|----------|-------------|
 | `tab` | string | No | Which list to show. Defaults to the currently visible one. |
@@ -664,6 +782,8 @@ Opens the Rooms app on a chosen list. With no parameter the app simply opens on 
 
 Opens the Rooms app on a specific room's detail view — info, members and settings.
 
+**Availability:** AI, Developer
+
 | Parameter | Type | Required | Description |
 |-----------|------|----------|-------------|
 | `roomId` | string | Yes | The unique identifier of the room to show. |
@@ -671,6 +791,8 @@ Opens the Rooms app on a specific room's detail view — info, members and setti
 #### `invite-to-room`
 
 Opens the room invitation dialog for a specific room.
+
+**Availability:** AI, Developer
 
 | Parameter | Type | Required | Description |
 |-----------|------|----------|-------------|
@@ -683,6 +805,8 @@ Opens the room invitation dialog for a specific room.
 #### `create-post`
 
 Open view and open post editor
+
+**Availability:** Developer
 
 | Parameter | Type | Required | Description |
 |-----------|------|----------|-------------|
@@ -697,6 +821,8 @@ Open view and open post editor
 
 Opens the community view and starts channel creation in a specific community context.
 
+**Availability:** Developer
+
 | Parameter | Type | Required | Description |
 |-----------|------|----------|-------------|
 | `community` | object | Yes | Community data object. |
@@ -710,6 +836,8 @@ Opens the community view and starts channel creation in a specific community con
 
 Opens the community view and navigates to a community by its ID. Use when you only have a communityId and no specific channel to target — the app will land on the first available channel.
 
+**Availability:** AI, Developer
+
 | Parameter | Type | Required | Description |
 |-----------|------|----------|-------------|
 | `communityId` | string | Yes | The community id. |
@@ -717,6 +845,8 @@ Opens the community view and navigates to a community by its ID. Use when you on
 #### `show-channel`
 
 Opens the community view and navigates to a specific channel. Use communityId from AI context. For a root channel: pass its id as rootChannelId, omit subChannelId. For a sub-channel: the sub-channel object in AI context has a rootChannelId field — pass that as rootChannelId, and the sub-channel id as subChannelId.
+
+**Availability:** AI, Developer
 
 | Parameter | Type | Required | Description |
 |-----------|------|----------|-------------|
@@ -727,6 +857,8 @@ Opens the community view and navigates to a specific channel. Use communityId fr
 #### `show-post`
 
 Opens the community view and navigates to a specific post. Use communityId from AI context. For a post in a root channel: pass the channel id as rootChannelId, omit subChannelId. For a post in a sub-channel: pass the sub-channel's rootChannelId as rootChannelId, and the sub-channel id as subChannelId. Pass the post id as messageId.
+
+**Availability:** AI, Developer
 
 | Parameter | Type | Required | Description |
 |-----------|------|----------|-------------|
@@ -745,6 +877,8 @@ Contextual profile card shown when tapping a user avatar
 
 Shows the contextual profile card for a user.
 
+**Availability:** Developer
+
 | Parameter | Type | Required | Description |
 |-----------|------|----------|-------------|
 | `userId` | string | Yes | The unique identifier of the user whose card to show. |
@@ -761,6 +895,8 @@ Valu board games
 
 Open the Valu Games app.
 
+**Availability:** AI, Developer
+
 *No parameters.*
 
 ---
@@ -771,6 +907,8 @@ Open the Valu Games app.
 
 Opens the Valu Guru app on a chat with the built-in Valu Guru assistant, without sending anything. Resumes the most recent built-in-assistant conversation, or lands on the empty new-chat screen when there is none. Custom chatbot conversations are never resumed, and nothing is created on the server — a session appears only once a message is sent.
 
+**Availability:** Developer
+
 | Parameter | Type | Required | Description |
 |-----------|------|----------|-------------|
 | `newChat` | boolean | No | When true, always lands on the empty new-chat screen instead of resuming the most recent Valu Guru conversation. |
@@ -778,6 +916,8 @@ Opens the Valu Guru app on a chat with the built-in Valu Guru assistant, without
 #### `start-session`
 
 Opens the Valu Guru app and starts a brand-new conversation session with an initial message. Always creates a new session regardless of existing ones.
+
+**Availability:** Developer
 
 | Parameter | Type | Required | Description |
 |-----------|------|----------|-------------|
@@ -788,11 +928,15 @@ Opens the Valu Guru app and starts a brand-new conversation session with an init
 
 Opens the Valu Guru app and switches to the Agents tab in the left panel.
 
+**Availability:** Developer
+
 *No parameters.*
 
 #### `open-chat`
 
 Opens the Valu Guru app and navigates to a specific chat session by ID.
+
+**Availability:** Developer
 
 | Parameter | Type | Required | Description |
 |-----------|------|----------|-------------|
@@ -802,6 +946,8 @@ Opens the Valu Guru app and navigates to a specific chat session by ID.
 
 Opens the Valu Guru app and navigates to a specific agent chat by ID.
 
+**Availability:** Developer
+
 | Parameter | Type | Required | Description |
 |-----------|------|----------|-------------|
 | `agentId` | string | Yes | The agent ID to open. |
@@ -810,6 +956,8 @@ Opens the Valu Guru app and navigates to a specific agent chat by ID.
 
 Opens the Valu Guru app on a library chatbot's detail page. Unlike open-chat, the target is not personal — any user in the network can view it (used e.g. by the bot badge on shared chatbot replies).
 
+**Availability:** Developer
+
 | Parameter | Type | Required | Description |
 |-----------|------|----------|-------------|
 | `chatbotId` | string | Yes | The library chatbot ID whose detail page to open. |
@@ -817,6 +965,8 @@ Opens the Valu Guru app on a library chatbot's detail page. Unlike open-chat, th
 #### `create-chatbot`
 
 Opens the Valu Guru app on the new-chatbot creation wizard, optionally pre-filled. Pass `instructions` to land on the Design step fully filled in, or just `prompt` to land on the Describe step with the task pre-typed and ready to generate.
+
+**Availability:** Developer
 
 | Parameter | Type | Required | Description |
 |-----------|------|----------|-------------|
@@ -836,6 +986,8 @@ Valu puzzle games
 #### `start-puzzle`
 
 Open Valu Puzzles and launch a specific puzzle, optionally with a score-to-beat challenge from another user.
+
+**Availability:** Developer
 
 | Parameter | Type | Required | Description |
 |-----------|------|----------|-------------|
@@ -857,11 +1009,15 @@ Issues short-lived signed identity JWTs for iFrame (mini-app) applications. Allo
 
 Issues a short-lived signed identity JWT for the calling mini-app. The target application is inferred from the intent sender — no parameters needed. Requires the user to be authenticated. JWT claims: sub=userId, aud=callingApplicationId, iss=platform, exp=5min.
 
+**Availability:** Developer
+
 *No parameters.*
 
 #### `close_all`
 
 Closes all currently loaded applications and clears all docks. Unlike the normal close flow, does not re-open the default application — the UI stays blank with no application displayed.
+
+**Availability:** Developer
 
 *No parameters.*
 
@@ -869,11 +1025,15 @@ Closes all currently loaded applications and clears all docks. Unlike the normal
 
 Expands the calling application to fill the dock by closing every other loaded application. The target application is inferred from the intent sender — no parameters needed. Mirrors the "Expand Application" default header action for iframe apps that render their own context menu (header: false).
 
+**Availability:** Developer
+
 *No parameters.*
 
 #### `close-application`
 
 Closes the calling application (unloads it from its dock), then re-opens the default network application if nothing is left docked. The target application is inferred from the intent sender — no parameters needed. Mirrors the "Close Application" default header action for iframe apps that render their own context menu (header: false).
+
+**Availability:** Developer
 
 *No parameters.*
 
@@ -889,6 +1049,8 @@ Per-application file storage service for uploading, searching, and deleting reso
 
 Uploads files to the calling application's storage for the current user.
 
+**Availability:** Developer
+
 | Parameter | Type | Required | Description |
 |-----------|------|----------|-------------|
 | `files` | FileList | Yes | The files to upload. |
@@ -896,6 +1058,8 @@ Uploads files to the calling application's storage for the current user.
 #### `resource-search`
 
 Searches resources in the calling application's storage for the current user.
+
+**Availability:** Developer
 
 | Parameter | Type | Required | Description |
 |-----------|------|----------|-------------|
@@ -906,6 +1070,8 @@ Searches resources in the calling application's storage for the current user.
 #### `resource-delete`
 
 Deletes a resource from the calling application's storage.
+
+**Availability:** Developer
 
 | Parameter | Type | Required | Description |
 |-----------|------|----------|-------------|
@@ -923,6 +1089,8 @@ Badge-based access control (CBAC). Manages policies that grant a permission on a
 
 Lists all CBAC policies configured for a target entity.
 
+**Availability:** Developer
+
 | Parameter | Type | Required | Description |
 |-----------|------|----------|-------------|
 | `networkId` | string | Yes | ID of the network the target belongs to. |
@@ -932,6 +1100,8 @@ Lists all CBAC policies configured for a target entity.
 #### `create-policy`
 
 Creates a CBAC policy on a target entity. Valid grantedPermission values depend on targetType: room → room.view / room.comment / room.contribute / room.edit; community → community.join; group → group.join. Requires manage permission on the target.
+
+**Availability:** Developer
 
 | Parameter | Type | Required | Description |
 |-----------|------|----------|-------------|
@@ -946,6 +1116,8 @@ Creates a CBAC policy on a target entity. Valid grantedPermission values depend 
 
 Deletes a single CBAC policy by ID. Requires manage permission on the target.
 
+**Availability:** Developer
+
 | Parameter | Type | Required | Description |
 |-----------|------|----------|-------------|
 | `policyId` | string | Yes | ID of the policy to delete. |
@@ -957,11 +1129,15 @@ Deletes a single CBAC policy by ID. Requires manage permission on the target.
 
 Lists every badge visible to the current user — badges scoped to their networks plus global ones. Returns an array of `{networkId, badgeId, badgeName, badgeDescription, thumbnailId}`, where `networkId` is "all" for a global badge. Use this to resolve a badge name to the badgeId required by search-users-by-badge-id and the policy intents.
 
+**Availability:** AI, Developer
+
 *No parameters.*
 
 #### `search-users-by-badge-id`
 
 Lists the users holding a given badge, optionally filtered by a name query. The reverse of looking up which badges a single user holds. Call list-badges first to resolve a badge name to its badgeId. Returns `{users, total}` where `total` is the full match count across all pages — page through it with offset/size rather than assuming the first page is everything.
+
+**Availability:** AI, Developer
 
 | Parameter | Type | Required | Description |
 |-----------|------|----------|-------------|
@@ -982,6 +1158,8 @@ Content management service for uploading, searching, and deleting resources scop
 
 Uploads files to a resource storage scoped by belonging (room, prop, community, channel, directory, or post).
 
+**Availability:** Developer
+
 | Parameter | Type | Required | Description |
 |-----------|------|----------|-------------|
 | `files` | FileList | Yes | The files to upload. |
@@ -995,6 +1173,8 @@ Uploads files to a resource storage scoped by belonging (room, prop, community, 
 #### `resource-search`
 
 Searches for resources within a given scope (room, prop, community, channel, directory, or post). Each returned resource has an id (and a title/name) — tag every resource you reference in your reply as @[cms-resource:id|title].
+
+**Availability:** AI, Developer
 
 | Parameter | Type | Required | Description |
 |-----------|------|----------|-------------|
@@ -1012,6 +1192,8 @@ Searches for resources within a given scope (room, prop, community, channel, dir
 
 Deletes a resource or removes it from a prop or post.
 
+**Availability:** Developer
+
 | Parameter | Type | Required | Description |
 |-----------|------|----------|-------------|
 | `resourceId` | string | Yes | The unique identifier of the resource to delete. |
@@ -1025,17 +1207,20 @@ Deletes a resource or removes it from a prop or post.
 
 ### Commerce (`Commerce`)
 
-Products, cart and purchases shared across apps. An app lists its own goods and adds them to the one cart the user checks out with a single QR scan. Prices, totals and payouts are decided server-side — this surface carries ids and quantities only — and paying is never an action here: the buyer scans the code themselves.
+Products, the cart, orders and the seller's own store, shared across apps. An app shows the network's products and adds them to the one cart the user pays for with a single QR scan, and it can run the signed-in seller's store: products, publishing, promotions and analytics. Prices, totals and payouts are decided server-side. Paying is never an action here: `checkout` hands the buyer to My Cart, where they press Pay and scan the code themselves, and answers with what they did. A write that costs the user money, gives goods away, cannot be undone or speaks for them in public waits for their yes in a dialog the platform draws.
 
 *Source: `src/Services/Commerce/CommerceService.js`*
 
 #### `list-products`
 
-Search the live products available in the user's current network — the buyer's shelf, every seller's goods, not only yours. Products the network or its admins have refused are simply absent from the answer. For the signed-in seller's OWN products, drafts included, use list-seller-products.
+Search the live products available in the user's current network — the buyer's shelf, every seller's goods, not only yours. Products the network or its admins have refused are simply absent from the answer. Each product names its seller, who is a PERSON, not a store: `sellerName` (their profile name), `sellerUserId` (draw their avatar with the users API's getIcon({userId: sellerUserId})) and `sellerIdentityName` (the Verus ID payments go to). `storeName` carries the same person's name, for older callers; show the person, never a store. For the signed-in seller's OWN products, drafts included, use list-seller-products.
+
+**Availability:** AI, Developer
 
 | Parameter | Type | Required | Description |
 |-----------|------|----------|-------------|
 | `query` | string | No | free-text search over the product title, or a whole tag |
+| `storeId` | string | No | only this seller's products: a product's `storeId`, from list-products or get-product. Every user has one store, so this is everything one person sells (My Cart's "Everything from this store") |
 | `category` | string | No | one of the platform's category ids — see list-categories |
 | `tag` | string | No | one tag, matched exactly (case and spacing do not matter) |
 | `attributes` | object | No | app-defined facets to filter by, e.g. {"subject": "Mathematics"} |
@@ -1045,7 +1230,9 @@ Search the live products available in the user's current network — the buyer's
 
 #### `get-product`
 
-One product with its price, its parts when it is a bundle, its store, its reviews and whether the current user already owns it. `contents` is what the product holds, as a tree to draw: `{type: "folder", title, items}`, `{type: "file", resourceId, title, kind, contentType, fileSize}` and `{type: "product", productId, title}`. `children` is NOT the content: it is only the products a bundle includes, empty for anything else. `items` is the same content as flat database rows, kept for older callers. A file's `resourceId` (and `resource_id` in items) is null unless the user owns the product or sells it: titles and types are the shop window, the ids open the paid files. For something the user bought, use get-purchase-contents.
+One product with its price, its parts when it is a bundle, its seller, its reviews and whether the current user already owns it. The seller is a PERSON, as in list-products: `sellerName`, `sellerUserId` (their avatar through the users API's getIcon) and `sellerIdentityName`; the store record's name is that person too. `contents` is what the product holds, as a tree to draw: `{type: "folder", title, items}`, `{type: "file", resourceId, title, kind, contentType, fileSize}` and `{type: "product", productId, title}`. `children` is NOT the content: it is only the products a bundle includes, empty for anything else. `items` is the same content as flat database rows, kept for older callers. A file's `resourceId` (and `resource_id` in items) is null unless the user owns the product or sells it: titles and types are the shop window, the ids open the paid files. For something the user bought, use get-purchase-contents.
+
+**Availability:** AI, Developer
 
 | Parameter | Type | Required | Description |
 |-----------|------|----------|-------------|
@@ -1055,11 +1242,15 @@ One product with its price, its parts when it is a bundle, its store, its review
 
 The platform's product categories as `{categories: [{id, label}]}`. Every product is filed under exactly one; pass an `id` to list-products as `category`, and show the `label`.
 
+**Availability:** AI, Developer
+
 *No parameters.*
 
 #### `add-to-cart`
 
 Put a product in the user's cart, credited to your app. The server re-checks that it can be bought here before accepting it, so a refusal comes back with a code to show.
+
+**Availability:** AI, Developer
 
 | Parameter | Type | Required | Description |
 |-----------|------|----------|-------------|
@@ -1070,19 +1261,25 @@ Put a product in the user's cart, credited to your app. The server re-checks tha
 
 Which of these products the current user owns. This is how an app unlocks a ticket, a seat or an in-app good it sold through the shared cart.
 
+**Availability:** AI, Developer
+
 | Parameter | Type | Required | Description |
 |-----------|------|----------|-------------|
 | `productIds` | array | Yes | the product ids to check |
 
 #### `get-cart`
 
-Reads the user's cart — every item in it, from every app, as the buyer will check it out. Returns `{items, count}` where `count` excludes anything saved for later. Use it to show a badge, a summary, or to tell whether something this app sells is already in there. Read-only: change the cart with `add-to-cart`, or send the user to it with `open-cart`.
+Reads the user's cart — every item in it, from every app, as the buyer will check it out. Returns `{items, count}` where `count` excludes anything saved for later. Use it to show a badge, a summary, or to tell whether something this app sells is already in there. Each item's `appId` says which app added it. An app changes only its own rows: `add-to-cart` adds one, `update-cart-item` changes one, `remove-from-cart` and `clear-cart` take them out. Every other app's items are the buyer's to change in My Cart: send them there with `open-cart`.
+
+**Availability:** AI, Developer
 
 *No parameters.*
 
 #### `create-product`
 
-Create a product for the seller, as a DRAFT. Two ways in. With no params it opens the platform's own 'list something for sale' form in a modal and BLOCKS until the seller creates a product or cancels. With a `title` it creates the draft directly from the fields given — name, description, price, category, tags, cover and content — without a form: use this when you already have the resource ids (a generated cover, files found in Media). Either way returns `{success: true, product}` (or `{success: false, product: null, code}`; `cancelled` when the seller backed out of the form), and the product is already in the seller's catalogue. It is NEVER published here: publishing decides money and networks, and stays with the seller in the Merchant Console. Opening a store first (a verified Verus identity) is handled inside.
+Create a product for the seller, as a DRAFT. Two ways in. With no params it opens the platform's own 'list something for sale' form in a modal and BLOCKS until the seller creates a product or cancels. With a `title` it creates the draft directly from the fields given — name, description, price, category, tags, cover and content — without a form: use this when you already have the resource ids (a generated cover, files found in Media). Either way returns `{success: true, product}` (or `{success: false, product: null, code}`; `cancelled` when the seller backed out of the form), and the product is already in the seller's catalogue. It is NEVER published here: publishing decides money and networks, so the seller confirms it separately — in the publish dialog an app opens with publish-product, or in the Merchant Console. Opening a store first (a verified Verus identity) is handled inside.
+
+**Availability:** AI, Developer
 
 | Parameter | Type | Required | Description |
 |-----------|------|----------|-------------|
@@ -1100,6 +1297,8 @@ Create a product for the seller, as a DRAFT. Two ways in. With no params it open
 
 Every product the SIGNED-IN user sells, from their own store, so an app can show a seller their own products: live, draft (unlisted ones included), archived and broken, in every network, including ones a network blocked. Unlike list-products, the buyer's shelf of live products allowed here. The store is always the current user's; there is no way to name another. Read-only, newest change first. Returns `{hasStore, products}`; `hasStore` is false (and products empty) when the user has no store. Each product: id, title, description, status, category, tags, priceAmount, priceCurrency, totalPriceAmount, isBundle, coverResourceId, stock (null = unlimited), soldCount, contentCount. Show totalPriceAmount as the price: on a bundle priceAmount is only the seller's part on top of what it includes, and totalPriceAmount is null when the server could not price the bundle.
 
+**Availability:** Developer
+
 | Parameter | Type | Required | Description |
 |-----------|------|----------|-------------|
 | `status` | string | No | only products in this state |
@@ -1109,6 +1308,8 @@ Every product the SIGNED-IN user sells, from their own store, so an app can show
 
 List the SELLER's own products in their store — drafts, unlisted, live and archived — unlike list-products, which is the buyer's shelf and never shows drafts. Use it to find the productId to edit. Each product carries `editable`: true only for a draft (never published, or unlisted by the seller). Returns `{hasStore, products}`.
 
+**Availability:** AI
+
 | Parameter | Type | Required | Description |
 |-----------|------|----------|-------------|
 | `status` | string | No | only products in this state |
@@ -1116,19 +1317,23 @@ List the SELLER's own products in their store — drafts, unlisted, live and arc
 
 #### `get-my-product`
 
-One of the seller's own products with its content, in exactly the shape update-product takes: `{product, items}`. Read it before changing the content — `items` in update-product REPLACES the whole tree, so edit this list and send it back rather than sending only the new files.
+One of the seller's own products with its content, in exactly the shape update-product takes: `{product, items}`. Read it before changing the content — `items` in update-product REPLACES the whole tree, so edit this list and send it back rather than sending only the new files. `product.editable` is true for a draft, whose fields and content may change; a `broken` product (needs attention: something it included was archived) takes new content only.
+
+**Availability:** AI, Developer
 
 | Parameter | Type | Required | Description |
 |-----------|------|----------|-------------|
-| `productId` | string | Yes | the product, from list-my-products |
+| `productId` | string | Yes | the product, from list-seller-products (an app) or list-my-products (the AI) |
 
 #### `update-product`
 
-Edit one of the seller's own DRAFT products — one never published, or one the seller unlisted. A live or archived product is refused with code `not_editable` (a live one must be unlisted by the seller in the Merchant Console first). Only the fields given change. `items` REPLACES the content: call get-my-product first and send back the edited list; an empty list is refused. Never publishes. Returns `{success: true, product}` or `{success: false, code, error}`.
+Edit one of the seller's own DRAFT products — one never published, or one the seller unlisted. A live or archived product is refused with code `not_editable` (a live one must be unlisted first: unlist-product, or the seller in the Merchant Console). A `broken` product (needs attention: something it included was archived) accepts `items` only — its other fields are `not_editable` — and goes back on sale when it is published again (publish-product). Only the fields given change. `items` REPLACES the content: call get-my-product first and send back the edited list; an empty list is refused. Never publishes. Returns `{success: true, product}` or `{success: false, code, error}`.
+
+**Availability:** AI, Developer
 
 | Parameter | Type | Required | Description |
 |-----------|------|----------|-------------|
-| `productId` | string | Yes | the draft to edit, from list-my-products |
+| `productId` | string | Yes | the draft (or broken product) to edit, from list-seller-products (an app) or list-my-products (the AI) |
 | `title` | string | No | the product's name |
 | `description` | string | No | what a buyer reads before paying; an empty string clears it |
 | `priceAmount` | number | No | the price; 0 makes it free. On a product that includes other products this is the price ON TOP of theirs (a buyer pays the included products plus this) |
@@ -1144,6 +1349,8 @@ Edit one of the seller's own DRAFT products — one never published, or one the 
 
 What the signed-in user OWNS — every product they bought, wherever they bought it, as My Cart's Orders tab lists it. Returns `{purchases: [{productId, title, coverResourceId, purchasedAt, orderId, boughtInAppId, isBundlePart, delivered, deletedBySeller}]}`. `delivered` is true once the buyer's own copy is in their Media; `isBundlePart` marks a product that came inside a bundle; a purchase the seller deleted is still theirs.
 
+**Availability:** Developer
+
 | Parameter | Type | Required | Description |
 |-----------|------|----------|-------------|
 | `thisAppOnly` | boolean | No | true lists only what was bought in YOUR app |
@@ -1152,6 +1359,8 @@ What the signed-in user OWNS — every product they bought, wherever they bought
 
 One purchase opened up: the version the user BOUGHT (frozen at purchase, not the product as it is now), as a tree to draw. Returns `{productId, title, deletedBySeller, contents}`; contents nodes are `{type: "folder", title, items}`, `{type: "file", resourceId, title, kind, contentType, fileSize, deliveredResourceId}` and `{type: "product", productId, title}` (a product inside a bundle — open it with its own get-purchase-contents). `deliveredResourceId` is the buyer's own copy in Media, null until delivered. Refused with code `not_owned` when the user does not own the product — the server decides.
 
+**Availability:** Developer
+
 | Parameter | Type | Required | Description |
 |-----------|------|----------|-------------|
 | `productId` | string | Yes | a product the user owns, from list-purchases |
@@ -1159,6 +1368,8 @@ One purchase opened up: the version the user BOUGHT (frozen at purchase, not the
 #### `preview-purchase`
 
 Open the platform's previewer on what the user bought — the Orders tab's click on a file. Without `resourceId` it shows every file of the purchase in tree order; with one, just that file, which must be in the purchase (its `resourceId` or `deliveredResourceId` from get-purchase-contents). Returns `{success: true, count}`, or `{success: false, code}` with `not_owned`, `not_in_purchase` or `empty`. The previewer is a window over the whole page.
+
+**Availability:** Developer
 
 | Parameter | Type | Required | Description |
 |-----------|------|----------|-------------|
@@ -1169,13 +1380,17 @@ Open the platform's previewer on what the user bought — the Orders tab's click
 
 Open a purchase where it lives, in Media's Purchased section — the Orders tab's "Show in Media". The buyer's delivered folder when there is one, otherwise a read-only view of the version they bought. Without `productId`, the whole Purchased section. Media docks beside your app. Returns `{success: true}`, or `{success: false, code: "not_owned"}` without opening anything.
 
+**Availability:** Developer
+
 | Parameter | Type | Required | Description |
 |-----------|------|----------|-------------|
 | `productId` | string | No | a product the user owns; omit for everything they bought |
 
 #### `open-cart`
 
-Open My Cart for the user, scoped to your app's items. With `popup` it is drawn over your own app instead of docking My Cart — mid-purchase, that keeps the user where they were.
+Open My Cart for the user, scoped to your app's items. With `popup` it is drawn over your own app instead of docking My Cart — mid-purchase, that keeps the user where they were. It answers as soon as the cart is open; for a Pay button use `checkout`, which opens the same cart and answers with what the buyer did there.
+
+**Availability:** Developer
 
 | Parameter | Type | Required | Description |
 |-----------|------|----------|-------------|
@@ -1183,7 +1398,9 @@ Open My Cart for the user, scoped to your app's items. With `popup` it is drawn 
 
 #### `open-purchases`
 
-Open the user's order history in My Cart. With `popup` it is drawn over your own app instead of docking My Cart.
+Open the user's order history in My Cart (one order, expanded: `open-order`). With `popup` it is drawn over your own app instead of docking My Cart.
+
+**Availability:** Developer
 
 | Parameter | Type | Required | Description |
 |-----------|------|----------|-------------|
@@ -1191,11 +1408,347 @@ Open the user's order history in My Cart. With `popup` it is drawn over your own
 
 #### `open-products`
 
-Open the seller's own products in the Merchant Console — the seller's side of `open-cart`. Use it after `create-product`, or for a "My products" link: it shows everything they sell across every app, not just yours, and whether they may sell at all is the platform's decision, not your app's. With `popup` it is drawn over your own app instead of docking the console.
+Open the seller's own products in the Merchant Console — the seller's side of `open-cart`. Use it for a "My products" link: it shows everything they sell across every app, not just yours, and whether they may sell at all is the platform's decision, not your app's. With `popup` it is drawn over your own app instead of docking the console.
+
+**Availability:** Developer
 
 | Parameter | Type | Required | Description |
 |-----------|------|----------|-------------|
 | `popup` | boolean | No | true draws the surface over YOUR app's own pane instead of docking the application, so the page the user was on stays visible and usable behind it. Where your app is not on screen it falls back to a window over the whole page. |
+
+#### `update-cart-item`
+
+Change one of YOUR app's rows in the user's cart: its quantity, whether it is selected for checkout, or whether it is saved for later. Give at least one of them; only the fields given change. A row added by another app is refused with code `not_yours` — the buyer changes those in My Cart (`open-cart`) — and a row the cart does not hold with `not_found`. Returns the whole cart as get-cart reads it: `{success: true, items, count}`, `count` excluding what is saved for later. The server re-checks stock and availability and refuses with its own code.
+
+**Availability:** Developer
+
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `itemId` | string | Yes | the cart row to change: an item `id` from get-cart, one your app added |
+| `qty` | number | No | the new quantity, a whole number of at least 1 |
+| `selected` | boolean | No | true to include it in the next checkout, false to leave it out |
+| `savedForLater` | boolean | No | true moves it out of the cart into saved for later; false brings it back |
+
+#### `remove-from-cart`
+
+Take one of YOUR app's rows out of the user's cart. Another app's row is refused with code `not_yours` (the buyer removes those in My Cart), a row the cart does not hold with `not_found`. Returns the whole cart: `{success: true, items, count}`.
+
+**Availability:** Developer
+
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `itemId` | string | Yes | the cart row to remove: an item `id` from get-cart, one your app added |
+
+#### `clear-cart`
+
+Remove every row YOUR app added to the user's cart, saved-for-later ones included. Other apps' rows are never touched. No dialog: they are your own rows. Returns what is left — `{success: true, items, count}` — so an empty `items` means the cart held only your rows.
+
+**Availability:** Developer
+
+*No parameters.*
+
+#### `preview-promo`
+
+What a discount code would do to the items YOUR app has selected in the cart — exactly what `checkout` will charge for them. Returns `{valid, reason, discounts: [{kind, label, amountVrsc}], subtotalVrsc, totalVrsc}`. `reason` is null when valid, else `promo_invalid`, `promo_expired`, `promo_exhausted` or `not_applicable` (a real code that takes nothing off this selection, e.g. under its minimum). `discounts` lists everything that takes money off, the code and any volume discount or sale alike. Read-only: nothing is reserved, and My Cart prices the code again when the buyer pays. With nothing of yours selected the server refuses `validation_failed`.
+
+**Availability:** Developer
+
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `code` | string | Yes | the code as the buyer typed it; case and surrounding spaces do not matter |
+
+#### `get-display`
+
+How this network SHOWS prices: `{currency, vrscUsd}`, where `currency` is `USD` or `VRSC` (the network admins' choice) and `vrscUsd` is the server's VRSC→USD rate, null when it is unknown. Every amount Commerce answers with stays in VRSC (`…Vrsc`); multiply by `vrscUsd` to show dollars, and show VRSC when the rate is null.
+
+**Availability:** Developer
+
+*No parameters.*
+
+#### `checkout`
+
+Your app's Pay button. Your app never takes a payment: this opens My Cart's own cart over your app, showing your items with `promoCode` typed in and applied, and the BUYER presses Pay and scans the code there — only My Cart creates the order. It answers when the buyer closes it: `{success: true, outcome, orderId?, status?}`. `outcome` is `paid` (a free order too: unlock it), `pending` (an order was made but is not paid yet — follow it with get-order or the order-updated event), `cancelled` (the order will not be paid: the buyer cancelled it, or it expired or failed — `status` says which — and its items are back in the cart) or `dismissed` (closed without making an order). Refused with code `empty`, and nothing opens, when none of your items is selected in the cart (add them first). With `popup: false` My Cart docks instead and it answers at once with `outcome: "opened"`, as it does where there is no popup to draw. A second checkout while one is open replaces it; the first answers at once — `dismissed`, unless an order was already made in it.
+
+**Availability:** Developer
+
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `promoCode` | string | No | a discount code to type in and apply for the buyer; check it first with preview-promo |
+| `popup` | boolean | No | false docks My Cart instead of drawing its cart over your app (default true) |
+
+#### `open-order`
+
+Open one of the user's orders in My Cart, expanded: where the buyer resumes a pending payment ("Show code"), cancels or deletes an unpaid order, or reads a receipt. Those are the buyer's own actions in My Cart; your app cannot take them. With `popup` it is drawn over your own app instead of docking My Cart. Returns `{success: true, popup}`.
+
+**Availability:** Developer
+
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `orderId` | string | Yes | the order to show, e.g. from list-orders or checkout |
+| `popup` | boolean | No | true draws the surface over YOUR app's own pane instead of docking the application, so the page the user was on stays visible and usable behind it. Where your app is not on screen it falls back to a window over the whole page. |
+
+#### `list-orders`
+
+The user's orders, newest first, with their whole receipt as frozen at checkout. Returns `{orders: [{id, status, createdAt, paidAt, expiresAt, isTest, subtotalVrsc, totalVrsc, rateVrscUsd, items: [{productId, appId, title, qty, unitPriceVrsc, lineTotalVrsc, imageResourceId, deletedBySeller, parts: [{productId, title}], bundleFeeVrsc}], discounts: [{kind, label, amountVrsc}], notCharged: [{productId, title, amountVrsc}], payouts: [{kind, identityName, storeId, amountVrsc, status, donationPercent, donationMemberCount}], payment: {method, transactionId, failureReason} | null}]}`. `status` is `pending_payment`, `paid`, `expired`, `cancelled` or `failed`; without `status` you get pending and paid orders (a cancelled order is deleted). `notCharged` are parts of a bundle the user already owned. An order never carries a way to pay it: send the buyer to it with open-order.
+
+**Availability:** Developer
+
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `status` | string | No | only orders in this state |
+| `limit` | number | No | how many orders to read, newest first; counted before thisAppOnly narrows them |
+| `thisAppOnly` | boolean | No | true keeps only orders with at least one item bought in YOUR app |
+
+#### `get-order`
+
+One of the user's orders, in the shape list-orders answers: `{order}`. Use it to follow an order `checkout` answered with. An order that is not the user's is refused `not_found`, exactly like one that does not exist. `imageResourceId` is null here; list-orders resolves the pictures.
+
+**Availability:** Developer
+
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `orderId` | string | Yes | the order to read |
+
+#### `rate-product`
+
+Rate a product the user owns, one to five stars with an optional review. A rating is public (it shows on the product's page), so the platform asks the user first in its own dialog over your app: `score` and `text` only pre-fill it, the user can change both, and what they confirm is what is saved. Returns `{success: true, review: {score, text}}` — what was saved. Refused with `cancelled` when the user closes the dialog (nothing is saved; do not ask again on your own), `not_owned` when they do not own the product (no dialog), `busy` while another platform dialog is waiting, and `unsupported` where there is no dialog to ask with.
+
+**Availability:** Developer
+
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `productId` | string | Yes | a product the user owns, e.g. from list-purchases |
+| `score` | number | No | the stars to propose, a whole number from 1 to 5 |
+| `text` | string | No | the review to propose, up to 4000 characters |
+
+#### `get-my-store`
+
+The signed-in user's own store and where they stand to sell — with list-seller-products, enough to draw the Merchant Console's setup checklist (verified identity → store → donation set → a product → one published). Returns `{hasStore, identityVerified, sellerName, sellerUserId, store, network}`. Buyers see a PERSON as the seller, not a store: show `sellerName` (the owner's profile name) and draw their avatar from `sellerUserId` with the users API's getIcon. `store` is `{id, name, description, status, payoutIdentityName, donationTiers: [{minMembers, percent}], donationUpdatedAt}`, or null — its `name` is kept for older callers and is not what buyers see; an empty `donationTiers` means no donation is set, and such a store sells nowhere. `identityVerified` says whether the user can open a store (a Verified Verus identity; when false, send them to their Profile). `network` is the network the user is in now: `{id, memberCount, mode, allowedRatings, displayCurrency, donationTierIndex}` — `mode` is `open | approval_required | closed`, `donationTierIndex` which of the store's four donation tiers this network takes (null without a store or a known size). Read-only.
+
+**Availability:** Developer
+
+*No parameters.*
+
+#### `create-store`
+
+Open the signed-in user's store — what lets them sell; buyers see the user themselves as the seller, so it needs no name. It needs a Verified Verus identity: without one it is refused with code `not_eligible_kyc` — send the user to their Profile. A user who already has a store gets it back unchanged. Returns `{success: true, store}` in get-my-store's shape. No dialog. Next steps: set-donation-tiers (a store with no donation sells nowhere), then create-product.
+
+**Availability:** Developer
+
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `name` | string | No | rarely needed — the user's own profile name is used without it; at most 120 characters |
+| `description` | string | No | what they sell, at most 2000 characters |
+
+#### `set-donation-tiers`
+
+Set the store's network donation — the share of every sale that goes to the network it is sold in, one percentage per network size; a store with none sells nowhere. OPENS A PLATFORM DIALOG over your app showing each tier old → new (this network's marked) and saves only if the user confirms. `{success: false, code: "cancelled"}` is a normal answer: the user said no — do not ask again yourself. Lowering any tier sends the store back for approval in every network that approved it (its products hide there until an admin approves again), and the dialog says so. Sending what is already saved asks nothing and changes nothing. Returns `{success: true, store, reopenedNetworks}` — the networks that must approve the store again. Refused `busy` while another dialog from your app is open, `unsupported` where the platform cannot show one.
+
+**Availability:** Developer
+
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `tiers` | array | Yes | exactly four {minMembers, percent}, one per network size — minMembers 0, 100, 1000 and 10000 — each percent 0 to 100 with at most two decimals |
+
+#### `list-network-access`
+
+Where the store stands in each network it asked to sell in: `{networks: [{networkId, status, requestedAt, decidedAt, note, message}]}`. `status` is `pending | approved | rejected | suspended`; `note` is the admins' word on their decision, `message` the seller's on the request. The network the user is in now may be missing: in an `open` one (get-my-store `network.mode`) a store sells without asking. Read-only.
+
+**Availability:** Developer
+
+*No parameters.*
+
+#### `request-network-access`
+
+Ask a network's admins to let the store sell there, with an optional message; they decide, and list-network-access shows the outcome. Returns `{success: true, request}` in list-network-access's shape (`status: "pending"`). No dialog.
+
+**Availability:** Developer
+
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `networkId` | string | Yes | the network to sell in |
+| `message` | string | No | a word to the admins, at most 2000 characters |
+
+#### `quote-bundle`
+
+What a product made of these products would cost a buyer, priced by the server exactly as checkout prices it (sales, bundles inside bundles, a part reached twice). Returns `{currency, parts: [{productId, amount}], included, own, total, duplicates, unavailable}`: `included` is the parts' sum, `own` the seller's price on top, `total` what a buyer pays; `duplicates` are parts reached twice, `unavailable` ids that are neither on sale nor the seller's own. Read-only — show it while the seller assembles a bundle; create-product with `{productId}` items makes one.
+
+**Availability:** Developer
+
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `productIds` | array | Yes | the products the bundle would include |
+| `priceCurrency` | string | No | the currency to quote in (default VRSC) |
+| `ownPrice` | number | No | the seller's own price on top of the parts, zero or more |
+
+#### `publish-product`
+
+Put one of the seller's products on sale. OPENS THE MERCHANT CONSOLE'S PUBLISH DIALOG over your app: the user picks the networks to sell in — `networkIds` start ticked where the store may sell, by default this network — and confirms. Only then is the product listed (in My Cart and in YOUR app) and published, freezing this version for buyers. `{success: false, code: "cancelled"}` is a normal answer: the user did not publish — do not ask again yourself. Only a draft or a `broken` product (its content fixed with update-product) can be published; no content, no category, or a store with no donation set is refused `validation_failed` before any dialog, saying which. Returns `{success: true, product, version: {id, version, status, vaultStatus, publishedAt}}`. Refused `busy` while another dialog from your app is open, `unsupported` where the platform cannot show one.
+
+**Availability:** Developer
+
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `productId` | string | Yes | the product, from list-seller-products |
+| `networkIds` | array | No | networks to start ticked in the dialog; the user decides |
+
+#### `unlist-product`
+
+Take a product that is on sale off every shelf: it becomes a draft again, its published version intact — buyers keep what they bought, and publishing again puts it back. OPENS THE MERCHANT CONSOLE'S UNLIST DIALOG over your app and unlists only if the user confirms; `{success: false, code: "cancelled"}` is a normal answer. Only an `active` product can be unlisted. Returns `{success: true, product}`. Unlist a live product before editing it with update-product.
+
+**Availability:** Developer
+
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `productId` | string | Yes | a product on sale, from list-seller-products |
+
+#### `archive-product`
+
+Withdraw a product from sale for good. OPENS A PLATFORM DIALOG over your app saying it leaves every shelf and cannot be undone, and naming the products that include it — they stop selling too until each is published again without it. Archives only if the user confirms; `{success: false, code: "cancelled"}` is a normal answer. Anyone who bought it keeps it. Returns `{success: true, product, brokeBundles}` — `brokeBundles` the ids of the products that stopped selling.
+
+**Availability:** Developer
+
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `productId` | string | Yes | the product, from list-seller-products |
+
+#### `delete-product`
+
+Delete a product for good. OPENS THE MERCHANT CONSOLE'S DELETE DIALOG over your app, where the user types the product's name to confirm; deletes only then. `{success: false, code: "cancelled"}` is a normal answer. A product that is part of another product cannot be deleted: the dialog names those products and the answer is `{success: false, code: "conflict"}` — take it out of them first (update-product on each). Buyers keep what they bought. Returns `{success: true}`.
+
+**Availability:** Developer
+
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `productId` | string | Yes | the product, from list-seller-products |
+
+#### `list-promotions`
+
+Every sale, volume discount and discount code of the store: `{sales: [{id, productId, salePriceAmount, salePriceCurrency, startsAt, endsAt, status}], tiers: [{id, minItems, percentOff, status}], codes: [{id, code, kind, value, currency, minSubtotalVrsc, maxRedemptions, redeemedCount, reservedCount, perBuyerLimit, startsAt, endsAt, status}]}`. `status` is `active | ended` for a sale and `active | disabled` for a tier or a code. A buyer's price takes a sale first, then at most one volume discount, then at most one code — they never stack beyond that. Read-only.
+
+**Availability:** Developer
+
+*No parameters.*
+
+#### `set-sale`
+
+Put one product on sale at a lower price. OPENS A PLATFORM DIALOG over your app showing the sale price against the usual one and when it runs; starts it only if the user confirms. `{success: false, code: "cancelled"}` is a normal answer. The sale price must be below the product's own and in its currency, and a bundle (priced by its parts) cannot go on sale — each refused `validation_failed` before any dialog. A product with a sale running gets this one instead. Returns `{success: true, sale}` in list-promotions' shape.
+
+**Availability:** Developer
+
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `productId` | string | Yes | the product, from list-seller-products |
+| `salePriceAmount` | number | Yes | the sale price, below the product's own |
+| `salePriceCurrency` | string | No | must be the product's own price currency (the default) |
+| `startsAt` | string | No | ISO date it starts; omit for now |
+| `endsAt` | string | No | ISO date it ends; omit to run until end-sale |
+
+#### `end-sale`
+
+End a sale now. Direct — stopping a discount needs no dialog. Returns `{success: true, sale}` with `status: "ended"`.
+
+**Availability:** Developer
+
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `saleId` | string | Yes | the sale's id (not the product's), from list-promotions |
+
+#### `set-volume-tier`
+
+A store-wide volume discount: every order with at least `minItems` of the seller's items gets `percentOff` off, in every app and network the store sells in. OPENS A PLATFORM DIALOG over your app ("N or more items → P% off, every order in your store") and saves only if the user confirms; `{success: false, code: "cancelled"}` is a normal answer. With `tierId` it edits that discount (the dialog shows what it was); without, it adds one — or replaces the one at the same `minItems`. Returns `{success: true, tier}` in list-promotions' shape.
+
+**Availability:** Developer
+
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `minItems` | number | Yes | how many items an order needs, a whole number of at least 2 |
+| `percentOff` | number | Yes | the discount, more than 0 and at most 100 |
+| `tierId` | string | No | the discount to edit, from list-promotions |
+
+#### `remove-volume-tier`
+
+Remove a volume discount. Direct — no dialog. Returns `{success: true}`.
+
+**Availability:** Developer
+
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `tierId` | string | Yes | the discount, from list-promotions |
+
+#### `create-discount-code`
+
+A discount code buyers type at checkout — on the seller's own products only. OPENS A PLATFORM DIALOG over your app with the code, its value, limits and dates, and creates it only if the user confirms; `{success: false, code: "cancelled"}` is a normal answer. The code is stored upper-case; one the store already has is refused `conflict`. Returns `{success: true, discountCode}` in list-promotions' code shape — named `discountCode` because `code` is the refusal field.
+
+**Availability:** Developer
+
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `code` | string | Yes | 3 to 32 letters, digits and hyphens |
+| `kind` | string | Yes | percent off, or a fixed amount off |
+| `value` | number | Yes | the percent (at most 100) or the amount, more than 0 |
+| `currency` | string | No | a fixed amount's currency (default VRSC) |
+| `minSubtotalVrsc` | number | No | the smallest order it applies to, in VRSC |
+| `maxRedemptions` | number | No | how many times it can be used in all; omit for unlimited |
+| `perBuyerLimit` | number | No | how many times one buyer can use it; omit for unlimited |
+| `startsAt` | string | No | ISO date it starts; omit for now |
+| `endsAt` | string | No | ISO date it ends; omit for no end |
+
+#### `update-discount-code`
+
+Change a discount code. DIRECT when it only stops the discount: `status: "disabled"`, or an `endsAt` sooner than the one it has (any end, for a code that has none). Anything that gives more — `status: "active"` again, a later end or none (`endsAt: null`), more uses, more per buyer — OPENS A PLATFORM DIALOG over your app with each change before → after, and saves only if the user confirms; `{success: false, code: "cancelled"}` is a normal answer. Returns `{success: true, discountCode}`.
+
+**Availability:** Developer
+
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `codeId` | string | Yes | the code's id, from list-promotions |
+| `status` | string | No | disabled turns it off; active turns it back on |
+| `endsAt` | string | No | ISO date it ends, or null for no end |
+| `maxRedemptions` | number | No | how many times it can be used in all, at least 1 |
+| `perBuyerLimit` | number | No | how many times one buyer can use it, at least 1 |
+
+#### `delete-discount-code`
+
+Delete a code nothing ever used. Direct — no dialog. A code that was used is part of the record and is refused `conflict`: turn it off instead (update-discount-code with `status: "disabled"`). Returns `{success: true}`.
+
+**Availability:** Developer
+
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `codeId` | string | Yes | the code's id, from list-promotions |
+
+#### `get-analytics`
+
+The store's own numbers over a range — the Merchant Console's Analytics — exactly as the server sends them: `{range, totals: {revenueVrsc, orders, units, curatorFeeVrsc, revenueApproximate}, series: [{day, revenueVrsc, orders, suppressed}], topProducts: [{productId, title, revenueVrsc, units, suppressed}], byNetwork: [{networkId, revenueVrsc, orders, suppressed}], suppressedCells}`. A row with `suppressed: true` was built from too few orders and is WITHHELD: its numbers are not figures — show it as withheld, never as 0. `orders` counts order lines touched, an upper bound, not distinct orders. Read-only.
+
+**Availability:** Developer
+
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `from` | string | No | ISO date the range starts |
+| `to` | string | No | ISO date the range ends |
+| `testOnly` | boolean | No | true reads the test orders' figures instead of the real ones (never mixed) |
+
+#### `subscribe-events`
+
+Be told when commerce changes instead of polling. Name the events you want; the answer is `{success: true, events}`, your app's whole set now: each call REPLACES the previous one, and an empty list stops them all. An unknown name is refused with `validation_failed` and nothing changes; a caller that is not an embedded app is refused with `unsupported`. Each event arrives as a host push, `api:trigger` with `{action: "commerce", data: {event, …}}` (the SDK emits `ValuApi.ON_COMMERCE` with that `data`). The events and their data: `cart-updated {count}` — the cart changed; `count` is what the cart badge shows (saved-for-later excluded), never which items: re-read with get-cart. `order-updated {orderId, status}` — an order holding at least one of YOUR app's items changed: pending_payment, paid, failed, expired, cancelled or deleted. Orders without your items are never sent to you. `delivery-updated {orderId, status}` — that order's files: delivered (they are in the buyer's Media; re-read with list-purchases), unavailable or failed. `catalogue-updated {productId, change}` — the shelf of this network changed: change is added, updated or removed; productId null means re-read the whole shelf with list-products. `seller-product-updated {productId, change}` — one of the signed-in seller's own products: created, updated, content-updated, published, unlisted, archived, deleted, broken, sale-started, sale-ended, blocked or unblocked; re-read with list-seller-products. `seller-store-updated {change, networkId?}` — their store: created, updated, donation-updated or network-access-updated (networkId names the network when there is one). `seller-promotions-updated {change}` — a promotion changed: sale, tier or code. An event says WHAT changed, never the new state: treat it as a hint to re-read with the matching intent, never as data, and expect to miss one now and then (a missed event is a stale screen until the next read). Subscriptions last until unsubscribe-events, until your app's frame closes or until it reloads — moving the app to another dock reloads its frame — so subscribe again every time your app starts, after api:ready.
+
+**Availability:** Developer
+
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `events` | array | Yes | the event names to receive, replacing any earlier subscription: cart-updated, order-updated, delivery-updated, catalogue-updated, seller-product-updated, seller-store-updated, seller-promotions-updated |
+
+#### `unsubscribe-events`
+
+Stop receiving commerce events. Without `events`, every one your app subscribed to; with it, only those. Answers `{success: true, events}`: what your app still receives (empty when nothing). An unknown name is refused with `validation_failed` and nothing changes. There is no need to call it before your app closes: a subscription ends with the frame that made it.
+
+**Availability:** Developer
+
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `events` | array | No | the event names to stop receiving (see subscribe-events); omit to stop them all |
 
 ---
 
@@ -1209,6 +1762,8 @@ Community service for browsing communities, listing channels, and loading posts 
 
 Search for available communities. Returns community objects with communityId, name, description, and other properties.
 
+**Availability:** AI, Developer
+
 | Parameter | Type | Required | Description |
 |-----------|------|----------|-------------|
 | `query` | string | No | Search query to filter communities by name. |
@@ -1219,6 +1774,8 @@ Search for available communities. Returns community objects with communityId, na
 
 Retrieves detailed information about a specific community by its ID.
 
+**Availability:** AI, Developer
+
 | Parameter | Type | Required | Description |
 |-----------|------|----------|-------------|
 | `communityId` | string | Yes | The unique community identifier. |
@@ -1226,6 +1783,8 @@ Retrieves detailed information about a specific community by its ID.
 #### `get-channels`
 
 Lists channels within a specific community. Returns {communityId, channels[]} where each channel has channelId, rootChannelId (same as channelId — use this for entity tags), title, and other properties.
+
+**Availability:** AI, Developer
 
 | Parameter | Type | Required | Description |
 |-----------|------|----------|-------------|
@@ -1235,6 +1794,8 @@ Lists channels within a specific community. Returns {communityId, channels[]} wh
 #### `get-posts`
 
 Loads posts/messages in a specific channel or sub-channel. Returns {communityId?, rootChannelId, subChannelId?, messages[]}. The rootChannelId and subChannelId in the response are the exact values to use when constructing community-post or community-sub-channel-post entity tags — no need to track them separately.
+
+**Availability:** AI, Developer
 
 | Parameter | Type | Required | Description |
 |-----------|------|----------|-------------|
@@ -1256,6 +1817,8 @@ Picker service for selecting items from data providers (rooms, contacts, etc.) v
 
 Opens an interactive picker so the END USER can choose ONE item (a room, contact, group, etc.) and returns their selection. BLOCKS until the user picks or cancels. Returns the selected item object (its shape depends on the provider — typically `{id, name, ...}`) or `null` if the user cancelled. Use this when the user's request needs an entity reference and they have NOT named a specific one — e.g. "share this in a group" without naming the group → call with providers: ["groups"]. Do not use to search programmatically; use the provider's own search/list service intent for that.
 
+**Availability:** AI, Developer
+
 | Parameter | Type | Required | Description |
 |-----------|------|----------|-------------|
 | `providers` | string[] | Yes | Provider IDs to show as picker sources. Available IDs include: "rooms", "contacts", "groups", "communities", "props", "events". Pass one entry for a single-source picker, or multiple to let the user switch sources via tabs. Example: ["rooms"] or ["contacts", "groups"]. |
@@ -1266,6 +1829,8 @@ Opens an interactive picker so the END USER can choose ONE item (a room, contact
 #### `pick-multiple`
 
 Same as pick-single but lets the END USER select MORE THAN ONE item. BLOCKS until they confirm or cancel. Returns an array of selected items (`[{id, name, ...}, ...]`) or `null` if cancelled. Use when the user's request implies multiple targets — e.g. "invite some people to the room" → call with providers: ["contacts"].
+
+**Availability:** AI, Developer
 
 | Parameter | Type | Required | Description |
 |-----------|------|----------|-------------|
@@ -1288,6 +1853,8 @@ Developer Portal service for creating and listing the current user's application
 
 Creates a new application in the Developer Portal. By default the application is served in an iframe from https://{appSlug}-{userId}.valuguru.app/ — a host of its own, the slug and the user id joined with a dash (the slug is derived from the name — lowercased, dashes; deduplicated with -2, -3, … on collision) — and that site needs code deployed to it before it shows anything. Pass the optional `url` to instead point the app's iframe DIRECTLY at an existing external page (no code/build needed) — the created app then opens straight to that URL. Returns the created app's id, devId, slug, URL, and a ready-made `tag` — a chat entity tag of the form @[application:`<appId>`|`<Name>`]. To give the user a clickable link that opens the application inside the platform, paste that `tag` value verbatim into your reply (do NOT link the raw URL).
 
+**Availability:** AI, Developer
+
 | Parameter | Type | Required | Description |
 |-----------|------|----------|-------------|
 | `name` | string | Yes | Human-readable name for the application. Also used to derive the URL slug. |
@@ -1298,6 +1865,8 @@ Creates a new application in the Developer Portal. By default the application is
 #### `list-applications`
 
 Lists the current user's applications in the Developer Portal. Returns each application's appId, devId, name, slug, url, description, createdAt timestamp, and a ready-made `tag` — a chat entity tag of the form @[application:`<appId>`|`<Name>`]. To give the user a clickable link that opens an application inside the platform, paste its `tag` value verbatim into your reply (do NOT link the raw URL).
+
+**Availability:** AI, Developer
 
 *No parameters.*
 
@@ -1313,6 +1882,8 @@ Calendar service for listing, creating, and editing meetings.
 
 Returns a list of calendar events for the specified date range and optional meeting filter, sorted by start time ascending.
 
+**Availability:** AI, Developer
+
 | Parameter | Type | Required | Description |
 |-----------|------|----------|-------------|
 | `range` | string | No | Date range to fetch. Must be one of: day, week, month, year. Defaults to month. |
@@ -1323,6 +1894,8 @@ Returns a list of calendar events for the specified date range and optional meet
 #### `create-meeting`
 
 Creates a new meeting on the calendar with the specified title, type, time range, and optional participants, description, color, and recurrence.
+
+**Availability:** AI, Developer
 
 | Parameter | Type | Required | Description |
 |-----------|------|----------|-------------|
@@ -1342,6 +1915,8 @@ Creates a new meeting on the calendar with the specified title, type, time range
 #### `edit-meeting`
 
 Updates an existing meeting's fields (title, description, time, participants, or color) by meeting ID.
+
+**Availability:** AI, Developer
 
 | Parameter | Type | Required | Description |
 |-----------|------|----------|-------------|
@@ -1365,6 +1940,8 @@ Group management service for listing groups the current user belongs to and thei
 
 Returns groups the current user belongs to. Supports search and cursor-based pagination.
 
+**Availability:** AI, Developer
+
 | Parameter | Type | Required | Description |
 |-----------|------|----------|-------------|
 | `query` | string | No | Search query to filter groups by name. |
@@ -1374,6 +1951,8 @@ Returns groups the current user belongs to. Supports search and cursor-based pag
 #### `list-group-participants`
 
 Returns participants of a specific group. Supports search and cursor-based pagination.
+
+**Availability:** AI, Developer
 
 | Parameter | Type | Required | Description |
 |-----------|------|----------|-------------|
@@ -1386,6 +1965,8 @@ Returns participants of a specific group. Supports search and cursor-based pagin
 
 Returns groups the current user can join via CBAC — groups whose badge policy is satisfied by the badges the user holds. Each result includes the cbacPolicies that grant access. Supports search and cursor-based pagination.
 
+**Availability:** AI, Developer
+
 | Parameter | Type | Required | Description |
 |-----------|------|----------|-------------|
 | `query` | string | No | Search query to filter groups by name. |
@@ -1395,6 +1976,8 @@ Returns groups the current user can join via CBAC — groups whose badge policy 
 #### `join-group`
 
 Joins the current user to a group via CBAC. The user must hold a badge that satisfies a badge policy on the target group (use discover-groups to find eligible groups first).
+
+**Availability:** AI, Developer
 
 | Parameter | Type | Required | Description |
 |-----------|------|----------|-------------|
@@ -1412,6 +1995,8 @@ Generic HTTP utility: reachability ping, GET, and POST against any URL. Requests
 
 Pings a URL with HEAD and returns whether it is reachable, the response latency in ms, and the HTTP status code (0 for cross-origin or unreachable servers). Returns: { up: boolean, latency: number, status: number, error?: string }.
 
+**Availability:** Developer
+
 | Parameter | Type | Required | Description |
 |-----------|------|----------|-------------|
 | `url` | string | Yes | The URL to ping. |
@@ -1420,6 +2005,8 @@ Pings a URL with HEAD and returns whether it is reachable, the response latency 
 #### `get`
 
 Performs an HTTP GET against the URL and returns the response. Body is auto-parsed as JSON when the response Content-Type is application/json (or *+json), otherwise as text. Returns: { ok: boolean, status: number, statusText: string, headers: object, body: any, bodyType: "json"|"text", latency: number, error?: string }.
+
+**Availability:** Developer
 
 | Parameter | Type | Required | Description |
 |-----------|------|----------|-------------|
@@ -1431,6 +2018,8 @@ Performs an HTTP GET against the URL and returns the response. Body is auto-pars
 #### `post`
 
 Performs an HTTP POST against the URL with the given body and returns the response (same shape as get). If `body` is a plain object it is JSON-stringified and Content-Type defaults to application/json; strings are sent verbatim with the supplied or existing Content-Type.
+
+**Availability:** Developer
 
 | Parameter | Type | Required | Description |
 |-----------|------|----------|-------------|
@@ -1453,6 +2042,8 @@ Exposes the in-memory console log buffer captured by ConsoleLogCapture for diagn
 
 Returns the captured console log buffer (log, info, warn, error) since app start. Choose the format: "text" returns { format: "text", text: `<string>` } with one line per entry; "file" returns { format: "file", filename, mimeType, size, file: File } — the File is for direct callers (upload/download) and is omitted in the AI/MCP serialized response, which still includes filename, mimeType, and size.
 
+**Availability:** Developer
+
 | Parameter | Type | Required | Description |
 |-----------|------|----------|-------------|
 | `format` | string | No | Output format. Must be one of: "text", "file". Defaults to "text". |
@@ -1469,6 +2060,8 @@ Network management service for retrieving information about the current network.
 
 Returns the id and name of the network the user is currently in. Call this to get the current networkId before making any room or network-related calls.
 
+**Availability:** AI, Developer
+
 *No parameters.*
 
 ---
@@ -1483,6 +2076,8 @@ Read-only access to a user's public profile artifacts — Verus verifiable crede
 
 Returns the Verus verifiable credentials published on a user's profile, by their userId. These are the attestation claims of type "credential" shown in the profile Credentials view. Revoked credentials are returned only when the userId is the current user. Visibility is enforced by the backend against the current user.
 
+**Availability:** AI, Developer
+
 | Parameter | Type | Required | Description |
 |-----------|------|----------|-------------|
 | `userId` | string | Yes | The unique identifier of the user whose credentials to list. |
@@ -1491,6 +2086,8 @@ Returns the Verus verifiable credentials published on a user's profile, by their
 #### `get-user-badges`
 
 Returns the badges assigned to a user by their userId. Each badge includes badgeId, badgeName, badgeDescription, thumbnailId, and networkId. Visibility is enforced by the backend against the current user.
+
+**Availability:** AI, Developer
 
 | Parameter | Type | Required | Description |
 |-----------|------|----------|-------------|
@@ -1509,6 +2106,8 @@ Low-level resource service for generating URLs (thumbnails, public links, direct
 
 Returns a thumbnail URL for a resource at the specified size.
 
+**Availability:** Developer
+
 | Parameter | Type | Required | Description |
 |-----------|------|----------|-------------|
 | `resourceId` | string | Yes | The unique identifier of the resource. |
@@ -1518,6 +2117,8 @@ Returns a thumbnail URL for a resource at the specified size.
 
 Generates a public preview URL for a resource.
 
+**Availability:** AI, Developer
+
 | Parameter | Type | Required | Description |
 |-----------|------|----------|-------------|
 | `resourceId` | string | Yes | The unique identifier of the resource. |
@@ -1525,6 +2126,8 @@ Generates a public preview URL for a resource.
 #### `generate-best-view-url`
 
 Generates an optimized view URL for a resource.
+
+**Availability:** AI, Developer
 
 | Parameter | Type | Required | Description |
 |-----------|------|----------|-------------|
@@ -1534,6 +2137,8 @@ Generates an optimized view URL for a resource.
 
 Generates a direct public API URL for downloading a resource.
 
+**Availability:** AI, Developer
+
 | Parameter | Type | Required | Description |
 |-----------|------|----------|-------------|
 | `resourceId` | string | Yes | The unique identifier of the resource. |
@@ -1541,6 +2146,8 @@ Generates a direct public API URL for downloading a resource.
 #### `list-bot-avatars`
 
 Returns the network-allowed bot avatar collection (id, name, tags) from the shared bot-avatars directory. Avatars carrying the current network's denied tags (same modesty/policy filter as the user avatar picker) are excluded. Use a returned `id` as a 3D avatar resource id (e.g. an agent's avatarResourceId).
+
+**Availability:** AI, Developer
 
 | Parameter | Type | Required | Description |
 |-----------|------|----------|-------------|
@@ -1558,6 +2165,8 @@ GoTo points of a room (server name "cameraPosition"): list them, save or delete 
 
 Returns every saved GoTo point of a room, in server order: {status: "ok", points}. Each point carries id, name, position {x,y,z}, rotation {x,y,z,w} (EULER DEGREES, w is always 0 — NOT a quaternion), cameraMode (0 = do not change, 1 = fly, 2 = third person) and the server timestamps. A room with no saved points returns an empty list — the "Home" point Unity shows in that case exists only in its memory.
 
+**Availability:** AI, Developer
+
 | Parameter | Type | Required | Description |
 |-----------|------|----------|-------------|
 | `roomId` | string | Yes | The room whose points to list. |
@@ -1566,6 +2175,8 @@ Returns every saved GoTo point of a room, in server order: {status: "ok", points
 #### `create-room-point`
 
 Opens the point editor for a NEW point and BLOCKS until the user saves or cancels. Needs a pose to save the point at: pass camera (the live 3D camera pose) or a point to copy the pose from — the web layer cannot read the camera itself. Resolves {status: "ok", point, persisted, savePreview} once the point is written, or {status: "cancelled"} / {status: "error", message}.
+
+**Availability:** AI, Developer
 
 | Parameter | Type | Required | Description |
 |-----------|------|----------|-------------|
@@ -1581,6 +2192,8 @@ Opens the point editor for a NEW point and BLOCKS until the user saves or cancel
 #### `edit-room-point`
 
 Opens the point editor for an EXISTING point and BLOCKS until the user saves, deletes or cancels. Resolves {status: "ok", point, persisted, savePreview}, {status: "deleted", point: {id}, persisted}, {status: "cancelled"} or {status: "error", message}. A point whose id is empty is treated as a create.
+
+**Availability:** AI, Developer
 
 | Parameter | Type | Required | Description |
 |-----------|------|----------|-------------|
@@ -1598,6 +2211,8 @@ Opens the point editor for an EXISTING point and BLOCKS until the user saves, de
 
 Writes a point WITHOUT opening any UI: creates it when point.id is empty or missing, otherwise overwrites the saved point with that id. An update REPLACES the whole point, so send a complete one (read it with list-room-points first) — fields left out are not kept. Returns {status: "ok", point} with the server copy, whose id is the one to keep after a create.
 
+**Availability:** Developer
+
 | Parameter | Type | Required | Description |
 |-----------|------|----------|-------------|
 | `roomId` | string | Yes | The room the point belongs to. |
@@ -1606,6 +2221,8 @@ Writes a point WITHOUT opening any UI: creates it when point.id is empty or miss
 #### `delete-room-point`
 
 Deletes one saved point by id. Returns {status: "ok"}. The point parallax preview resource is cleaned up by the 3D scene, not here.
+
+**Availability:** Developer
 
 | Parameter | Type | Required | Description |
 |-----------|------|----------|-------------|
@@ -1624,6 +2241,8 @@ Room management service for searching rooms, browsing room templates, creating r
 
 Searches all public/discoverable rooms in the current network using the explorer service. Returns rooms anyone can find and join, regardless of membership. Use this when the user wants to discover or browse rooms. Every room in the result carries a ready-made entity link in its `tag` field (`@[room:networkId/roomId|Name]`) plus the resolved `networkId` — paste that `tag` verbatim when linking to the room and NEVER assemble one from ids yourself.
 
+**Availability:** AI, Developer
+
 | Parameter | Type | Required | Description |
 |-----------|------|----------|-------------|
 | `query` | string | No | Search query to filter rooms by name. |
@@ -1633,6 +2252,8 @@ Searches all public/discoverable rooms in the current network using the explorer
 #### `search-my-rooms`
 
 Searches rooms belonging to the current user within the current network — their joined rooms, favorites, or pending invitations. Use this when the user asks about their own rooms. Every room in the result carries a ready-made entity link in its `tag` field (`@[room:networkId/roomId|Name]`) plus the resolved `networkId` — paste that `tag` verbatim when linking to the room and NEVER assemble one from ids yourself.
+
+**Availability:** AI, Developer
 
 | Parameter | Type | Required | Description |
 |-----------|------|----------|-------------|
@@ -1645,6 +2266,8 @@ Searches rooms belonging to the current user within the current network — thei
 
 Retrieves basic room model data by room ID including name, description, settings, and metadata.
 
+**Availability:** Developer
+
 | Parameter | Type | Required | Description |
 |-----------|------|----------|-------------|
 | `roomId` | string | Yes | The unique room identifier. |
@@ -1654,6 +2277,8 @@ Retrieves basic room model data by room ID including name, description, settings
 
 Retrieves the current user permissions for a room (view, comment, contribute, edit, manage).
 
+**Availability:** AI, Developer
+
 | Parameter | Type | Required | Description |
 |-----------|------|----------|-------------|
 | `roomId` | string | Yes | The unique room identifier. |
@@ -1661,6 +2286,8 @@ Retrieves the current user permissions for a room (view, comment, contribute, ed
 #### `get-room-props`
 
 Lists all props (interactive objects) in a room. Returns prop objects with id, name (what the prop SHOWS, and the label on its tag: the prop's own title, else the title of its FIRST resource — a filled frame is named after its content, because a content prop carries no title of its own — else the asset's catalog name, else the bare id when nothing names it), assetTitle (the asset's catalog name, e.g. "Gold Picture Frame" or "Presentation Board" — tells you what kind of object the prop is even when the author renamed it), type (array of content types the prop can hold — empty means it cannot hold content), thumbnailCount (number of visual display canvases — a picture frame has thumbnailCount > 0), isPresentationBoard (true = a live screen-share board, NEVER a target for pasted content; null = unknown), invokeType (Default/Container/Bookshelf/FileCabinet), tags, contentCount, assetId, and `tag` — a ready-made entity link for the prop (`@[prop:networkId/roomId/propId|Name]`) that you paste verbatim when referring to it, never assembling one from ids yourself. Match the user's words against tags, name and assetTitle to find the prop they mean (e.g. "logo", "team", "the gold frame"). Each prop also carries `groupId` — the id of its prop group (props sharing the same tag set; see get-room-prop-groups). For PLACING content prefer get-room-prop-groups: it returns these same props already grouped, and paste-resources-into-prop-group spreads content over a group for you. Props are returned in the room's NAVIGATION ORDER and each carries `navIndex` (0-based position): normally that is the props-group order the room stores, but when the room's settings select a storyline to override Next/Previous navigation, THAT storyline's frame order is the source of truth for prop order — props the storyline never visits come last with `navIndex: null`.
+
+**Availability:** AI, Developer
 
 | Parameter | Type | Required | Description |
 |-----------|------|----------|-------------|
@@ -1670,6 +2297,8 @@ Lists all props (interactive objects) in a room. Returns prop objects with id, n
 #### `get-prop`
 
 Returns details for a single prop by ID (name, assetTitle, type, thumbnailCount, isPresentationBoard, contentCount, assetId, `navIndex` — the prop's 0-based position in the room's navigation order, null when a Next/Previous storyline override never visits it — and the ready-made entity link `tag` — same fields as get-room-props) with no navigation or UI side effects. Use this to read prop data. Only use preview-prop when the user explicitly asks to show, open, or navigate to a prop.
+
+**Availability:** AI, Developer
 
 | Parameter | Type | Required | Description |
 |-----------|------|----------|-------------|
@@ -1681,6 +2310,8 @@ Returns details for a single prop by ID (name, assetTitle, type, thumbnailCount,
 
 Lists all team member invitations for a prop in a room. Returns an array of invitation records, each containing the invited user's ID, their permissions (view/comment/contribute/edit/manage), and any stored custom metadata. Agent assignments are stored id-only as `customParams.agentInfo.id` (string). Older rows may still carry the full snapshot `customParams.agentInfo: { id, name, description, avatarUrl }` — only `id` is read; everything else is resolved from the live agent.
 
+**Availability:** AI, Developer
+
 | Parameter | Type | Required | Description |
 |-----------|------|----------|-------------|
 | `roomId` | string | Yes | The room the prop belongs to. |
@@ -1689,6 +2320,8 @@ Lists all team member invitations for a prop in a room. Returns an array of invi
 #### `invite-to-prop`
 
 Adds a user to a prop's team, or updates an existing team member's permissions and metadata. When called for a user already in the team this acts as an update — the invitation is replaced with the new permissions and customParams. Use list-prop-team-members first to check current membership before inviting.
+
+**Availability:** AI, Developer
 
 | Parameter | Type | Required | Description |
 |-----------|------|----------|-------------|
@@ -1702,6 +2335,8 @@ Adds a user to a prop's team, or updates an existing team member's permissions a
 
 Removes a user from a prop's team by deleting their invitation. Use list-prop-team-members first to confirm the user is currently a team member.
 
+**Availability:** AI, Developer
+
 | Parameter | Type | Required | Description |
 |-----------|------|----------|-------------|
 | `roomId` | string | Yes | The room the prop belongs to. |
@@ -1711,6 +2346,8 @@ Removes a user from a prop's team by deleting their invitation. Use list-prop-te
 #### `list-room-templates`
 
 Lists the room templates the AI is allowed to build from: ONLY templates tagged both "community" and "ai-friendly" are returned — every other template is skipped by design, never look for or suggest one (filteredOutCount says how many of the page were skipped). Each template has an id, name, tags (e.g. "office", "gallery", "community"), price in USD (0 or missing = free; paid templates CAN be created too — the room then has to be purchased by the user within 15 minutes, see create-room-from-template), subscriptionStatus, and groupCount — the number of prop groups (tagged sections of frames) the template's room contains, read from a tag of the form "prop-groups_N" (e.g. prop-groups_5; null when the template carries no such tag). Choose a template by groupCount: prefer the one equal to the number of content sections the user has, else the smallest larger one; a template with more groups than sections leaves the extra groups on their placeholders, one with fewer forces sections to be merged — say so when you propose it. Supports text search and server-side tag filtering with pagination. Use this before create-room-from-template to find a template id, its groupCount and its price.
+
+**Availability:** AI, Developer
 
 | Parameter | Type | Required | Description |
 |-----------|------|----------|-------------|
@@ -1723,6 +2360,8 @@ Lists the room templates the AI is allowed to build from: ONLY templates tagged 
 
 Creates a new 3D room in the current network from a room template — FREE or PAID. The tool looks the template up in the AI-approved list itself and uses the listed price (pass `price` too when you have it; it is the fallback if the lookup fails). For a paid template the room is created immediately with a one-time-payment plan and the platform keeps it only if the user completes the purchase within 15 minutes; this tool never pays anything. Returns { roomId, name, networkId, tag, price, isFree, paymentRequired } for the NEW room plus, when paymentRequired is true, paymentWindowMinutes (15) and paymentInstructions. When paymentRequired is true you MUST tell the user right away: the price, that the room is temporary until it is bought within 15 minutes, and how to pay (Valu web app -> Rooms -> open the new room -> "Pay for Room"); never claim it is paid. Creating the room and linking to it are two separate steps: to link, paste the returned `tag` (`@[room:networkId/roomId|Name]`) VERBATIM — never rebuild it from ids, never reuse a roomId from an earlier call or a template id, and never guess the networkId. Use list-room-templates first to find the template id and its price.
 
+**Availability:** AI, Developer
+
 | Parameter | Type | Required | Description |
 |-----------|------|----------|-------------|
 | `templateId` | string | Yes | The room template id (from list-room-templates). |
@@ -1732,6 +2371,8 @@ Creates a new 3D room in the current network from a room template — FREE or PA
 #### `paste-resources-into-prop`
 
 Places one or more existing CMS resources into a prop in a room. Resources are link-copied (the originals stay in their current folder) and added to the prop's content list. IDEMPOTENT: a resource already on the prop (itself, or as a link copy) is skipped and listed in skippedAlreadyPresent — so repeating a paste after a timeout can never duplicate content; when everything was already there the result carries alreadyPresent=true and nothing is changed. Template placeholder resources still sitting on the prop (from the room template) are removed first so they never mix with the user's content (removedTemplateStubs in the result lists them; set removeTemplateStubs=false to keep them). When the paste leaves more than one resource on a non-container prop, the tool automatically enables the prop's auto content slider so the items cycle as a slideshow (result field sliderEnabled reports it; sliderError appears if the paste succeeded but the slider toggle failed). The tool also CLEARS the prop's title (content props carry no caption — a section's name lives on its sign; titleCleared reports it, titleClearError if that save failed). Use this tool ONLY when the user named exactly one prop. When the target is a GROUP — a row of frames, a tagged section, several props — call paste-resources-into-prop-group instead: it spreads the content across the group's props in navigation order itself, so never hand-split content into per-prop calls. The prop must support content — check via get-room-props that its type array is non-empty and isPresentationBoard is false: presentation (screen-share) boards are rejected, they are reserved for live screen sharing. Prefer props with thumbnailCount > 0 (picture frames / display canvases). Use service__CMS__resource_search to find resource ids first. Returns the paste result plus `name` and `tag` read back AFTER the paste, so they name what the prop now shows (its first resource) — paste that `tag` verbatim when linking to the prop.
+
+**Availability:** AI, Developer
 
 | Parameter | Type | Required | Description |
 |-----------|------|----------|-------------|
@@ -1746,6 +2387,8 @@ Places one or more existing CMS resources into a prop in a room. Resources are l
 
 Lists a room's props ALREADY GROUPED by their tag set, in the room's navigation order — use this (not get-room-props) whenever content is to be placed. Returns { roomId, networkId, propOrder, groupIds, groups } — groupIds is the ordered list of every group id, read it first. A group is the set of props whose normalized tags (lowercase, spaces -> "-") are identical; its `id` is those tags sorted and joined with "+" (e.g. "building1+floor0+team"), so multi-tag rooms yield one group per tag combination ("building1+floor0+team" and "building1+floor1+team" are different groups). A SINGLE tagged prop is a group of one — the lone "logo" frame is the group "logo". Props WITHOUT tags belong to no group and are skipped entirely (never listed, never filled). Each group carries id, tags, label, isLogoGroup (true when the tags include "logo": every logo frame shows EVERY logo, so paste-resources-into-prop-group replicates there by default), navIndex (the group's first position in the room's walk; null = outside it), propCount, eligiblePropCount (props that can take content), decorativePropCount (props with no content type — walls, plants, signs — counted but NOT listed), totalContentCount, labels — the section's SIGNS: Text props (recognised by an asset tag containing "Text", or as a titled prop with no content type) whose title is the text shown in the room, members of the group because they carry its tags (an untagged sign is invisible to these tools); each { propId, text } — and props — only the props that can hold content (presentation boards included, flagged), each as a compact entry: id, name (what the prop SHOWS: its own title, else the title of its FIRST resource, else the asset's catalog name, else the bare id when nothing names it — an id-only name means an empty, unnamed frame), assetTitle, type, thumbnailCount, logoCount, invokeType, isPresentationBoard, acceptsContent (true = type non-empty and not a presentation board), contentCount, navIndex, tag. Match the user's words against group tags/label first ("the team wall on floor 0" -> tags contain team and floor0), then against prop name/assetTitle when they mean one exact prop. Pass group ids to paste-resources-into-prop-group; when the user's content is coarser than the groups ("team" over per-floor team groups) pass every group whose tags contain the facet. The ready-made `tag` on each prop is pasted verbatim when linking to it — never assemble one. propOrder says where the order came from ({ source: "storyline" | "props-group", storylineId?, storylineTitle? }).
 
+**Availability:** AI, Developer
+
 | Parameter | Type | Required | Description |
 |-----------|------|----------|-------------|
 | `roomId` | string | Yes | The unique room identifier. |
@@ -1754,6 +2397,8 @@ Lists a room's props ALREADY GROUPED by their tag set, in the room's navigation 
 #### `paste-resources-into-prop-group`
 
 Spreads existing CMS resources across the props of one or more prop GROUPS (ids from get-room-prop-groups), in the room's navigation order, as contiguous, order-preserving shares — one slideshow per prop. The tool does ALL the chunking (7 resources over 3 frames -> 3/2/2; 2 over 5 -> the first two frames get one each), so call it ONCE per content group with all of that group's resources — never once per prop, and never split the resources yourself. Pass several groupIds when the content is coarser than the room's groups (e.g. "team" photos over "building1+floor0+team" and "building1+floor1+team"); their props are pooled in walk order. Frames that still show only their template placeholder come FIRST (lowest navIndex first), frames that already hold user content come after — so a later top-up fills the empty slots before joining existing slideshows; each placement reports hadUserContent (true/false, null when the prop's content could not be read). distribution: "spread" (default — contiguous shares), "stack" (everything onto the first eligible prop as one slideshow — only when the user explicitly asked for a single slideshow) or "replicate" (EVERY resource onto EVERY eligible prop — the default when every selected group is a LOGO group, isLogoGroup true, so all logos show on all logo frames; never spread logos unless the user asks). Presentation boards are skipped automatically and listed in skippedProps; decorative members (walls, signs) are never candidates. Per prop this behaves exactly like paste-resources-into-prop: resources are link-copied (originals stay), a resource already on the prop (itself or as a link copy) is skipped rather than duplicated (per placement and top-level skippedAlreadyPresent — a repeat after a timeout is safe), template placeholder stubs are removed first, the auto content slider is enabled when a prop ends up with more than one item, and titles are cleared on EVERY content prop of the selected groups — the pasted ones and the untouched ones alike (content props carry no caption; the section's name lives on its sign; clearedTitlePropIds lists them, titleClearErrors any that failed). Returns { roomId, groupIds, distribution, placements: [{ groupId, propId, name, tag, navIndex, hadUserContent, resourceIds, addedResourceIds, failed, removedTemplateStubs, sliderEnabled, titleCleared, sliderError?, titleClearError?, stubCleanupError?, error? }], clearedTitlePropIds, titleClearErrors?, unplacedResourceIds (resources that landed on no prop at all), eligiblePropCount, skippedProps } — each placement's name and tag are read back AFTER the paste, so they name what the prop now shows (its first resource), not the empty frame it was. It throws only when nothing could be attempted: an unknown group id (the message lists the valid ids), no eligible prop in the selected groups, or empty input. Report failed/unplaced items honestly; paste each placement's `tag` verbatim when linking. Use paste-resources-into-prop only when the user named exactly one prop.
+
+**Availability:** AI, Developer
 
 | Parameter | Type | Required | Description |
 |-----------|------|----------|-------------|
@@ -1768,6 +2413,8 @@ Spreads existing CMS resources across the props of one or more prop GROUPS (ids 
 #### `rename-prop-group`
 
 Gives a prop GROUP a display name by retitling its section SIGNS — the group's labels from get-room-prop-groups, i.e. the tagged Text props that show the section name in the room. Content props (frames, boards) are never touched: they carry no title at all (pasting clears any they had), the name lives on the sign. Use it in the guided build once the section's name is settled (listed by the user up front, self-evident from the tag, or confirmed from your proposal — or chosen by you when the user asked you to decide everything). The group id itself comes from tags and does not change. Returns { roomId, groupId, name, hasLabels, renamedLabelPropIds, failed } — hasLabels false means the group has no sign, so there was nothing to rename (say so); renamedLabelPropIds are the signs that now show the name; failed lists signs that could not be saved. Never rename a group the user did not name or ask you to name.
+
+**Availability:** AI, Developer
 
 | Parameter | Type | Required | Description |
 |-----------|------|----------|-------------|
@@ -1788,6 +2435,8 @@ Headless text-chat I/O for non-UI callers (agents, sub-agents, scripts). Read ch
 
 Fetches the most recent messages for a text-chat channel by channelId, decrypted and ready to read. Returns a plain list of messages with authorId, body, timestamp, and messageType. Does not open any UI or change the active channel.
 
+**Availability:** Developer
+
 | Parameter | Type | Required | Description |
 |-----------|------|----------|-------------|
 | `channelId` | string | Yes | The text-chat channel ID to load messages from. |
@@ -1798,6 +2447,8 @@ Fetches the most recent messages for a text-chat channel by channelId, decrypted
 #### `send-message`
 
 Sends a text message to a text-chat channel. You must provide EITHER a channelId (preferred when you already have one) OR a userId (for a direct message — the service resolves the direct channel automatically). Silent — does NOT open the TextChat application, does NOT change the active channel, does NOT affect any UI. Encryption is handled automatically if the channel is encrypted.
+
+**Availability:** Developer
 
 | Parameter | Type | Required | Description |
 |-----------|------|----------|-------------|
@@ -1810,6 +2461,8 @@ Sends a text message to a text-chat channel. You must provide EITHER a channelId
 #### `message-owner`
 
 Delivers a message authored by the AI agent itself (NOT by the logged-in user) into a user's dedicated agent-to-user channel, resolved from source `userAIAgent:{userId}:{agentId}`. The recipient sees the agent as the author and the channel is created on first use. This is the INVASIVE owner-notification channel: use it to ping/notify the owner (pass the owner's userId) — or, occasionally, any other user. Unlike send-message (which sends as the logged-in user), this is authored by the agent. Silent toward the UI — does NOT open the TextChat application or change the active channel.
+
+**Availability:** AI
 
 | Parameter | Type | Required | Description |
 |-----------|------|----------|-------------|
@@ -1831,6 +2484,8 @@ Returns the current user's local clock context — local ISO with offset, UTC IS
 
 Returns an object describing the user's current local time: { iso: local ISO 8601 with offset (e.g. "2026-05-28T13:45:30.000+02:00"), utcIso: same instant in UTC (e.g. "2026-05-28T11:45:30.000Z"), timezone: IANA name (e.g. "Europe/Berlin"), offsetMinutes: integer minutes ahead of UTC (e.g. 120), dayOfWeek: long English day name (e.g. "Thursday"), localDate: "YYYY-MM-DD" in local time, localTime: "HH:MM" in local time, locale: resolved BCP 47 locale (e.g. "en-US") }. Takes no parameters.
 
+**Availability:** Developer
+
 *No parameters.*
 
 ---
@@ -1845,11 +2500,15 @@ User management service for getting current user info, looking up users by ID, s
 
 Returns the currently authenticated user info (id, firstName, lastName, etc.).
 
+**Availability:** AI, Developer
+
 *No parameters.*
 
 #### `get`
 
 Retrieves a user by their unique ID. Returns user object with id, firstName, lastName, etc.
+
+**Availability:** AI, Developer
 
 | Parameter | Type | Required | Description |
 |-----------|------|----------|-------------|
@@ -1858,6 +2517,8 @@ Retrieves a user by their unique ID. Returns user object with id, firstName, las
 #### `search-users`
 
 Search for users within existing connections (contacts, followers, or following). Use this to find a user ID when you only know their name and they are already in your network. To discover new users outside your network, use find-user instead.
+
+**Availability:** AI, Developer
 
 | Parameter | Type | Required | Description |
 |-----------|------|----------|-------------|
@@ -1870,6 +2531,8 @@ Search for users within existing connections (contacts, followers, or following)
 
 Discover new users to connect with by searching by name. Uses a suggestion engine — distinct from search-users which searches within existing connections.
 
+**Availability:** AI, Developer
+
 | Parameter | Type | Required | Description |
 |-----------|------|----------|-------------|
 | `query` | string | No | Search query to filter users by name. |
@@ -1880,6 +2543,8 @@ Discover new users to connect with by searching by name. Uses a suggestion engin
 
 Sends a connection request to a user by their ID.
 
+**Availability:** AI, Developer
+
 | Parameter | Type | Required | Description |
 |-----------|------|----------|-------------|
 | `userId` | string | Yes | The unique identifier of the user to send a connection request to. |
@@ -1887,6 +2552,8 @@ Sends a connection request to a user by their ID.
 #### `accept-connection-request`
 
 Accepts a pending connection request from a user.
+
+**Availability:** AI, Developer
 
 | Parameter | Type | Required | Description |
 |-----------|------|----------|-------------|
@@ -1896,6 +2563,8 @@ Accepts a pending connection request from a user.
 
 Declines a pending connection request from a user.
 
+**Availability:** AI, Developer
+
 | Parameter | Type | Required | Description |
 |-----------|------|----------|-------------|
 | `userId` | string | Yes | The unique identifier of the user whose connection request to decline. |
@@ -1903,6 +2572,8 @@ Declines a pending connection request from a user.
 #### `cancel-connection-request`
 
 Cancels a pending connection request that the current user previously sent.
+
+**Availability:** AI, Developer
 
 | Parameter | Type | Required | Description |
 |-----------|------|----------|-------------|
@@ -1920,6 +2591,8 @@ System service for managing applications via AI. Provides tools to open, close, 
 
 Opens (loads) an application by its ID into the dock.
 
+**Availability:** none (platform-internal)
+
 | Parameter | Type | Required | Description |
 |-----------|------|----------|-------------|
 | `applicationId` | string | Yes | The unique identifier of the application to open. |
@@ -1927,6 +2600,8 @@ Opens (loads) an application by its ID into the dock.
 #### `close`
 
 Closes (unloads) an application by its ID from the dock.
+
+**Availability:** none (platform-internal)
 
 | Parameter | Type | Required | Description |
 |-----------|------|----------|-------------|
@@ -1936,6 +2611,8 @@ Closes (unloads) an application by its ID from the dock.
 
 Checks whether an application with the given ID exists in the registry.
 
+**Availability:** none (platform-internal)
+
 | Parameter | Type | Required | Description |
 |-----------|------|----------|-------------|
 | `applicationId` | string | Yes | The unique identifier of the application to check. |
@@ -1944,11 +2621,15 @@ Checks whether an application with the given ID exists in the registry.
 
 Returns a list of all registered applications with their id, slug, icon, and title.
 
+**Availability:** none (platform-internal)
+
 *No parameters.*
 
 #### `is-application-loaded`
 
 Checks whether an application with the given ID is currently loaded (open) in the dock.
+
+**Availability:** none (platform-internal)
 
 | Parameter | Type | Required | Description |
 |-----------|------|----------|-------------|
@@ -1958,6 +2639,8 @@ Checks whether an application with the given ID is currently loaded (open) in th
 
 Returns the in-memory message history for a chat session. Omit chatId to get the currently active session.
 
+**Availability:** Developer
+
 | Parameter | Type | Required | Description |
 |-----------|------|----------|-------------|
 | `chatId` | string | No | ID of the chat session. Omit to use the currently active session. |
@@ -1966,6 +2649,8 @@ Returns the in-memory message history for a chat session. Omit chatId to get the
 
 Returns the in-memory message history for a background agent.
 
+**Availability:** Developer
+
 | Parameter | Type | Required | Description |
 |-----------|------|----------|-------------|
 | `agentId` | string | Yes | ID of the background agent whose message history to retrieve. |
@@ -1973,6 +2658,8 @@ Returns the in-memory message history for a background agent.
 #### `query-knowledge-base`
 
 Queries the RAG knowledge base directly over the Valu Guru server's socket connection, bypassing chat entirely. Returns the raw tool result text.
+
+**Availability:** Developer
 
 | Parameter | Type | Required | Description |
 |-----------|------|----------|-------------|
@@ -1992,6 +2679,8 @@ Executes on-chain transfers from an AI agent's attached Verus wallet identity. E
 
 Send currency from the agent's attached Verus wallet to a destination address or identity. Call this when the user or agent needs to move funds out of an agent wallet. Fails if the agent has no wallet attached, or if the wallet is still pending creation.
 
+**Availability:** AI, Developer
+
 | Parameter | Type | Required | Description |
 |-----------|------|----------|-------------|
 | `agentId` | string | Yes | ID of the AI agent performing the transfer. The service looks up which wallet identity is attached to this agent — NEVER pass a wallet ID or i-address here. |
@@ -2003,6 +2692,8 @@ Send currency from the agent's attached Verus wallet to a destination address or
 #### `get-balance`
 
 Return the last-known balance of the wallet attached to the specified agent. Reads from the client cache — call verus:getAgentsBalance (via AiGuruStore.refreshAgentBalances) for a fresh value.
+
+**Availability:** AI, Developer
 
 | Parameter | Type | Required | Description |
 |-----------|------|----------|-------------|
