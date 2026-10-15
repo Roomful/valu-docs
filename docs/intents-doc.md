@@ -657,7 +657,7 @@ Open My Cart on one of its tabs. The tab becomes part of the address, so the pla
 
 | Parameter | Type | Required | Description |
 |-----------|------|----------|-------------|
-| `section` | string | Yes | Which tab to open: discover, cart or orders. |
+| `section` | string | Yes | Which tab to open: discover, cart, purchased (what the user owns) or orders (receipts). |
 
 #### `open-cart`
 
@@ -679,6 +679,17 @@ Open the order history — every purchase made across Valu apps, with its receip
 
 | Parameter | Type | Required | Description |
 |-----------|------|----------|-------------|
+| `popup` | boolean | No | true draws this over the pane of the app that asked instead of docking My Cart, so the app the buyer came from stays visible and usable behind it. Where the caller is not on screen the popup falls back to a window over the whole page. |
+
+#### `open-purchased`
+
+Open what the user OWNS — every product they bought or got free, with its files, how far through them they are, and their rating. With `productId`, that product opened and shown. Orders (open-orders) are the receipts only.
+
+**Availability:** AI, Developer
+
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `productId` | string | No | a product the user owns, to open and show |
 | `popup` | boolean | No | true draws this over the pane of the app that asked instead of docking My Cart, so the app the buyer came from stays visible and usable behind it. Where the caller is not on screen the popup falls back to a window over the whole page. |
 
 #### `open-order`
@@ -1409,12 +1420,13 @@ Open My Cart for the user, scoped to your app's items. With `popup` it is drawn 
 
 #### `open-purchases`
 
-Open the user's order history in My Cart (one order, expanded: `open-order`). With `popup` it is drawn over your own app instead of docking My Cart.
+Open what the user OWNS in My Cart's Purchased tab — each product with its files, how far through them they are, and their rating; with `productId`, that product opened and shown. Receipts are `open-order`. With `popup` it is drawn over your own app instead of docking My Cart.
 
 **Availability:** Developer
 
 | Parameter | Type | Required | Description |
 |-----------|------|----------|-------------|
+| `productId` | string | No | a product the user owns, to open and show |
 | `popup` | boolean | No | true draws the surface over YOUR app's own pane instead of docking the application, so the page the user was on stays visible and usable behind it. Where your app is not on screen it falls back to a window over the whole page. |
 
 #### `open-products`
