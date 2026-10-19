@@ -21,8 +21,17 @@ export default defineConfigWithTheme({
     [
       'script',
       {},
-      `;(() => {      
+      `;(() => {
         let applicationId, source, origin;
+
+        // Framed = opened as the Valu Docs application inside Valu Social. Set
+        // before first paint so the Explorer section (shown only in the
+        // iframe, see theme/explorer/explorer.css) never flashes in or out.
+        if (window.self !== window.top) document.documentElement.classList.add('valu-framed');
+
+        // What the Explorer pages need to call the host: filled on api:ready,
+        // which can arrive before the Vue app has mounted.
+        const bridge = window.__valuBridge = {ready: false, applicationId: '', source: null, origin: ''};
 
         window.addEventListener('message', event => {
           if (event.data?.target !== 'valuApi') return;
@@ -30,10 +39,11 @@ export default defineConfigWithTheme({
           const message = event.data.message;
 
           switch (event.data.name) {
-            case 'api:ready': {            
+            case 'api:ready': {
               applicationId = message.applicationId;
               source = event.source;
               origin = event.origin;
+              Object.assign(bridge, {ready: true, applicationId, source, origin});
               window.dispatchEvent(new CustomEvent('valu_api-ready', {detail: {}}));
               console.info('Valu API Ready, from: ' + applicationId);
               break;
@@ -76,7 +86,9 @@ export default defineConfigWithTheme({
     nav: [
       {text: 'Home', link: '/'},
       {text: 'Docs', link: '/valu-overview'},
-      {text: 'API', link: '/valu-api'}
+      {text: 'API', link: '/valu-api'},
+      // Shown only inside Valu Social (html.valu-framed).
+      {text: 'Explorer', link: '/explorer/intents', activeMatch: '/explorer/'}
     ],
 
     search: {
@@ -102,6 +114,16 @@ export default defineConfigWithTheme({
           {text: 'Gaming Client Engine', link: '/netcode-client'},
           {text: 'Crypto Server', link: '/crypto_server'},
           {text: 'Valu Wallet API', link: 'https://valu-verse.github.io/valuapi/'},
+        ]
+      },
+      {
+        // Shown only inside Valu Social (html.valu-framed): there the pages can
+        // run calls through the host's bridge.
+        text: 'Explorer',
+        items: [
+          {text: 'Intents', link: '/explorer/intents'},
+          {text: 'Server Intents', link: '/explorer/server-intents'},
+          {text: 'REST APIs', link: '/explorer/rest-apis'},
         ]
       }
     ],

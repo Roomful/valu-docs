@@ -2,7 +2,8 @@
   "scripts": {
     "docs:dev": "vitepress dev docs --open",
     "docs:build": "vitepress build docs",
-    "docs:preview": "vitepress preview docs"
+    "docs:preview": "vitepress preview docs",
+    "explorer:catalogue": "node scripts/build-explorer-catalogue.mjs"
   },
   "devDependencies": {
     "mark.js": "8.11.1",
