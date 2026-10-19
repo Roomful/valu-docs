@@ -1,7 +1,7 @@
 # Intents Reference
 
 > Auto-generated from application and service manifests.  
-> Generated on: 2026-10-16
+> Generated on: 2026-10-19
 
 ## Table of Contents
 
@@ -48,6 +48,7 @@
 - [Profile Service (`Profile`)](#profile-service-profile)
 - [Resource Service (`Resources`)](#resource-service-resources)
 - [Room Points Service (`RoomPoints`)](#room-points-service-roompoints)
+- [Room Zones Service (`RoomZones`)](#room-zones-service-roomzones)
 - [Rooms Service (`Rooms`)](#rooms-service-rooms)
 - [Text Chat Service (`TextChat`)](#text-chat-service-textchat)
 - [Time Service (`Time`)](#time-service-time)
@@ -2251,6 +2252,72 @@ Deletes one saved point by id. Returns {status: "ok"}. The point parallax previe
 |-----------|------|----------|-------------|
 | `roomId` | string | Yes | The room the point belongs to. |
 | `pointId` | string | Yes | Id of the point to delete. |
+
+---
+
+### Room Zones Service (`RoomZones`)
+
+Zones of a room and the claims on them (docs/superpowers/specs/2026-10-16-room-claiming-zones-design.md). A zone is an invisible box in a room: it can join its video call when someone walks in, it can be claimed as somebody's personal space, or both. A CLAIM IS A PROP INVITATION on the master server — there is no other store — so the occupant also gets edit rights on the zone prop. The server does not enforce exclusivity: the earliest claim wins and the loser is withdrawn, so always read the occupancy back rather than assuming a claim held.
+
+*Source: `src/Services/RoomZones/RoomZonesService.js`*
+
+#### `list-room-zones`
+
+Every zone of a room: {status: "ok", zones}. Each zone carries id (the prop id), title, its box in room metres (x, z, rotY in degrees, width, depth, height, floorOffset), the two capabilities (call, claim) and its claim policy (settings.audience is "members" or "listed"). A room with no zones returns an empty list.
+
+**Availability:** AI, Developer
+
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `roomId` | string | Yes | The room whose zones to list. |
+| `claimableOnly` | boolean | No | Only the zones that can be claimed (the "spaces"). Default false. |
+
+#### `zone-occupancy`
+
+Who holds the room's claimable zones right now: {status: "ok", occupancy} keyed by zone id, each {claim, conflicts, stale}. `claim` is null when the zone is free, else {userId, claimedAt, source, doorPolicy, displayName, status}. `stale` means the occupant no longer has access to the room, so the zone is effectively free. `conflicts` are losing claims a moderator should clear. This reads the server every time — there is no push for prop invitations.
+
+**Availability:** AI, Developer
+
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `roomId` | string | Yes | The room to read. |
+
+#### `claim-zone`
+
+Claims a zone for the SIGNED-IN user. Returns {status: "ok", claim} when it worked, or {status: "refused", reason, message} when it did not — "taken", "limit", "not-listed", "not-claimable", "no-access" or "cooldown". A user who may not write prop invitations at all gets {status: "refused", reason: "needs-request"}: they must ask a room owner to assign it instead. Never claims on behalf of somebody else — use assign-zone for that.
+
+**Availability:** AI, Developer
+
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `roomId` | string | Yes | The room the zone belongs to. |
+| `zoneId` | string | Yes | The zone to claim (its prop id, as list-room-zones returns it). |
+| `displayName` | string | No | What to call the space, shown instead of the claimant's name. |
+| `status` | string | No | A one-line status shown next to the space, e.g. "in focus until 4". |
+| `doorPolicy` | string | No | Who may come in: "open" (default), "knock" or "closed". Shown, not yet enforced. |
+
+#### `release-zone`
+
+Releases the signed-in user's own claim on a zone: {status: "ok"}. Starts a one-minute cooldown before the same user may claim that zone again. Releasing a zone somebody else holds is not possible here — a room owner uses assign-zone or the Spaces app.
+
+**Availability:** AI, Developer
+
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `roomId` | string | Yes | The room the zone belongs to. |
+| `zoneId` | string | Yes | The zone to release. |
+
+#### `assign-zone`
+
+Gives a zone to a particular user. Requires the caller to OWN the room (manage rights) or be a network admin; anything less is refused. Bypasses the zone's audience, the room's per-user limit and the cooldown by design — this is how offices are handed out. Returns {status: "ok"}.
+
+**Availability:** Developer
+
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `roomId` | string | Yes | The room the zone belongs to. |
+| `zoneId` | string | Yes | The zone to assign. |
+| `userId` | string | Yes | Who gets it. |
 
 ---
 
