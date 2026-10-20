@@ -50,4 +50,7 @@ jobs:
           git add docs/intents-doc.md docs/.vitepress/explorer/intents.json docs/.vitepress/explorer/service-intents.json
           git diff --cached --quiet && echo "No changes to commit" && exit 0
           git commit -m "docs: update intents reference"
+          # Another push may have landed since checkout (a docs commit made
+          # alongside the web change that triggered this run): replay on top.
+          git pull --rebase origin main
           git push
