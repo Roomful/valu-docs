@@ -17,6 +17,90 @@
 }
 
 /*
+ * The search field in the nav bar.
+ *
+ * Carbon frames it with `--vp-c-border` — a dark grey (#576069) in light mode
+ * — and splits ⌘K into two bordered keys, which read as heavy boxes on the
+ * light header. A soft filled field instead, in both themes: no frame until
+ * hover, muted icon and placeholder, one quiet key chip.
+ *
+ * Carbon's own rules include a scoped `.VPNavBarSearch[data-v] .DocSearch-
+ * Button` (three classes' worth), hence the long selectors here.
+ */
+.VPNavBar .VPNavBarSearch .DocSearch.DocSearch-Button {
+  box-sizing: border-box;
+  border: 1px solid transparent;
+  border-radius: 8px;
+  /* bg-soft, not bg-alt: in dark mode bg-alt IS the nav bar's colour. */
+  background-color: var(--vp-c-bg-soft);
+  transition: background-color 0.2s, border-color 0.2s;
+}
+
+.VPNavBar .VPNavBarSearch .DocSearch.DocSearch-Button:hover {
+  border-color: var(--vp-c-divider);
+  background-color: var(--vp-c-default-soft);
+}
+
+.VPNavBar .VPNavBarSearch .DocSearch.DocSearch-Button:focus-visible {
+  outline: 2px solid var(--vp-c-brand-1);
+  outline-offset: 1px;
+}
+
+.VPNavBar .VPNavBarSearch .DocSearch-Button .DocSearch-Search-Icon,
+.VPNavBar .VPNavBarSearch .DocSearch-Button .DocSearch-Button-Placeholder {
+  color: var(--vp-c-text-2);
+}
+
+.VPNavBar .VPNavBarSearch .DocSearch-Button .DocSearch-Button-Placeholder {
+  font-weight: 400;
+}
+
+@media (min-width: 768px) {
+  .VPNavBar .VPNavBarSearch .DocSearch.DocSearch-Button {
+    width: 240px;
+    height: 36px;
+    padding: 0 8px 0 12px;
+  }
+
+  /* One chip for ⌘K, not two half-boxes. */
+  .VPNavBar .VPNavBarSearch .DocSearch-Button .DocSearch-Button-Keys {
+    margin-left: auto;
+    padding: 0 6px;
+    border: 1px solid var(--vp-c-divider);
+    border-radius: 5px;
+    background-color: var(--vp-c-bg);
+  }
+
+  .VPNavBar .VPNavBarSearch .DocSearch-Button .DocSearch-Button-Key,
+  .VPNavBar .VPNavBarSearch .DocSearch-Button .DocSearch-Button-Key + .DocSearch-Button-Key,
+  .VPNavBar .VPNavBarSearch .DocSearch-Button:hover .DocSearch-Button-Keys > * {
+    margin: 0;
+    padding: 0;
+    border: 0;
+    border-radius: 0;
+    background: transparent;
+    color: var(--vp-c-text-2);
+    height: 20px;
+    line-height: 20px;
+    font-size: 11px;
+  }
+
+  .VPNavBar .VPNavBarSearch .DocSearch-Button .DocSearch-Button-Key:first-child:after {
+    font-size: 11px;
+  }
+
+  .VPNavBar .VPNavBarSearch .DocSearch-Button .DocSearch-Button-Key + .DocSearch-Button-Key {
+    margin-left: 2px;
+  }
+}
+
+@media (min-width: 768px) and (max-width: 1279px) {
+  .VPNavBar .VPNavBarSearch .DocSearch.DocSearch-Button {
+    width: 180px;
+  }
+}
+
+/*
  * Inside Valu Social the platform owns the theme (it is pushed in, see
  * config.mts), so the docs' own appearance switch is hidden there — a second
  * switch could only disagree with the platform's.

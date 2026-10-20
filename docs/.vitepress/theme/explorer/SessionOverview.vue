@@ -140,62 +140,9 @@
               <dd>{{ networkInfo.subscribed ? 'Subscribed' : 'Not subscribed' }}</dd>
             </template>
           </dl>
-          <template v-if="settings.length">
-            <div class="vx-subhead">Settings</div>
-            <div class="vx-flags">
-              <span v-for="s in settings" :key="s.key" class="vx-flag" :class="{on: s.on}" :title="s.key">
-                <span class="vx-flag-mark" aria-hidden="true">{{ s.on ? '✓' : '–' }}</span>{{ s.label }}
-              </span>
-            </div>
-          </template>
-          <p v-else-if="calls.networkInfo.status === 'loading'" class="vx-muted">Loading the network's settings…</p>
-          <p v-else-if="calls.networkInfo.status === 'error'" class="vx-error-text">{{ calls.networkInfo.error }}</p>
         </PanelState>
       </section>
 
-      <!-- ── roles ─────────────────────────────────────────────────────── -->
-      <section class="vx-panel wide" aria-labelledby="vx-roles">
-        <header class="vx-panel-head">
-          <h2 id="vx-roles" class="vx-panel-title">Roles</h2>
-          <span v-if="roleGroups.length" class="vx-muted">
-            {{ roleGroups.length }} {{ roleGroups.length === 1 ? 'role' : 'roles' }} · {{ grantCount }} {{ grantCount === 1 ? 'grant' : 'grants' }}
-          </span>
-        </header>
-
-        <PanelState :slot-state="calls.user" :connected="connected">
-          <p v-if="!roleGroups.length" class="vx-muted">No roles — you act with the rights every member has.</p>
-          <ul v-else class="vx-roles">
-            <li v-for="g in roleGroups" :key="g.key" class="vx-role">
-              <div class="vx-role-head">
-                <span class="vx-role-name">{{ g.name }}</span>
-                <code class="vx-role-id">{{ g.id }}</code>
-                <span v-if="g.isBuildIn" class="vx-badge gray" title="System role, cannot be overridden">built-in</span>
-                <span class="vx-role-target">
-                  <template v-if="g.targets.length === 1">
-                    on {{ g.targets[0].type }}<template v-if="g.targets[0].id"> <code>{{ g.targets[0].id }}</code></template>
-                  </template>
-                  <button
-                    v-else
-                    type="button"
-                    class="vx-link-button"
-                    :aria-expanded="openRole === g.key"
-                    @click="openRole = openRole === g.key ? '' : g.key"
-                  >on {{ g.summary }}</button>
-                </span>
-              </div>
-              <div v-if="g.permissions.length" class="vx-options">
-                <code v-for="p in g.permissions" :key="p">{{ p }}</code>
-              </div>
-              <ul v-if="openRole === g.key" class="vx-role-targets">
-                <li v-for="t in g.targets" :key="`${t.type}:${t.id}`">
-                  <span class="vx-muted">{{ t.type }}</span> <code>{{ t.id || '—' }}</code>
-                </li>
-              </ul>
-            </li>
-          </ul>
-
-        </PanelState>
-      </section>
     </div>
   </div>
 </template>
@@ -303,39 +250,7 @@ const formatTime = seconds => new Date(seconds * 1000).toLocaleString(undefined,
   dateStyle: 'medium', timeStyle: 'medium',
 });
 
-// ── roles ───────────────────────────────────────────────────────────────
-
-// userRoles holds one entry per GRANT: an "Application Admin" on each of 84
-// applications is 84 entries of the same role. Shown once per role, with the
-// targets it is granted on folded behind a count.
-const plural = (n, type) => `${n} ${type}${n === 1 ? '' : 's'}`;
-
-const roleGroups = computed(() => {
-  const groups = new Map();
-  for (const r of roles.value) {
-    const key = r.id || r.roleName || '?';
-    let g = groups.get(key);
-    if (!g) {
-      g = {key, id: r.id ?? '', name: r.roleName || r.id || 'Unnamed role', isBuildIn: Boolean(r.isBuildIn), permissions: new Set(), targets: new Map()};
-      groups.set(key, g);
-    }
-    for (const p of r.permissions ?? []) g.permissions.add(p);
-    const type = r.targetType || 'platform';
-    g.targets.set(`${type}:${r.targetId ?? ''}`, {type, id: r.targetId ?? ''});
-  }
-  return [...groups.values()]
-    .map(g => {
-      const targets = [...g.targets.values()];
-      const byType = new Map();
-      for (const t of targets) byType.set(t.type, (byType.get(t.type) ?? 0) + 1);
-      const summary = [...byType].map(([type, n]) => plural(n, type)).join(', ');
-      return {...g, permissions: [...g.permissions], targets, summary};
-    })
-    .sort((a, b) => a.name.localeCompare(b.name));
-});
-
-const grantCount = computed(() => roleGroups.value.reduce((n, g) => n + g.targets.length, 0));
-const openRole = ref('');
+// ── badges ──────────────────────────────────────────────────────────────
 
 const badges = computed(() => calls.badges.data?.badges ?? []);
 // A Roomful ack carries `error` on success too; only `error.status` is a failure.
@@ -350,24 +265,6 @@ const badgesError = computed(() => {
 const networkId = computed(() => calls.network.data?.networkId || calls.network.data?.id || '');
 const networkInfo = computed(() => calls.networkInfo.data);
 const networkName = computed(() => calls.network.data?.name || networkInfo.value?.network?.fullName || 'Unnamed network');
-
-const SETTINGS = [
-  ['allowAnonymous', 'Anonymous access'],
-  ['onlyVerifiedAccounts', 'Verified accounts only'],
-  ['enablePayments', 'Payments'],
-  ['enableTokenomics', 'Tokenomics'],
-  ['allUsersAreConnected', 'Everyone connected'],
-  ['disableRoomCreation', 'Room creation off'],
-  ['hideTextchat', 'Text chat hidden'],
-  ['hideVideochat', 'Video chat hidden'],
-  ['hasAnalytics', 'Analytics'],
-  ['hasExpo', 'Expo'],
-];
-const settings = computed(() => {
-  const defaults = networkInfo.value?.networkDefaults;
-  if (!defaults) return [];
-  return SETTINGS.filter(([key]) => key in defaults).map(([key, label]) => ({key, label, on: Boolean(defaults[key])}));
-});
 
 // ── small pieces ────────────────────────────────────────────────────────
 
