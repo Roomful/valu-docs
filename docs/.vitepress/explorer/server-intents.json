@@ -852,7 +852,8 @@
                 "description": "how many to return: 100 by default, up to 500"
               }
             ]
-          }
+          },
+          "appOnly": true
         },
         {
           "action": "list-my-products",
@@ -1013,7 +1014,8 @@
                 "description": "true lists only what was bought in YOUR app"
               }
             ]
-          }
+          },
+          "appOnly": true
         },
         {
           "action": "get-purchase-contents",
@@ -1031,7 +1033,8 @@
               }
             ],
             "optional": []
-          }
+          },
+          "appOnly": true
         },
         {
           "action": "preview-purchase",
@@ -1055,7 +1058,8 @@
                 "description": "the file of that purchase to open on"
               }
             ]
-          }
+          },
+          "appOnly": true
         },
         {
           "action": "mark-purchase-file-seen",
@@ -1096,7 +1100,8 @@
                 "description": "a product the user owns; omit for everything they bought"
               }
             ]
-          }
+          },
+          "appOnly": true
         },
         {
           "action": "open-cart",
@@ -1192,7 +1197,8 @@
                 "description": "true moves it out of the cart into saved for later; false brings it back"
               }
             ]
-          }
+          },
+          "appOnly": true
         },
         {
           "action": "remove-from-cart",
@@ -1210,7 +1216,8 @@
               }
             ],
             "optional": []
-          }
+          },
+          "appOnly": true
         },
         {
           "action": "clear-cart",
@@ -1222,7 +1229,8 @@
           "params": {
             "required": [],
             "optional": []
-          }
+          },
+          "appOnly": true
         },
         {
           "action": "preview-promo",
@@ -1240,7 +1248,8 @@
               }
             ],
             "optional": []
-          }
+          },
+          "appOnly": true
         },
         {
           "action": "get-display",
@@ -1252,7 +1261,8 @@
           "params": {
             "required": [],
             "optional": []
-          }
+          },
+          "appOnly": true
         },
         {
           "action": "checkout",
@@ -1275,7 +1285,8 @@
                 "description": "false docks My Cart instead of drawing its cart over your app (default true)"
               }
             ]
-          }
+          },
+          "appOnly": true
         },
         {
           "action": "open-order",
@@ -1299,7 +1310,8 @@
                 "description": "true draws the surface over YOUR app's own pane instead of docking the application, so the page the user was on stays visible and usable behind it. Where your app is not on screen it falls back to a window over the whole page."
               }
             ]
-          }
+          },
+          "appOnly": true
         },
         {
           "action": "list-orders",
@@ -1349,7 +1361,8 @@
                 "description": "true keeps only orders with at least one item bought in YOUR app"
               }
             ]
-          }
+          },
+          "appOnly": true
         },
         {
           "action": "get-order",
@@ -1367,7 +1380,8 @@
               }
             ],
             "optional": []
-          }
+          },
+          "appOnly": true
         },
         {
           "action": "rate-product",
@@ -1396,7 +1410,8 @@
                 "description": "the review to propose, up to 4000 characters"
               }
             ]
-          }
+          },
+          "appOnly": true
         },
         {
           "action": "get-my-store",
@@ -1408,7 +1423,8 @@
           "params": {
             "required": [],
             "optional": []
-          }
+          },
+          "appOnly": true
         },
         {
           "action": "create-store",
@@ -1431,7 +1447,8 @@
                 "description": "what they sell, at most 2000 characters"
               }
             ]
-          }
+          },
+          "appOnly": true
         },
         {
           "action": "set-donation-tiers",
@@ -1449,7 +1466,8 @@
               }
             ],
             "optional": []
-          }
+          },
+          "appOnly": true
         },
         {
           "action": "list-network-access",
@@ -1461,7 +1479,8 @@
           "params": {
             "required": [],
             "optional": []
-          }
+          },
+          "appOnly": true
         },
         {
           "action": "request-network-access",
@@ -1485,7 +1504,8 @@
                 "description": "a word to the admins, at most 2000 characters"
               }
             ]
-          }
+          },
+          "appOnly": true
         },
         {
           "action": "quote-bundle",
@@ -1524,7 +1544,8 @@
                 "description": "the seller's own price on top of the parts, zero or more"
               }
             ]
-          }
+          },
+          "appOnly": true
         },
         {
           "action": "publish-product",
@@ -1548,7 +1569,8 @@
                 "description": "networks to start ticked in the dialog; the user decides"
               }
             ]
-          }
+          },
+          "appOnly": true
         },
         {
           "action": "unlist-product",
@@ -1566,7 +1588,8 @@
               }
             ],
             "optional": []
-          }
+          },
+          "appOnly": true
         },
         {
           "action": "archive-product",
@@ -1584,7 +1607,8 @@
               }
             ],
             "optional": []
-          }
+          },
+          "appOnly": true
         },
         {
           "action": "delete-product",
@@ -1602,7 +1626,8 @@
               }
             ],
             "optional": []
-          }
+          },
+          "appOnly": true
         },
         {
           "action": "list-promotions",
@@ -1614,7 +1639,8 @@
           "params": {
             "required": [],
             "optional": []
-          }
+          },
+          "appOnly": true
         },
         {
           "action": "set-sale",
@@ -1663,7 +1689,8 @@
                 "description": "ISO date it ends; omit to run until end-sale"
               }
             ]
-          }
+          },
+          "appOnly": true
         },
         {
           "action": "end-sale",
@@ -1681,7 +1708,8 @@
               }
             ],
             "optional": []
-          }
+          },
+          "appOnly": true
         },
         {
           "action": "set-volume-tier",
@@ -1710,7 +1738,8 @@
                 "description": "the discount to edit, from list-promotions"
               }
             ]
-          }
+          },
+          "appOnly": true
         },
         {
           "action": "remove-volume-tier",
@@ -1728,7 +1757,8 @@
               }
             ],
             "optional": []
-          }
+          },
+          "appOnly": true
         },
         {
           "action": "create-discount-code",
@@ -1807,7 +1837,8 @@
                 "description": "ISO date it ends; omit for no end"
               }
             ]
-          }
+          },
+          "appOnly": true
         },
         {
           "action": "update-discount-code",
@@ -1856,7 +1887,8 @@
                 "description": "how many times one buyer can use it, at least 1"
               }
             ]
-          }
+          },
+          "appOnly": true
         },
         {
           "action": "delete-discount-code",
@@ -1874,7 +1906,8 @@
               }
             ],
             "optional": []
-          }
+          },
+          "appOnly": true
         },
         {
           "action": "get-analytics",
@@ -1902,7 +1935,8 @@
                 "description": "true reads the test orders' figures instead of the real ones (never mixed)"
               }
             ]
-          }
+          },
+          "appOnly": true
         },
         {
           "action": "subscribe-events",
@@ -1920,7 +1954,8 @@
               }
             ],
             "optional": []
-          }
+          },
+          "appOnly": true
         },
         {
           "action": "unsubscribe-events",
@@ -1938,7 +1973,8 @@
                 "description": "the event names to stop receiving (see subscribe-events); omit to stop them all"
               }
             ]
-          }
+          },
+          "appOnly": true
         }
       ]
     },
@@ -3102,7 +3138,8 @@
                 "description": "Network the room belongs to. Defaults to the current network."
               }
             ]
-          }
+          },
+          "appOnly": true
         },
         {
           "action": "create-room-point",
@@ -3157,7 +3194,8 @@
                 "description": "Network the room belongs to. Defaults to the current network."
               }
             ]
-          }
+          },
+          "appOnly": true
         },
         {
           "action": "edit-room-point",
@@ -3217,7 +3255,8 @@
                 "description": "Network the room belongs to. Defaults to the current network."
               }
             ]
-          }
+          },
+          "appOnly": true
         },
         {
           "action": "save-room-point",
@@ -3240,7 +3279,8 @@
               }
             ],
             "optional": []
-          }
+          },
+          "appOnly": true
         },
         {
           "action": "delete-room-point",
@@ -3263,7 +3303,8 @@
               }
             ],
             "optional": []
-          }
+          },
+          "appOnly": true
         }
       ]
     },
