@@ -1894,6 +1894,14 @@ Lists the current user's applications in the Developer Portal. Returns each appl
 
 *No parameters.*
 
+#### `list-application-apis`
+
+Lists every application published in the current network that declares a REST API in its manifest. Returns {success, networkId, apis}; each api carries applicationId, address (the gateway path and token audience), title, description, gatewayUrl (where callers send requests, through the Valu Guru gateway), documentUrl (its OpenAPI document, read through the gateway), scopes, callers, availability, userContext, docsUrl and routable. Read-only: it describes the APIs, it calls none of them.
+
+**Availability:** AI, Developer
+
+*No parameters.*
+
 ---
 
 ### Events Service (`Events`)
