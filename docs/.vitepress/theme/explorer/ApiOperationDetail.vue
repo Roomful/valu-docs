@@ -11,6 +11,7 @@
           <code>{{ op.path }}</code>
         </div>
         <span class="vx-badges">
+          <span v-if="stage" class="vx-badge amber">{{ stage }}</span>
           <span v-if="op.deprecated" class="vx-badge red">Deprecated</span>
           <span v-if="!safe" class="vx-badge amber" title="Changes data — Run asks first">Writes</span>
         </span>
@@ -101,11 +102,12 @@
           <button
             type="button"
             class="vx-button brand"
-            :disabled="!connected || !!bodyError || state.running || !api.gatewayUrl"
+            :disabled="!connected || !!bodyError || state.running || !api.gatewayUrl || api.canSend === false"
             @click="run(false)"
           >{{ state.running ? 'Sending…' : 'Send' }}</button>
           <button v-if="!state.running" type="button" class="vx-link-button" @click="reset">Reset</button>
         </div>
+        <p v-if="api.sendNote" class="vx-muted pg-send-note">{{ api.sendNote }}</p>
       </section>
 
       <!-- ── response ──────────────────────────────────────────────────── -->
@@ -191,6 +193,8 @@ const props = defineProps({
   op: {type: Object, required: true}, // an openapi.mjs operation
   state: {type: Object, required: true}, // per-operation, owned by the playground
   networkId: {type: String, default: ''},
+  /** "In development · v1.1.0 · draft" for one of the user's own apps; '' otherwise. */
+  stage: {type: String, default: ''},
 });
 
 const {connected} = useValuBridge();

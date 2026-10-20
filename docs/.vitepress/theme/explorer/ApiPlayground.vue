@@ -5,7 +5,7 @@
     <p v-if="connected && (list.status === 'loading' || list.status === 'idle')" class="vx-muted pg-page-note">Loading the applications that serve an API…</p>
     <p v-else-if="list.status === 'error'" class="vx-error-text pg-page-note">{{ list.error }}</p>
     <p v-else-if="list.status === 'ok' && !list.apis.length" class="vx-muted pg-page-note">
-      No application in this network serves a REST API yet.
+      No application in this network serves a REST API yet, and none of yours declares one.
     </p>
 
     <div v-if="list.apis.length" class="pg-body">
@@ -34,10 +34,11 @@
         <!-- ── one application's API ─────────────────────────────────── -->
         <article v-if="selected?.kind === 'overview'" class="pg-detail">
           <header class="pg-head">
-            <div class="pg-crumb"><span>REST API</span></div>
+            <div class="pg-crumb"><span>{{ selected.api.source === 'development' ? 'REST API · in development' : 'REST API' }}</span></div>
             <div class="pg-title-row">
               <div class="pg-title pg-app-title" role="heading" aria-level="2">{{ selected.api.title }}</div>
               <span class="vx-badges">
+                <span v-if="selected.api.source === 'development'" class="vx-badge amber" :title="stageTitle(selected.api)">{{ stageLabel(selected.api) }}</span>
                 <span v-if="!selected.api.routable" class="vx-badge red" title="It declares an API but no address to reach it">Not routable</span>
                 <span v-if="selected.api.availability?.includes('ai')" class="vx-badge brand" title="Offered to AI agents">AI</span>
               </span>
@@ -48,6 +49,10 @@
                v-html="richText(docOf(selected.api).description || selected.api.description)"></div>
 
           <dl class="vx-facts pg-facts">
+            <template v-if="selected.api.source === 'development'">
+              <dt>Version</dt>
+              <dd>{{ selected.api.version ? `v${selected.api.version}` : 'not tagged' }} — {{ selected.api.live ? 'released' : 'not released yet' }}</dd>
+            </template>
             <dt>Address</dt>
             <dd><code>{{ selected.api.address }}</code></dd>
             <template v-if="selected.api.gatewayUrl">
@@ -58,7 +63,7 @@
               <dt>Document</dt>
               <dd>
                 {{ docOf(selected.api).title }}<template v-if="docOf(selected.api).version"> · v{{ docOf(selected.api).version }}</template>
-                · <a :href="selected.api.documentUrl" target="_blank" rel="noreferrer">openapi.json</a>
+                · <a :href="selected.api.docUrl" target="_blank" rel="noreferrer">openapi.json</a>
               </dd>
             </template>
             <template v-if="selected.api.scopes?.length">
@@ -84,6 +89,7 @@
               <dd>{{ selected.api.contact }}</dd>
             </template>
           </dl>
+          <p v-if="selected.api.sendNote" class="vx-muted">{{ selected.api.sendNote }}</p>
 
           <section class="pg-pane pg-endpoints" aria-label="Endpoints">
             <header class="pg-pane-head">
@@ -113,6 +119,7 @@
           :op="selected.op"
           :state="stateFor(selectedKey, selected.op)"
           :network-id="list.networkId"
+          :stage="selected.api.source === 'development' ? stageLabel(selected.api) : ''"
         />
       </div>
     </div>
@@ -136,26 +143,69 @@ const USER_CONTEXT = {
   none: 'Calls act for no user',
 };
 const scopeName = s => (typeof s === 'string' ? s : s?.name ?? '');
+const slug = s => String(s).toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
 
-// ── the list, then each application's document ───────────────────────────
+const SECTION = {network: 'In this network', development: 'In development'};
+
+const stageLabel = api => `In development${api.version ? ` · v${api.version}` : ''}${api.live ? '' : ' · draft'}`;
+const stageTitle = api => (api.live
+  ? 'One of your applications: this is its released version'
+  : 'One of your applications: this version is not released yet');
+
+// ── the lists, then each application's document ──────────────────────────
+
+/**
+ * One entry of the page. Two sources:
+ *  - `network`: published in this network (Developer.list-application-apis).
+ *    Read and called through the gateway.
+ *  - `development`: an app this user develops or tests, as its newest
+ *    API-bearing version (Developer.list-my-application-apis). The gateway
+ *    routes RELEASED versions — and, for an app Valu Guru serves for a
+ *    workspace, its unreleased declaration too, from a trusted host such as
+ *    this one. A hand-authored draft is neither: its document is read from
+ *    its own address, as the Portal's REST API tab does, and it cannot be
+ *    sent until it is released.
+ */
+function entry(api, source) {
+  const throughGateway = source === 'network' || Boolean(api.workspace) || Boolean(api.live);
+  return {
+    ...api,
+    source,
+    key: `${source === 'development' ? 'dev-' : ''}${slug(api.address)}`,
+    docUrl: throughGateway ? api.documentUrl : (api.specUrl || api.documentUrl),
+    viaGateway: throughGateway,
+    canSend: throughGateway,
+    sendNote: throughGateway ? ''
+      : `The gateway routes released versions only, so this draft cannot be sent from here — release ${api.version ? `v${api.version}` : 'it'} to call it.`,
+  };
+}
 
 const list = reactive({status: 'idle', error: '', networkId: '', apis: []});
 const docs = reactive({});
 const emptyDoc = {status: 'idle', ops: [], error: '', title: '', version: '', description: ''};
-const docOf = api => docs[api.address] ?? emptyDoc;
+const docOf = api => docs[api.key] ?? emptyDoc;
 
 async function loadDoc(api) {
-  docs[api.address] = {...emptyDoc, status: 'loading'};
+  docs[api.key] = {...emptyDoc, status: 'loading'};
   try {
-    if (!api.documentUrl) throw new Error('No gateway address to read its OpenAPI document from.');
-    const token = await identityToken().catch(() => '');
-    const res = await fetch(api.documentUrl, {headers: token ? {Authorization: `Bearer ${token}`} : {}});
+    if (!api.docUrl) throw new Error('It names no OpenAPI document to read.');
+    // The identity token goes only to our own gateway; an app's own host gets
+    // a plain request — its document is public by definition.
+    const token = api.docUrl === api.documentUrl ? await identityToken().catch(() => '') : '';
+    let res;
+    try {
+      res = await fetch(api.docUrl, {headers: token ? {Authorization: `Bearer ${token}`} : {}});
+    } catch {
+      throw new Error(api.viaGateway
+        ? 'The OpenAPI document could not be reached.'
+        : 'The app\'s own host did not let this page read its OpenAPI document (a browser cross-origin rule).');
+    }
     const text = await res.text();
     let body = null;
     try { body = JSON.parse(text); } catch { /* reported below */ }
     if (!res.ok) throw new Error(`The OpenAPI document could not be read: ${body?.error?.message || `${res.status} ${res.statusText}`}`);
     if (!body?.paths) throw new Error('The OpenAPI document has no paths.');
-    docs[api.address] = {
+    docs[api.key] = {
       status: 'ok',
       ops: operationsOf(body),
       error: '',
@@ -164,24 +214,37 @@ async function loadDoc(api) {
       description: body.info?.description ?? '',
     };
   } catch (e) {
-    docs[api.address] = {...emptyDoc, status: 'error', error: e?.message ?? String(e)};
+    docs[api.key] = {...emptyDoc, status: 'error', error: e?.message ?? String(e)};
   }
 }
 
 async function load() {
   list.status = 'loading';
   try {
-    const reply = await settle(callService('Developer', 'list-application-apis', {}).promise);
+    const [published, mine] = await Promise.all([
+      settle(callService('Developer', 'list-application-apis', {}).promise),
+      // Newer than the published list: an older build answers nothing, which
+      // only means there is no development section yet.
+      settle(callService('Developer', 'list-my-application-apis', {}).promise).catch(() => undefined),
+    ]);
     // An older Valu Social build has no such intent and answers nothing at all.
-    if (reply === undefined || reply === null) {
+    if (published === undefined || published === null) {
       throw new Error('This Valu Social build cannot list application APIs yet (Developer.list-application-apis).');
     }
-    if (reply.success === false) throw new Error(reply.error || 'Valu Social could not list the APIs.');
-    list.apis = (reply.apis ?? []).filter(api => api?.address);
-    list.networkId = reply.networkId ?? '';
+    if (published.success === false) throw new Error(published.error || 'Valu Social could not list the APIs.');
+
+    const network = (published.apis ?? []).filter(api => api?.address).map(api => entry(api, 'network'));
+    // A released app already listed above is the same API: show it once.
+    const listed = new Set(network.map(api => api.address));
+    const development = (mine?.success === false ? [] : mine?.apis ?? [])
+      .filter(api => api?.address && !(api.live && listed.has(api.address)))
+      .map(api => entry(api, 'development'));
+
+    list.apis = [...network, ...development];
+    list.networkId = published.networkId ?? '';
     list.status = 'ok';
     list.apis.forEach(loadDoc);
-    if (!selectFromHash() && list.apis.length) selectKey(slug(list.apis[0].address));
+    if (!selectFromHash() && list.apis.length) selectKey(list.apis[0].key);
   } catch (e) {
     list.status = 'error';
     list.error = e?.message ?? String(e);
@@ -204,8 +267,7 @@ const FILTERS = [
 const allOps = computed(() => list.apis.flatMap(api => docOf(api).ops));
 const filters = computed(() => FILTERS.map(f => ({...f, count: allOps.value.filter(f.test).length})));
 
-const slug = s => String(s).toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
-const opKey = (api, op) => `${slug(api.address)}--${op.id}`;
+const opKey = (api, op) => `${api.key}--${op.id}`;
 
 const navGroups = computed(() => {
   const test = FILTERS.find(f => f.id === filter.value)?.test ?? (() => true);
@@ -217,13 +279,14 @@ const navGroups = computed(() => {
     const apiMatches = matches(apiText, query.value);
     if (query.value.trim() && !apiMatches && !ops.length) return null;
     return {
-      id: api.address,
+      id: api.key,
       title: api.title,
+      section: SECTION[api.source],
       count: doc.status === 'ok' ? ops.length : doc.status === 'error' ? '–' : '…',
       note: doc.status === 'loading' ? 'Reading its OpenAPI document…' : doc.status === 'error' ? 'Its OpenAPI document could not be read.' : '',
       noteTone: doc.status === 'error' ? 'err' : '',
       items: [
-        {key: slug(api.address), label: 'Overview', plain: true},
+        {key: api.key, label: api.source === 'development' ? stageLabel(api).replace('In development · ', 'Overview · ') : 'Overview', plain: true},
         ...ops.map(o => ({key: opKey(api, o), label: o.path, method: o.method, title: o.summary})),
       ],
     };
@@ -244,7 +307,7 @@ const navEl = ref(null);
 
 const selected = computed(() => {
   for (const api of list.apis) {
-    if (slug(api.address) === selectedKey.value) return {kind: 'overview', api};
+    if (api.key === selectedKey.value) return {kind: 'overview', api};
     for (const op of docOf(api).ops) {
       if (opKey(api, op) === selectedKey.value) return {kind: 'op', api, op};
     }
@@ -258,10 +321,12 @@ const toggleLabel = computed(() => {
   return s.kind === 'op' ? `${s.api.title} · ${s.op.method} ${s.op.path}` : `${s.api.title} · Overview`;
 });
 
+const owner = key => list.apis.find(a => key === a.key || key.startsWith(`${a.key}--`));
+
 function selectKey(key) {
   selectedKey.value = key;
-  const api = list.apis.find(a => key === slug(a.address) || key.startsWith(`${slug(a.address)}--`));
-  if (api) openGroups.add(api.address);
+  const api = owner(key);
+  if (api) openGroups.add(api.key);
   navOpen.value = false;
   const url = new URL(window.location.href);
   url.hash = key;
@@ -273,8 +338,7 @@ function selectKey(key) {
 // key, and `selected` resolves once the operations arrive.
 function selectFromHash() {
   const hash = decodeURIComponent(window.location.hash.slice(1));
-  const api = hash && list.apis.find(a => hash === slug(a.address) || hash.startsWith(`${slug(a.address)}--`));
-  if (!api) return false;
+  if (!hash || !owner(hash)) return false;
   selectKey(hash);
   return true;
 }

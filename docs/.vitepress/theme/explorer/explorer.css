@@ -948,6 +948,23 @@ textarea.pg-input { resize: vertical; }
 
 .vp-doc .pg-page-note { margin: 16px 0 0; }
 
+/* "In this network" / "In development" in the navigator. */
+.pg-section-head {
+  margin: 12px 6px 4px;
+  color: var(--vp-c-text-2);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.pg-section-head:first-child { margin-top: 2px; }
+
+.vp-doc .pg-send-note {
+  margin: 0;
+  padding: 0 14px 12px;
+}
+
 /* Narrow: the navigator folds into a picker above the detail, and the panes
    stack. After the base rules on purpose — same specificity, order decides. */
 @container pg (max-width: 760px) {
