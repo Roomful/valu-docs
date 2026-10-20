@@ -48,6 +48,18 @@ export default defineConfigWithTheme({
               console.info('Valu API Ready, from: ' + applicationId);
               break;
             }
+            // The host pushes its light/dark scheme when the frame loads and on
+            // every switch (valusocial-web IframeComponentLoader). Painted here,
+            // before Vue mounts, so the first frame is already right; the theme's
+            // setup (theme/index.mjs) then hands it to VitePress's isDark.
+            case 'api:color-scheme': {
+              const scheme = message?.scheme;
+              if (scheme !== 'light' && scheme !== 'dark') break;
+              bridge.colorScheme = scheme;
+              document.documentElement.classList.toggle('dark', scheme === 'dark');
+              window.dispatchEvent(new CustomEvent('valu_color-scheme', {detail: scheme}));
+              break;
+            }
           }
         });
 

@@ -1,0 +1,28 @@
+/*
+ * Site-wide adjustments to the Carbon theme.
+ */
+
+/*
+ * The nav bar follows light and dark.
+ *
+ * Carbon paints the bar with `--vp-c-bg-dark` and its text with
+ * `--vp-c-text-dark` in BOTH modes, so the header stayed dark on the light
+ * theme. Only nav components read those two variables (VPNav, VPNavBar*,
+ * VPFlyout, VPSocialLink), so pointing them at the page colours in light mode
+ * changes the header and nothing else.
+ */
+:root:not(.dark) {
+  --vp-c-bg-dark: var(--vp-c-bg);
+  --vp-c-text-dark: var(--vp-c-text-1);
+}
+
+/*
+ * Inside Valu Social the platform owns the theme (it is pushed in, see
+ * config.mts), so the docs' own appearance switch is hidden there — a second
+ * switch could only disagree with the platform's.
+ */
+html.valu-framed .VPNavBarAppearance,
+html.valu-framed .VPNavScreenAppearance,
+html.valu-framed .VPNavBarExtra .item.appearance {
+  display: none !important;
+}
