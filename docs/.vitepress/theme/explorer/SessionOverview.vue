@@ -11,15 +11,22 @@
     </BridgeStatus>
 
     <div class="vx-session-grid">
-      <!-- ── who ───────────────────────────────────────────────────────── -->
+      <!-- ── who, and what the platform lets them do ───────────────────── -->
       <section class="vx-panel" aria-labelledby="vx-you">
         <header class="vx-panel-head">
           <h2 id="vx-you" class="vx-panel-title">Signed in as</h2>
         </header>
 
-        <PanelState :slot-state="calls.user" :connected="connected" idle="The user Valu Social signed in, as every application sees them.">
+        <PanelState :slot-state="calls.user" :connected="connected">
           <div class="vx-who">
-            <span class="vx-avatar" aria-hidden="true">{{ initials }}</span>
+            <img
+              v-if="avatarUrl && !avatarFailed"
+              class="vx-avatar"
+              :src="avatarUrl"
+              alt=""
+              @error="avatarFailed = true"
+            />
+            <span v-else class="vx-avatar" aria-hidden="true">{{ initials }}</span>
             <div class="vx-who-text">
               <div class="vx-who-name">{{ fullName || 'Unnamed user' }}</div>
               <div class="vx-who-id">
@@ -28,7 +35,8 @@
               </div>
             </div>
           </div>
-          <dl class="vx-facts">
+
+          <dl v-if="user.identityName || user.emailVerified !== undefined" class="vx-facts">
             <template v-if="user.identityName">
               <dt>Verus ID</dt>
               <dd><code>{{ user.identityName }}</code> · {{ custody }}</dd>
@@ -38,9 +46,13 @@
               <dd>{{ user.emailVerified ? 'Verified' : 'Not verified' }}</dd>
             </template>
           </dl>
-        </PanelState>
 
-        <PanelSource :calls="[{label: 'Users.current', href: '/explorer/service-intents#users--current'}]" :raw="calls.user.data" />
+          <div class="vx-flags vx-who-flags">
+            <span v-for="f in flags" :key="f.key" class="vx-flag" :class="{on: f.on}" :title="f.title">
+              <span class="vx-flag-mark" aria-hidden="true">{{ f.on ? '✓' : '–' }}</span>{{ f.label }}
+            </span>
+          </div>
+        </PanelState>
       </section>
 
       <!-- ── authorization ─────────────────────────────────────────────── -->
@@ -52,11 +64,7 @@
           </span>
         </header>
 
-        <PanelState :slot-state="calls.token" :connected="connected" idle="The identity token Valu Social issues to this application for you.">
-          <p class="vx-panel-lead">
-            Valu Social vouches for you to <code>{{ token.claims?.aud || applicationId || 'valu_docs' }}</code> with a signed
-            identity token. An application's backend verifies it instead of running a login of its own.
-          </p>
+        <PanelState :slot-state="calls.token" :connected="connected">
           <dl v-if="token.claims" class="vx-facts">
             <dt>Subject</dt>
             <dd>
@@ -86,52 +94,55 @@
             </template>
           </dl>
           <p v-else class="vx-error-text">The reply carried no token that could be read.</p>
-          <div class="vx-panel-actions">
-            <CopyButton v-if="token.raw" :text="token.raw" label="Copy token" button />
-            <button type="button" class="vx-button" :disabled="calls.token.status === 'loading'" @click="loadToken">Issue a new one</button>
-            <a class="vx-panel-link" href="/identity-token-validation">How a backend verifies it →</a>
-          </div>
+          <a class="vx-panel-link" href="/identity-token-validation">How a backend verifies it →</a>
         </PanelState>
-
-        <PanelSource
-          :calls="[{label: 'Application.get-identity-token', href: '/explorer/service-intents#application--get-identity-token'}]"
-          :raw="token.claims ? {header: token.header, claims: token.claims} : calls.token.data"
-        />
       </section>
 
-      <!-- ── rights ────────────────────────────────────────────────────── -->
-      <section class="vx-panel wide" aria-labelledby="vx-rights">
+      <!-- ── roles ─────────────────────────────────────────────────────── -->
+      <section class="vx-panel wide" aria-labelledby="vx-roles">
         <header class="vx-panel-head">
-          <h2 id="vx-rights" class="vx-panel-title">Rights</h2>
+          <h2 id="vx-roles" class="vx-panel-title">Roles</h2>
+          <span v-if="roleGroups.length" class="vx-muted">
+            {{ roleGroups.length }} {{ roleGroups.length === 1 ? 'role' : 'roles' }} · {{ grantCount }} {{ grantCount === 1 ? 'grant' : 'grants' }}
+          </span>
         </header>
 
-        <PanelState :slot-state="calls.user" :connected="connected" idle="Your platform flags, the roles you hold and the badges that grant access in this network.">
-          <div class="vx-flags">
-            <span v-for="f in flags" :key="f.key" class="vx-flag" :class="{on: f.on}" :title="f.title">
-              <span class="vx-flag-mark" aria-hidden="true">{{ f.on ? '✓' : '–' }}</span>{{ f.label }}
-            </span>
-          </div>
-
-          <div class="vx-subhead">Roles <span class="vx-count">{{ roles.length }}</span></div>
-          <p v-if="!roles.length" class="vx-muted">No roles — you act with the rights every member has.</p>
+        <PanelState :slot-state="calls.user" :connected="connected">
+          <p v-if="!roleGroups.length" class="vx-muted">No roles — you act with the rights every member has.</p>
           <ul v-else class="vx-roles">
-            <li v-for="r in roles" :key="`${r.id}:${r.targetType}:${r.targetId}`" class="vx-role">
+            <li v-for="g in roleGroups" :key="g.key" class="vx-role">
               <div class="vx-role-head">
-                <span class="vx-role-name">{{ r.roleName || r.id }}</span>
-                <code class="vx-role-id">{{ r.id }}</code>
-                <span v-if="r.isBuildIn" class="vx-badge gray" title="System role, cannot be overridden">built-in</span>
-                <span class="vx-role-target">on {{ r.targetType || 'platform' }}<template v-if="r.targetId"> <code>{{ r.targetId }}</code></template></span>
+                <span class="vx-role-name">{{ g.name }}</span>
+                <code class="vx-role-id">{{ g.id }}</code>
+                <span v-if="g.isBuildIn" class="vx-badge gray" title="System role, cannot be overridden">built-in</span>
+                <span class="vx-role-target">
+                  <template v-if="g.targets.length === 1">
+                    on {{ g.targets[0].type }}<template v-if="g.targets[0].id"> <code>{{ g.targets[0].id }}</code></template>
+                  </template>
+                  <button
+                    v-else
+                    type="button"
+                    class="vx-link-button"
+                    :aria-expanded="openRole === g.key"
+                    @click="openRole = openRole === g.key ? '' : g.key"
+                  >on {{ g.summary }}</button>
+                </span>
               </div>
-              <div v-if="r.permissions?.length" class="vx-options">
-                <code v-for="p in r.permissions" :key="p">{{ p }}</code>
+              <div v-if="g.permissions.length" class="vx-options">
+                <code v-for="p in g.permissions" :key="p">{{ p }}</code>
               </div>
+              <ul v-if="openRole === g.key" class="vx-role-targets">
+                <li v-for="t in g.targets" :key="`${t.type}:${t.id}`">
+                  <span class="vx-muted">{{ t.type }}</span> <code>{{ t.id || '—' }}</code>
+                </li>
+              </ul>
             </li>
           </ul>
 
           <div class="vx-subhead">Badges in this network <span v-if="calls.badges.status === 'ok'" class="vx-count">{{ badges.length }}</span></div>
           <p v-if="calls.badges.status === 'loading' || calls.badges.status === 'idle'" class="vx-muted">Loading…</p>
           <p v-else-if="badgesError" class="vx-error-text">{{ badgesError }}</p>
-          <p v-else-if="!badges.length" class="vx-muted">No badges. Badges grant rights through badge-based policies (CBAC).</p>
+          <p v-else-if="!badges.length" class="vx-muted">No badges.</p>
           <ul v-else class="vx-badge-list">
             <li v-for="b in badges" :key="b.badgeId" :title="b.badgeDescription">
               <strong>{{ b.badgeName }}</strong>
@@ -139,14 +150,6 @@
             </li>
           </ul>
         </PanelState>
-
-        <PanelSource
-          :calls="[
-            {label: 'Users.current', href: '/explorer/service-intents#users--current'},
-            {label: 'Profile.get-user-badges', href: '/explorer/service-intents#profile--get-user-badges'},
-          ]"
-          :raw="calls.user.data ? {permissions: user.permissions, userRoles: user.userRoles, badges: calls.badges.data} : null"
-        />
       </section>
 
       <!-- ── network ───────────────────────────────────────────────────── -->
@@ -155,7 +158,7 @@
           <h2 id="vx-network" class="vx-panel-title">Network</h2>
         </header>
 
-        <PanelState :slot-state="calls.network" :connected="connected" idle="The network this session runs in — every call above is scoped to it.">
+        <PanelState :slot-state="calls.network" :connected="connected">
           <div class="vx-who">
             <div class="vx-who-text">
               <div class="vx-who-name">{{ networkName }}</div>
@@ -190,14 +193,6 @@
           <p v-else-if="calls.networkInfo.status === 'loading'" class="vx-muted">Loading the network's settings…</p>
           <p v-else-if="calls.networkInfo.status === 'error'" class="vx-error-text">{{ calls.networkInfo.error }}</p>
         </PanelState>
-
-        <PanelSource
-          :calls="[
-            {label: 'Networks.get-current-network', href: '/explorer/service-intents#networks--get-current-network'},
-            {label: 'network.get', href: ''},
-          ]"
-          :raw="calls.network.data ? {current: calls.network.data, info: calls.networkInfo.data} : null"
-        />
       </section>
     </div>
   </div>
@@ -206,15 +201,15 @@
 <script setup>
 import {computed, defineComponent, h, onBeforeUnmount, onMounted, reactive, ref, watch} from 'vue';
 import BridgeStatus from './BridgeStatus.vue';
-import {copyText, prettyJson} from './format.mjs';
+import {copyText} from './format.mjs';
 import {callService, runApi, settle, useValuBridge} from './valuBridge.mjs';
 
-const {connected, applicationId} = useValuBridge();
+const {connected} = useValuBridge();
 
 // ── calls ───────────────────────────────────────────────────────────────
 
 const blank = () => ({status: 'idle', data: null, error: ''});
-const calls = reactive({user: blank(), token: blank(), network: blank(), networkInfo: blank(), badges: blank()});
+const calls = reactive({user: blank(), avatar: blank(), token: blank(), network: blank(), networkInfo: blank(), badges: blank()});
 
 /** Run one call into its slot; resolves to the value, or undefined when it failed. */
 async function track(key, promise) {
@@ -231,20 +226,23 @@ async function track(key, promise) {
 
 const busy = computed(() => Object.values(calls).some(c => c.status === 'loading'));
 
-const loadToken = () => track('token', settle(callService('Application', 'get-identity-token', {}).promise));
-
 async function load() {
   if (!connected.value) return;
   const userCall = track('user', settle(callService('Users', 'current', {}).promise));
   const networkCall = track('network', settle(callService('Networks', 'get-current-network', {}).promise));
-  loadToken();
+  track('token', settle(callService('Application', 'get-identity-token', {}).promise));
 
   const [me, net] = await Promise.all([userCall, networkCall]);
   const id = net?.networkId;
   if (id) track('networkInfo', settle(runApi('network', 'get', id)));
   else calls.networkInfo = blank();
-  if (me?.id) track('badges', settle(callService('Profile', 'get-user-badges', {userId: me.id, networkId: id || 'all'}).promise));
-  else calls.badges = {status: 'error', data: null, error: 'Needs the signed-in user.'};
+  if (me?.id) {
+    avatarFailed.value = false;
+    track('avatar', settle(runApi('users', 'getIcon', {userId: me.id, size: 128})));
+    track('badges', settle(callService('Profile', 'get-user-badges', {userId: me.id, networkId: id || 'all'}).promise));
+  } else {
+    calls.badges = {status: 'error', data: null, error: 'Needs the signed-in user.'};
+  }
 }
 
 watch(connected, isConnected => { if (isConnected) load(); }, {immediate: true});
@@ -257,8 +255,22 @@ const fullName = computed(() => user.value.fullName
 const initials = computed(() => (fullName.value || '?')
   .split(/\s+/).filter(Boolean).slice(0, 2).map(w => w[0].toUpperCase()).join(''));
 
+// users.getIcon resolves to a pre-signed URL, or '' when there is no picture.
+const avatarUrl = computed(() => (typeof calls.avatar.data === 'string' ? calls.avatar.data : ''));
+const avatarFailed = ref(false);
+
 const CUSTODY = {1: 'self-sovereign (wallet-owned)', 2: 'shared custody (ValuLight)'};
 const custody = computed(() => CUSTODY[user.value.identityCustody] ?? 'custody not set');
+
+const roles = computed(() => (Array.isArray(user.value.userRoles) ? user.value.userRoles : []));
+
+const flags = computed(() => [
+  {key: 'admin', label: 'Platform admin', on: Boolean(user.value.permissions?.admin), title: 'permissions.admin'},
+  {key: 'developer', label: 'Developer', on: Boolean(user.value.permissions?.developer), title: 'permissions.developer'},
+  ...[['superAdmin', 'Super admin'], ['networkAdmin', 'Network admin'], ['roomfulAdmin', 'Roomful admin']].map(([id, label]) => ({
+    key: id, label, on: roles.value.some(r => r.id === id), title: `role ${id}`,
+  })),
+]);
 
 // ── authorization ───────────────────────────────────────────────────────
 
@@ -273,13 +285,13 @@ const KNOWN_CLAIMS = new Set(['sub', 'aud', 'iss', 'iat', 'exp', 'nbf', 'jti']);
 const token = computed(() => {
   const data = calls.token.data;
   const raw = typeof data === 'string' ? data : data?.token;
-  if (typeof raw !== 'string' || raw.split('.').length !== 3) return {raw: '', header: null, claims: null, extraClaims: {}};
+  if (typeof raw !== 'string' || raw.split('.').length !== 3) return {header: null, claims: null, extraClaims: {}};
   try {
     const [header, claims] = raw.split('.').slice(0, 2).map(decodePart);
     const extraClaims = Object.fromEntries(Object.entries(claims).filter(([k]) => !KNOWN_CLAIMS.has(k)));
-    return {raw, header, claims, extraClaims};
+    return {header, claims, extraClaims};
   } catch {
-    return {raw, header: null, claims: null, extraClaims: {}};
+    return {header: null, claims: null, extraClaims: {}};
   }
 });
 
@@ -300,17 +312,39 @@ const formatTime = seconds => new Date(seconds * 1000).toLocaleString(undefined,
   dateStyle: 'medium', timeStyle: 'medium',
 });
 
-// ── rights ──────────────────────────────────────────────────────────────
+// ── roles ───────────────────────────────────────────────────────────────
 
-const flags = computed(() => [
-  {key: 'admin', label: 'Platform admin', on: Boolean(user.value.permissions?.admin), title: 'permissions.admin'},
-  {key: 'developer', label: 'Developer', on: Boolean(user.value.permissions?.developer), title: 'permissions.developer'},
-  ...[['superAdmin', 'Super admin'], ['networkAdmin', 'Network admin'], ['roomfulAdmin', 'Roomful admin']].map(([id, label]) => ({
-    key: id, label, on: roles.value.some(r => r.id === id), title: `role ${id}`,
-  })),
-]);
+// userRoles holds one entry per GRANT: an "Application Admin" on each of 84
+// applications is 84 entries of the same role. Shown once per role, with the
+// targets it is granted on folded behind a count.
+const plural = (n, type) => `${n} ${type}${n === 1 ? '' : 's'}`;
 
-const roles = computed(() => (Array.isArray(user.value.userRoles) ? user.value.userRoles : []));
+const roleGroups = computed(() => {
+  const groups = new Map();
+  for (const r of roles.value) {
+    const key = r.id || r.roleName || '?';
+    let g = groups.get(key);
+    if (!g) {
+      g = {key, id: r.id ?? '', name: r.roleName || r.id || 'Unnamed role', isBuildIn: Boolean(r.isBuildIn), permissions: new Set(), targets: new Map()};
+      groups.set(key, g);
+    }
+    for (const p of r.permissions ?? []) g.permissions.add(p);
+    const type = r.targetType || 'platform';
+    g.targets.set(`${type}:${r.targetId ?? ''}`, {type, id: r.targetId ?? ''});
+  }
+  return [...groups.values()]
+    .map(g => {
+      const targets = [...g.targets.values()];
+      const byType = new Map();
+      for (const t of targets) byType.set(t.type, (byType.get(t.type) ?? 0) + 1);
+      const summary = [...byType].map(([type, n]) => plural(n, type)).join(', ');
+      return {...g, permissions: [...g.permissions], targets, summary};
+    })
+    .sort((a, b) => a.name.localeCompare(b.name));
+});
+
+const grantCount = computed(() => roleGroups.value.reduce((n, g) => n + g.targets.length, 0));
+const openRole = ref('');
 
 const badges = computed(() => calls.badges.data?.badges ?? []);
 // A Roomful ack carries `error` on success too; only `error.status` is a failure.
@@ -348,39 +382,20 @@ const settings = computed(() => {
 
 /** Loading / error / not-connected states around a panel's body. */
 const PanelState = defineComponent({
-  props: {slotState: Object, connected: Boolean, idle: String},
+  props: {slotState: Object, connected: Boolean},
   setup(props, {slots}) {
     return () => {
       const s = props.slotState;
-      if (!props.connected) return h('p', {class: 'vx-muted vx-panel-idle'}, props.idle);
+      if (!props.connected) return h('p', {class: 'vx-muted vx-panel-idle'}, '—');
       if (s.status === 'error') return h('p', {class: 'vx-error-text'}, s.error);
-      if (s.status !== 'ok') return h('p', {class: 'vx-muted vx-panel-idle'}, 'Asking Valu Social…');
+      if (s.status !== 'ok') return h('p', {class: 'vx-muted vx-panel-idle'}, 'Loading…');
       return slots.default?.();
     };
   },
 });
 
-/** Which calls fed a panel, linked to their explorer cards, plus the raw replies. */
-const PanelSource = defineComponent({
-  props: {calls: Array, raw: null},
-  setup(props) {
-    const open = ref(false);
-    return () => h('footer', {class: 'vx-panel-source'}, [
-      h('span', {class: 'vx-muted'}, 'From '),
-      ...props.calls.flatMap((c, i) => [
-        i ? h('span', {class: 'vx-muted'}, ' · ') : null,
-        c.href ? h('a', {href: c.href}, h('code', c.label)) : h('code', c.label),
-      ]),
-      props.raw ? h('button', {
-        type: 'button', class: 'vx-link-button vx-panel-raw-toggle', onClick: () => { open.value = !open.value; },
-      }, open.value ? 'Hide reply' : 'Show reply') : null,
-      open.value && props.raw ? h('pre', {class: 'vx-panel-raw'}, h('code', prettyJson(props.raw))) : null,
-    ]);
-  },
-});
-
 const CopyButton = defineComponent({
-  props: {text: String, label: String, button: Boolean},
+  props: {text: String, label: String},
   setup(props) {
     const done = ref(false);
     const copy = async () => {
@@ -390,11 +405,11 @@ const CopyButton = defineComponent({
     };
     return () => h('button', {
       type: 'button',
-      class: props.button ? 'vx-button' : 'vx-link-button',
+      class: 'vx-link-button',
       title: props.label,
       'aria-label': props.label,
       onClick: copy,
-    }, done.value ? 'Copied' : (props.button ? props.label : 'Copy'));
+    }, done.value ? 'Copied' : 'Copy');
   },
 });
 </script>
