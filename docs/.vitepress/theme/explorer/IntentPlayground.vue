@@ -9,49 +9,20 @@
         <span class="pg-caret" aria-hidden="true"></span>
       </button>
 
-      <aside class="pg-nav" :aria-label="`${groupNoun} and their intents`">
-        <input
-          v-model="query"
-          type="search"
-          class="pg-search"
-          :placeholder="`Search ${total} intents`"
-          :aria-label="`Search ${kind} intents`"
-        />
-        <select v-model="filter" class="pg-filter" aria-label="Show">
-          <option v-for="f in filters" :key="f.id" :value="f.id">{{ f.label }} ({{ f.count }})</option>
-        </select>
-
-        <nav ref="treeEl" class="pg-tree">
-          <div v-for="g in visible" :key="g.id" class="pg-group" :class="{doc: g.docOnly}">
-            <button
-              type="button"
-              class="pg-group-head"
-              :aria-expanded="isOpen(g)"
-              @click="toggleGroup(g)"
-            >
-              <span class="pg-caret" aria-hidden="true"></span>
-              <span class="pg-group-title">{{ g.title }}</span>
-              <span class="vx-count">{{ g.shown.length }}</span>
-            </button>
-            <ul v-if="isOpen(g)" class="pg-items">
-              <li v-for="i in g.shown" :key="i.action">
-                <button
-                  type="button"
-                  class="pg-item"
-                  :class="{active: selectedKey === keyOf(g, i)}"
-                  :aria-current="selectedKey === keyOf(g, i) ? 'true' : undefined"
-                  @click="select(g, i)"
-                >
-                  <span class="pg-item-name">{{ i.action }}</span>
-                  <span v-if="i.server && !i.docOnly" class="pg-dot green" title="Runs on server"></span>
-                  <span v-if="!i.docOnly && changesData(i)" class="pg-dot amber" title="Changes data"></span>
-                </button>
-              </li>
-            </ul>
-          </div>
-          <p v-if="!visible.length" class="vx-muted pg-none">No intent matches “{{ query }}”.</p>
-        </nav>
-      </aside>
+      <PlaygroundNav
+        ref="navEl"
+        v-model:query="query"
+        v-model:filter="filter"
+        :label="`${groupNoun} and their intents`"
+        :placeholder="`Search ${total} intents`"
+        :groups="navGroups"
+        :filters="filters"
+        :selected-key="selectedKey"
+        :open-ids="openGroups"
+        :empty-text="`No intent matches “${query}”.`"
+        @toggle="toggleGroup"
+        @select="(g, i) => select(g.source, i.source)"
+      />
 
       <div class="pg-main">
         <IntentDetail
@@ -73,6 +44,7 @@
 import {computed, nextTick, onBeforeUnmount, onMounted, reactive, ref} from 'vue';
 import BridgeStatus from './BridgeStatus.vue';
 import IntentDetail from './IntentDetail.vue';
+import PlaygroundNav from './PlaygroundNav.vue';
 import {changesData, matches} from './format.mjs';
 
 const props = defineProps({
@@ -163,10 +135,26 @@ const visible = computed(() => {
     .filter(g => g.shown.length);
 });
 
+// What the navigator draws: each visible group, its intents as items.
+const navGroups = computed(() => visible.value.map(g => ({
+  id: g.id,
+  title: g.title,
+  muted: g.docOnly,
+  source: g,
+  items: g.shown.map(i => ({
+    key: keyOf(g, i),
+    label: i.action,
+    source: i,
+    dots: [
+      ...(i.server && !i.docOnly ? [{tone: 'green', title: 'Runs on server'}] : []),
+      ...(!i.docOnly && changesData(i) ? [{tone: 'amber', title: 'Changes data'}] : []),
+    ],
+  })),
+})));
+
 // ── groups open / closed ─────────────────────────────────────────────────
 
 const openGroups = reactive(new Set());
-const isOpen = g => Boolean(query.value.trim()) || openGroups.has(g.id);
 function toggleGroup(g) {
   if (openGroups.has(g.id)) openGroups.delete(g.id);
   else openGroups.add(g.id);
@@ -199,18 +187,8 @@ function select(group, intent) {
   nextTick(revealActive);
 }
 
-/** Scroll the navigator's own list to the selected intent; the page stays put. */
-function revealActive() {
-  const tree = treeEl.value;
-  const item = tree?.querySelector('.pg-item.active');
-  if (!tree || !item) return;
-  const top = item.offsetTop - tree.offsetTop;
-  if (top < tree.scrollTop || top + item.offsetHeight > tree.scrollTop + tree.clientHeight) {
-    tree.scrollTop = Math.max(0, top - tree.clientHeight / 3);
-  }
-}
-
-const treeEl = ref(null);
+const navEl = ref(null);
+const revealActive = () => navEl.value?.reveal();
 
 /** "Http.get" → that intent (a server-only tool's declared equivalent). */
 function selectByName(name) {

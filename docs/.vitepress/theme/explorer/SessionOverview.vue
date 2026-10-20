@@ -203,7 +203,7 @@
 <script setup>
 import {computed, defineComponent, h, onBeforeUnmount, onMounted, reactive, ref, watch} from 'vue';
 import BridgeStatus from './BridgeStatus.vue';
-import {copyText} from './format.mjs';
+import {copyText, decodeJwt} from './format.mjs';
 import {callService, runApi, settle, useValuBridge} from './valuBridge.mjs';
 
 const {connected} = useValuBridge();
@@ -276,25 +276,14 @@ const flags = computed(() => [
 
 // ── authorization ───────────────────────────────────────────────────────
 
-function decodePart(part) {
-  const b64 = part.replace(/-/g, '+').replace(/_/g, '/').padEnd(Math.ceil(part.length / 4) * 4, '=');
-  const bytes = Uint8Array.from(atob(b64), c => c.charCodeAt(0));
-  return JSON.parse(new TextDecoder().decode(bytes));
-}
-
 const KNOWN_CLAIMS = new Set(['sub', 'aud', 'iss', 'iat', 'exp', 'nbf', 'jti']);
 
 const token = computed(() => {
   const data = calls.token.data;
-  const raw = typeof data === 'string' ? data : data?.token;
-  if (typeof raw !== 'string' || raw.split('.').length !== 3) return {header: null, claims: null, extraClaims: {}};
-  try {
-    const [header, claims] = raw.split('.').slice(0, 2).map(decodePart);
-    const extraClaims = Object.fromEntries(Object.entries(claims).filter(([k]) => !KNOWN_CLAIMS.has(k)));
-    return {header, claims, extraClaims};
-  } catch {
-    return {header: null, claims: null, extraClaims: {}};
-  }
+  const decoded = decodeJwt(typeof data === 'string' ? data : data?.token);
+  if (!decoded) return {header: null, claims: null, extraClaims: {}};
+  const extraClaims = Object.fromEntries(Object.entries(decoded.claims).filter(([k]) => !KNOWN_CLAIMS.has(k)));
+  return {header: decoded.header, claims: decoded.claims, extraClaims};
 });
 
 const now = ref(Date.now());

@@ -16,6 +16,7 @@
 // A failure comes back as the reply's message `{error}`.
 
 import {onMounted, readonly, ref} from 'vue';
+import {decodeJwt} from './format.mjs';
 
 const framed = ref(false);
 const connected = ref(false);
@@ -131,6 +132,21 @@ export async function settle(promise) {
   const error = replyError(reply);
   if (error) throw new Error(error);
   return reply;
+}
+
+let tokenCache = null;
+
+/**
+ * The platform's identity token for the signed-in user, issued to this app
+ * (Application.get-identity-token), reused until 30 s before it expires.
+ */
+export async function identityToken() {
+  if (tokenCache && tokenCache.exp * 1000 - Date.now() > 30_000) return tokenCache.token;
+  const reply = await settle(callService('Application', 'get-identity-token', {}).promise);
+  const token = typeof reply === 'string' ? reply : reply?.token;
+  if (typeof token !== 'string') throw new Error('Valu Social returned no identity token.');
+  tokenCache = {token, exp: decodeJwt(token)?.claims?.exp ?? 0};
+  return token;
 }
 
 /** The reply is a failure when it is the bridge's `{error}` envelope and nothing else. */

@@ -105,6 +105,21 @@ export function matches(haystack, query) {
   return words.every(w => text.includes(w));
 }
 
+/** A JWT's header and claims, read without verifying anything. Null when it is not one. */
+export function decodeJwt(token) {
+  if (typeof token !== 'string' || token.split('.').length !== 3) return null;
+  const part = s => {
+    const b64 = s.replace(/-/g, '+').replace(/_/g, '/').padEnd(Math.ceil(s.length / 4) * 4, '=');
+    return JSON.parse(new TextDecoder().decode(Uint8Array.from(atob(b64), c => c.charCodeAt(0))));
+  };
+  try {
+    const [header, claims] = token.split('.');
+    return {header: part(header), claims: part(claims)};
+  } catch {
+    return null;
+  }
+}
+
 export async function copyText(text) {
   try {
     await navigator.clipboard.writeText(text);
