@@ -41,11 +41,6 @@ html:not(.valu-framed) .VPNavScreenMenuLink[href^="/explorer/"] {
   color: var(--vp-c-text-2);
 }
 
-.vx-status.ok {
-  background: var(--vp-c-success-soft, var(--vp-c-green-soft));
-  color: var(--vp-c-text-1);
-}
-
 .vx-status.wait {
   background: var(--vp-c-warning-soft);
   color: var(--vp-c-text-1);
@@ -59,7 +54,6 @@ html:not(.valu-framed) .VPNavScreenMenuLink[href^="/explorer/"] {
   background: var(--vp-c-text-3);
 }
 
-.vx-status.ok .vx-dot { background: var(--vp-c-success-1, var(--vp-c-green-1)); }
 .vx-status.wait .vx-dot { background: var(--vp-c-warning-1); animation: vx-pulse 1.2s ease-in-out infinite; }
 
 @keyframes vx-pulse {
@@ -485,14 +479,6 @@ button.vx-card-head:hover { background: var(--vp-c-default-soft); border-radius:
 
 /* ── session overview ───────────────────────────────────────────────────── */
 
-.vx-status-text { flex: 1; }
-
-.vx-status-action:disabled {
-  color: var(--vp-c-text-3);
-  cursor: default;
-  text-decoration: none;
-}
-
 .vx-session-grid {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -511,17 +497,6 @@ button.vx-card-head:hover { background: var(--vp-c-default-soft); border-radius:
 }
 
 .vx-panel.wide { grid-column: 1 / -1; }
-
-/* Two columns of stacked panels; the last one in each fills to the bottom so
-   both columns end on the same line. */
-.vx-session-col {
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
-  min-width: 0;
-}
-
-.vx-session-col > .vx-panel:last-child { flex: 1; }
 
 .vx-panel-head {
   display: flex;
