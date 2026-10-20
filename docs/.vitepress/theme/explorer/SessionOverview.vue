@@ -11,92 +11,159 @@
     </BridgeStatus>
 
     <div class="vx-session-grid">
-      <!-- ── who, and what the platform lets them do ───────────────────── -->
-      <section class="vx-panel" aria-labelledby="vx-you">
-        <header class="vx-panel-head">
-          <h2 id="vx-you" class="vx-panel-title">Signed in as</h2>
-        </header>
+      <div class="vx-session-col">
+        <!-- ── who, and what the platform lets them do ───────────────────── -->
+        <section class="vx-panel" aria-labelledby="vx-you">
+          <header class="vx-panel-head">
+            <h2 id="vx-you" class="vx-panel-title">Signed in as</h2>
+          </header>
 
-        <PanelState :slot-state="calls.user" :connected="connected">
-          <div class="vx-who">
-            <img
-              v-if="avatarUrl && !avatarFailed"
-              class="vx-avatar"
-              :src="avatarUrl"
-              alt=""
-              @error="avatarFailed = true"
-            />
-            <span v-else class="vx-avatar" aria-hidden="true">{{ initials }}</span>
-            <div class="vx-who-text">
-              <div class="vx-who-name">{{ fullName || 'Unnamed user' }}</div>
-              <div class="vx-who-id">
-                <code>{{ user.id }}</code>
-                <CopyButton :text="user.id" label="Copy user id" />
+          <PanelState :slot-state="calls.user" :connected="connected">
+            <div class="vx-who">
+              <img
+                v-if="avatarUrl && !avatarFailed"
+                class="vx-avatar"
+                :src="avatarUrl"
+                alt=""
+                @error="avatarFailed = true"
+              />
+              <span v-else class="vx-avatar" aria-hidden="true">{{ initials }}</span>
+              <div class="vx-who-text">
+                <div class="vx-who-name">{{ fullName || 'Unnamed user' }}</div>
+                <div class="vx-who-id">
+                  <code>{{ user.id }}</code>
+                  <CopyButton :text="user.id" label="Copy user id" />
+                </div>
               </div>
             </div>
-          </div>
 
-          <dl v-if="user.identityName || user.emailVerified !== undefined" class="vx-facts">
-            <template v-if="user.identityName">
-              <dt>Verus ID</dt>
-              <dd><code>{{ user.identityName }}</code> · {{ custody }}</dd>
-            </template>
-            <template v-if="user.emailVerified !== undefined">
-              <dt>Email</dt>
-              <dd>{{ user.emailVerified ? 'Verified' : 'Not verified' }}</dd>
-            </template>
-          </dl>
+            <dl v-if="user.identityName || user.emailVerified !== undefined" class="vx-facts">
+              <template v-if="user.identityName">
+                <dt>Verus ID</dt>
+                <dd><code>{{ user.identityName }}</code> · {{ custody }}</dd>
+              </template>
+              <template v-if="user.emailVerified !== undefined">
+                <dt>Email</dt>
+                <dd>{{ user.emailVerified ? 'Verified' : 'Not verified' }}</dd>
+              </template>
+            </dl>
 
-          <div class="vx-flags vx-who-flags">
-            <span v-for="f in flags" :key="f.key" class="vx-flag" :class="{on: f.on}" :title="f.title">
-              <span class="vx-flag-mark" aria-hidden="true">{{ f.on ? '✓' : '–' }}</span>{{ f.label }}
+            <div class="vx-flags vx-who-flags">
+              <span v-for="f in flags" :key="f.key" class="vx-flag" :class="{on: f.on}" :title="f.title">
+                <span class="vx-flag-mark" aria-hidden="true">{{ f.on ? '✓' : '–' }}</span>{{ f.label }}
+              </span>
+            </div>
+          </PanelState>
+        </section>
+
+        <!-- ── badges ────────────────────────────────────────────────────── -->
+        <section class="vx-panel" aria-labelledby="vx-badges">
+          <header class="vx-panel-head">
+            <h2 id="vx-badges" class="vx-panel-title">Badges in this network</h2>
+            <span v-if="calls.badges.status === 'ok' && badges.length" class="vx-muted">{{ badges.length }}</span>
+          </header>
+
+          <PanelState :slot-state="calls.user" :connected="connected">
+            <p v-if="calls.badges.status === 'loading' || calls.badges.status === 'idle'" class="vx-muted">Loading…</p>
+            <p v-else-if="badgesError" class="vx-error-text">{{ badgesError }}</p>
+            <p v-else-if="!badges.length" class="vx-muted">No badges.</p>
+            <ul v-else class="vx-badge-list">
+              <li v-for="b in badges" :key="b.badgeId" :title="b.badgeDescription">
+                <strong>{{ b.badgeName }}</strong>
+                <span v-if="b.badgeDescription" class="vx-muted"> — {{ b.badgeDescription }}</span>
+              </li>
+            </ul>
+          </PanelState>
+        </section>
+      </div>
+
+      <div class="vx-session-col">
+        <!-- ── authorization ─────────────────────────────────────────────── -->
+        <section class="vx-panel" aria-labelledby="vx-auth">
+          <header class="vx-panel-head">
+            <h2 id="vx-auth" class="vx-panel-title">Authorization</h2>
+            <span v-if="token.claims" class="vx-badge" :class="tokenLive ? 'green' : 'red'">
+              {{ tokenLive ? `valid · ${countdown}` : 'expired' }}
             </span>
-          </div>
-        </PanelState>
-      </section>
+          </header>
 
-      <!-- ── authorization ─────────────────────────────────────────────── -->
-      <section class="vx-panel" aria-labelledby="vx-auth">
-        <header class="vx-panel-head">
-          <h2 id="vx-auth" class="vx-panel-title">Authorization</h2>
-          <span v-if="token.claims" class="vx-badge" :class="tokenLive ? 'green' : 'red'">
-            {{ tokenLive ? `valid · ${countdown}` : 'expired' }}
-          </span>
-        </header>
+          <PanelState :slot-state="calls.token" :connected="connected">
+            <dl v-if="token.claims" class="vx-facts">
+              <dt>Subject</dt>
+              <dd>
+                <code>{{ token.claims.sub }}</code>
+                <span v-if="user.id && token.claims.sub === user.id" class="vx-muted"> — you</span>
+                <span v-else-if="user.id" class="vx-error-text"> — not the signed-in user</span>
+              </dd>
+              <dt>Audience</dt>
+              <dd><code>{{ token.claims.aud }}</code></dd>
+              <dt>Issuer</dt>
+              <dd><code>{{ token.claims.iss }}</code></dd>
+              <template v-if="token.claims.iat">
+                <dt>Issued</dt>
+                <dd>{{ formatTime(token.claims.iat) }}</dd>
+              </template>
+              <template v-if="token.claims.exp">
+                <dt>Expires</dt>
+                <dd>{{ formatTime(token.claims.exp) }}</dd>
+              </template>
+              <template v-if="token.header">
+                <dt>Signed</dt>
+                <dd><code>{{ token.header.alg }}</code><template v-if="token.header.kid"> · key <code>{{ token.header.kid }}</code></template></dd>
+              </template>
+              <template v-for="(value, key) in token.extraClaims" :key="key">
+                <dt>{{ key }}</dt>
+                <dd><code>{{ typeof value === 'string' ? value : JSON.stringify(value) }}</code></dd>
+              </template>
+            </dl>
+            <p v-else class="vx-error-text">The reply carried no token that could be read.</p>
+            <a class="vx-panel-link" href="/identity-token-validation">How a backend verifies it →</a>
+          </PanelState>
+        </section>
 
-        <PanelState :slot-state="calls.token" :connected="connected">
-          <dl v-if="token.claims" class="vx-facts">
-            <dt>Subject</dt>
-            <dd>
-              <code>{{ token.claims.sub }}</code>
-              <span v-if="user.id && token.claims.sub === user.id" class="vx-muted"> — you</span>
-              <span v-else-if="user.id" class="vx-error-text"> — not the signed-in user</span>
-            </dd>
-            <dt>Audience</dt>
-            <dd><code>{{ token.claims.aud }}</code></dd>
-            <dt>Issuer</dt>
-            <dd><code>{{ token.claims.iss }}</code></dd>
-            <template v-if="token.claims.iat">
-              <dt>Issued</dt>
-              <dd>{{ formatTime(token.claims.iat) }}</dd>
+        <!-- ── network ───────────────────────────────────────────────────── -->
+        <section class="vx-panel" aria-labelledby="vx-network">
+          <header class="vx-panel-head">
+            <h2 id="vx-network" class="vx-panel-title">Network</h2>
+          </header>
+
+          <PanelState :slot-state="calls.network" :connected="connected">
+            <div class="vx-who">
+              <div class="vx-who-text">
+                <div class="vx-who-name">{{ networkName }}</div>
+                <div class="vx-who-id">
+                  <code>{{ networkId }}</code>
+                  <CopyButton :text="networkId" label="Copy network id" />
+                </div>
+              </div>
+            </div>
+            <dl class="vx-facts">
+              <template v-if="networkInfo?.network?.type">
+                <dt>Type</dt>
+                <dd>{{ networkInfo.network.type }}</dd>
+              </template>
+              <template v-if="networkInfo?.network?.parentNetworkId">
+                <dt>Parent</dt>
+                <dd><code>{{ networkInfo.network.parentNetworkId }}</code></dd>
+              </template>
+              <template v-if="networkInfo && networkInfo.subscribed !== undefined">
+                <dt>Membership</dt>
+                <dd>{{ networkInfo.subscribed ? 'Subscribed' : 'Not subscribed' }}</dd>
+              </template>
+            </dl>
+            <template v-if="settings.length">
+              <div class="vx-subhead">Settings</div>
+              <div class="vx-flags">
+                <span v-for="s in settings" :key="s.key" class="vx-flag" :class="{on: s.on}" :title="s.key">
+                  <span class="vx-flag-mark" aria-hidden="true">{{ s.on ? '✓' : '–' }}</span>{{ s.label }}
+                </span>
+              </div>
             </template>
-            <template v-if="token.claims.exp">
-              <dt>Expires</dt>
-              <dd>{{ formatTime(token.claims.exp) }}</dd>
-            </template>
-            <template v-if="token.header">
-              <dt>Signed</dt>
-              <dd><code>{{ token.header.alg }}</code><template v-if="token.header.kid"> · key <code>{{ token.header.kid }}</code></template></dd>
-            </template>
-            <template v-for="(value, key) in token.extraClaims" :key="key">
-              <dt>{{ key }}</dt>
-              <dd><code>{{ typeof value === 'string' ? value : JSON.stringify(value) }}</code></dd>
-            </template>
-          </dl>
-          <p v-else class="vx-error-text">The reply carried no token that could be read.</p>
-          <a class="vx-panel-link" href="/identity-token-validation">How a backend verifies it →</a>
-        </PanelState>
-      </section>
+            <p v-else-if="calls.networkInfo.status === 'loading'" class="vx-muted">Loading the network's settings…</p>
+            <p v-else-if="calls.networkInfo.status === 'error'" class="vx-error-text">{{ calls.networkInfo.error }}</p>
+          </PanelState>
+        </section>
+      </div>
 
       <!-- ── roles ─────────────────────────────────────────────────────── -->
       <section class="vx-panel wide" aria-labelledby="vx-roles">
@@ -139,59 +206,6 @@
             </li>
           </ul>
 
-          <div class="vx-subhead">Badges in this network <span v-if="calls.badges.status === 'ok'" class="vx-count">{{ badges.length }}</span></div>
-          <p v-if="calls.badges.status === 'loading' || calls.badges.status === 'idle'" class="vx-muted">Loading…</p>
-          <p v-else-if="badgesError" class="vx-error-text">{{ badgesError }}</p>
-          <p v-else-if="!badges.length" class="vx-muted">No badges.</p>
-          <ul v-else class="vx-badge-list">
-            <li v-for="b in badges" :key="b.badgeId" :title="b.badgeDescription">
-              <strong>{{ b.badgeName }}</strong>
-              <span v-if="b.badgeDescription" class="vx-muted"> — {{ b.badgeDescription }}</span>
-            </li>
-          </ul>
-        </PanelState>
-      </section>
-
-      <!-- ── network ───────────────────────────────────────────────────── -->
-      <section class="vx-panel wide" aria-labelledby="vx-network">
-        <header class="vx-panel-head">
-          <h2 id="vx-network" class="vx-panel-title">Network</h2>
-        </header>
-
-        <PanelState :slot-state="calls.network" :connected="connected">
-          <div class="vx-who">
-            <div class="vx-who-text">
-              <div class="vx-who-name">{{ networkName }}</div>
-              <div class="vx-who-id">
-                <code>{{ networkId }}</code>
-                <CopyButton :text="networkId" label="Copy network id" />
-              </div>
-            </div>
-          </div>
-          <dl class="vx-facts">
-            <template v-if="networkInfo?.network?.type">
-              <dt>Type</dt>
-              <dd>{{ networkInfo.network.type }}</dd>
-            </template>
-            <template v-if="networkInfo?.network?.parentNetworkId">
-              <dt>Parent</dt>
-              <dd><code>{{ networkInfo.network.parentNetworkId }}</code></dd>
-            </template>
-            <template v-if="networkInfo && networkInfo.subscribed !== undefined">
-              <dt>Membership</dt>
-              <dd>{{ networkInfo.subscribed ? 'Subscribed' : 'Not subscribed' }}</dd>
-            </template>
-          </dl>
-          <template v-if="settings.length">
-            <div class="vx-subhead">Settings</div>
-            <div class="vx-flags">
-              <span v-for="s in settings" :key="s.key" class="vx-flag" :class="{on: s.on}" :title="s.key">
-                <span class="vx-flag-mark" aria-hidden="true">{{ s.on ? '✓' : '–' }}</span>{{ s.label }}
-              </span>
-            </div>
-          </template>
-          <p v-else-if="calls.networkInfo.status === 'loading'" class="vx-muted">Loading the network's settings…</p>
-          <p v-else-if="calls.networkInfo.status === 'error'" class="vx-error-text">{{ calls.networkInfo.error }}</p>
         </PanelState>
       </section>
     </div>

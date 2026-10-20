@@ -624,6 +624,17 @@ button.vx-card-head:hover { background: var(--vp-c-default-soft); border-radius:
 
 .vx-panel.wide { grid-column: 1 / -1; }
 
+/* Two columns of stacked panels; the last one in each fills to the bottom so
+   both columns end on the same line. */
+.vx-session-col {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  min-width: 0;
+}
+
+.vx-session-col > .vx-panel:last-child { flex: 1; }
+
 .vx-panel-head {
   display: flex;
   align-items: center;
