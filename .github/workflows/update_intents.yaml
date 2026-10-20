@@ -25,14 +25,6 @@ jobs:
           token: ${{ secrets.VALUSOCIAL_WEB_READ_TOKEN }}
           path: valusocial-web
 
-      # Public; supplies the parity facts (what also runs on the server) for
-      # the Explorer's Server Intents page.
-      - name: Checkout valu-api
-        uses: actions/checkout@v4
-        with:
-          repository: Roomful/valu-api
-          path: valu-api
-
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
@@ -45,7 +37,7 @@ jobs:
       - name: Copy generated docs
         run: cp valusocial-web/output/intents.md valu-docs/docs/intents-doc.md
 
-      # Reads ../valusocial-web and ../valu-api, the checkouts above.
+      # Reads ../valusocial-web, the checkout above.
       - name: Generate Explorer catalogues
         run: node scripts/build-explorer-catalogue.mjs
         working-directory: valu-docs
@@ -55,7 +47,7 @@ jobs:
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add docs/intents-doc.md docs/.vitepress/explorer/intents.json docs/.vitepress/explorer/server-intents.json
+          git add docs/intents-doc.md docs/.vitepress/explorer/intents.json docs/.vitepress/explorer/service-intents.json
           git diff --cached --quiet && echo "No changes to commit" && exit 0
           git commit -m "docs: update intents reference"
           git push

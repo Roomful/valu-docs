@@ -7,15 +7,9 @@ pageClass: explorer-page playground-page
 ---
 
 <script setup>
-import catalogue from '../.vitepress/explorer/server-intents.json'
+import catalogue from '../.vitepress/explorer/service-intents.json'
 </script>
 
 # Service Intents
 
-<IntentPlayground
-  kind="service"
-  :groups="catalogue.services"
-  :sdk-package="catalogue.sdk.package"
-  :server-only-tools="catalogue.serverOnlyTools"
-  :sdk-only="catalogue.sdkOnly"
-/>
+<IntentPlayground kind="service" :groups="catalogue.services" />

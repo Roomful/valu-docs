@@ -1,14 +1,9 @@
 {
-  "sdk": {
-    "package": "@arkeytyp/valu-api",
-    "version": "2.0.0"
-  },
   "services": [
     {
       "id": "Application",
       "title": "Application Service",
       "description": "Issues short-lived signed identity JWTs for iFrame (mini-app) applications. Allows an embedded application to obtain a signed token proving the current user's identity to the mini-app's own backend.",
-      "source": "src/Services/Application/ApplicationService.js",
       "intents": [
         {
           "action": "get-identity-token",
@@ -20,8 +15,7 @@
           "params": {
             "required": [],
             "optional": []
-          },
-          "appOnly": true
+          }
         },
         {
           "action": "close_all",
@@ -33,8 +27,7 @@
           "params": {
             "required": [],
             "optional": []
-          },
-          "appOnly": true
+          }
         },
         {
           "action": "expand-application",
@@ -46,8 +39,7 @@
           "params": {
             "required": [],
             "optional": []
-          },
-          "appOnly": true
+          }
         },
         {
           "action": "close-application",
@@ -59,8 +51,7 @@
           "params": {
             "required": [],
             "optional": []
-          },
-          "appOnly": true
+          }
         }
       ]
     },
@@ -68,7 +59,6 @@
       "id": "ApplicationStorage",
       "title": "Application Storage Service",
       "description": "Per-application file storage service for uploading, searching, and deleting resources scoped to the calling application and current user.",
-      "source": "src/Services/UploadManager/ApplicationStorageService.js",
       "intents": [
         {
           "action": "resource-upload",
@@ -86,16 +76,6 @@
               }
             ],
             "optional": []
-          },
-          "server": {
-            "channel": "roomful",
-            "mutates": true,
-            "cache": "none",
-            "scopes": [
-              "applicationstorage:write"
-            ],
-            "returns": "{resolved: object[], failed: object[]}",
-            "status": "implemented"
           }
         },
         {
@@ -124,16 +104,6 @@
                 "description": "Pagination cursor for fetching the next page of results."
               }
             ]
-          },
-          "server": {
-            "channel": "roomful",
-            "mutates": false,
-            "cache": "read-through",
-            "scopes": [
-              "applicationstorage:read"
-            ],
-            "returns": "{resources: object[], hasMore: boolean, cursor: string}",
-            "status": "implemented"
           }
         },
         {
@@ -152,16 +122,6 @@
               }
             ],
             "optional": []
-          },
-          "server": {
-            "channel": "roomful",
-            "mutates": true,
-            "cache": "none",
-            "scopes": [
-              "applicationstorage:write"
-            ],
-            "returns": "void",
-            "status": "implemented"
           }
         }
       ]
@@ -170,7 +130,6 @@
       "id": "Cbac",
       "title": "CBAC Service",
       "description": "Badge-based access control (CBAC). Manages policies that grant a permission on a target entity (room, community, or group) to users holding specific badges. Policy mutations require manage permission on the target.",
-      "source": "src/Services/Cbac/CbacService.js",
       "intents": [
         {
           "action": "list-policies",
@@ -198,16 +157,6 @@
               }
             ],
             "optional": []
-          },
-          "server": {
-            "channel": "roomful",
-            "mutates": false,
-            "cache": "read-through",
-            "scopes": [
-              "cbac:read"
-            ],
-            "returns": "{policies: object[]}",
-            "status": "implemented"
           }
         },
         {
@@ -251,16 +200,6 @@
               }
             ],
             "optional": []
-          },
-          "server": {
-            "channel": "roomful",
-            "mutates": true,
-            "cache": "none",
-            "scopes": [
-              "cbac:write"
-            ],
-            "returns": "{policy: object}",
-            "status": "implemented"
           }
         },
         {
@@ -294,16 +233,6 @@
               }
             ],
             "optional": []
-          },
-          "server": {
-            "channel": "roomful",
-            "mutates": true,
-            "cache": "none",
-            "scopes": [
-              "cbac:write"
-            ],
-            "returns": "void",
-            "status": "implemented"
           }
         },
         {
@@ -317,16 +246,6 @@
           "params": {
             "required": [],
             "optional": []
-          },
-          "server": {
-            "channel": "roomful",
-            "mutates": false,
-            "cache": "read-through",
-            "scopes": [
-              "cbac:read"
-            ],
-            "returns": "{badges: object[]}",
-            "status": "implemented"
           }
         },
         {
@@ -362,16 +281,6 @@
                 "description": "Number of results to return. Defaults to 10."
               }
             ]
-          },
-          "server": {
-            "channel": "roomful",
-            "mutates": false,
-            "cache": "read-through",
-            "scopes": [
-              "cbac:read"
-            ],
-            "returns": "{users: object[], total: number}",
-            "status": "implemented"
           }
         }
       ]
@@ -380,7 +289,6 @@
       "id": "CMS",
       "title": "CMS Service",
       "description": "Content management service for uploading, searching, and deleting resources scoped to rooms, props, communities, channels, and directories.",
-      "source": "src/Services/CMS/CMSService.js",
       "intents": [
         {
           "action": "resource-upload",
@@ -429,16 +337,6 @@
                 "description": "The prop to move the uploaded resources into."
               }
             ]
-          },
-          "server": {
-            "channel": "roomful",
-            "mutates": true,
-            "cache": "none",
-            "scopes": [
-              "cms:write"
-            ],
-            "returns": "{resolved: object[], failed: object[], placed?: string}",
-            "status": "implemented"
           }
         },
         {
@@ -498,16 +396,6 @@
                 "description": "Pagination cursor for fetching the next page of results."
               }
             ]
-          },
-          "server": {
-            "channel": "roomful",
-            "mutates": false,
-            "cache": "read-through",
-            "scopes": [
-              "cms:read"
-            ],
-            "returns": "{resources: object[], hasMore: boolean, cursor: string}",
-            "status": "implemented"
           }
         },
         {
@@ -552,16 +440,6 @@
                 "description": "The prop to remove the resource from (removes association, does not delete the resource)."
               }
             ]
-          },
-          "server": {
-            "channel": "roomful",
-            "mutates": true,
-            "cache": "none",
-            "scopes": [
-              "cms:write"
-            ],
-            "returns": "void",
-            "status": "implemented"
           }
         }
       ]
@@ -570,7 +448,6 @@
       "id": "Commerce",
       "title": "Commerce",
       "description": "Products, the cart, orders and the seller's own store, shared across apps. An app shows the network's products and adds them to the one cart the user pays for with a single QR scan, and it can run the signed-in seller's store: products, publishing, promotions and analytics. Prices, totals and payouts are decided server-side. Paying is never an action here: `checkout` hands the buyer to My Cart, where they press Pay and scan the code themselves, and answers with what they did. A write that costs the user money, gives goods away, cannot be undone or speaks for them in public waits for their yes in a dialog the platform draws.",
-      "source": "src/Services/Commerce/CommerceService.js",
       "intents": [
         {
           "action": "list-products",
@@ -646,8 +523,7 @@
                 "description": "where the page starts"
               }
             ]
-          },
-          "appOnly": true
+          }
         },
         {
           "action": "get-product",
@@ -666,8 +542,7 @@
               }
             ],
             "optional": []
-          },
-          "appOnly": true
+          }
         },
         {
           "action": "list-categories",
@@ -680,8 +555,7 @@
           "params": {
             "required": [],
             "optional": []
-          },
-          "appOnly": true
+          }
         },
         {
           "action": "add-to-cart",
@@ -706,8 +580,7 @@
                 "description": "how many, at least 1 (default 1)"
               }
             ]
-          },
-          "appOnly": true
+          }
         },
         {
           "action": "check-entitlements",
@@ -726,8 +599,7 @@
               }
             ],
             "optional": []
-          },
-          "appOnly": true
+          }
         },
         {
           "action": "get-cart",
@@ -740,8 +612,7 @@
           "params": {
             "required": [],
             "optional": []
-          },
-          "appOnly": true
+          }
         },
         {
           "action": "create-product",
@@ -810,8 +681,7 @@
                 "description": "how many may be sold; omit for unlimited"
               }
             ]
-          },
-          "appOnly": true
+          }
         },
         {
           "action": "list-seller-products",
@@ -852,50 +722,7 @@
                 "description": "how many to return: 100 by default, up to 500"
               }
             ]
-          },
-          "appOnly": true
-        },
-        {
-          "action": "list-my-products",
-          "description": "List the SELLER's own products in their store — drafts, unlisted, live and archived — unlike list-products, which is the buyer's shelf and never shows drafts. Use it to find the productId to edit. Each product carries `editable`: true only for a draft (never published, or unlisted by the seller). Returns `{hasStore, products}`.",
-          "availability": [
-            "ai"
-          ],
-          "permissions": [],
-          "params": {
-            "required": [],
-            "optional": [
-              {
-                "name": "status",
-                "type": "string",
-                "description": "only products in this state",
-                "options": [
-                  {
-                    "value": "draft",
-                    "label": "draft"
-                  },
-                  {
-                    "value": "active",
-                    "label": "active"
-                  },
-                  {
-                    "value": "archived",
-                    "label": "archived"
-                  },
-                  {
-                    "value": "broken",
-                    "label": "broken"
-                  }
-                ]
-              },
-              {
-                "name": "limit",
-                "type": "number",
-                "description": "how many to return"
-              }
-            ]
-          },
-          "appOnly": true
+          }
         },
         {
           "action": "get-my-product",
@@ -914,8 +741,7 @@
               }
             ],
             "optional": []
-          },
-          "appOnly": true
+          }
         },
         {
           "action": "update-product",
@@ -995,8 +821,7 @@
                 "description": "the WHOLE new content: resource ids (\"res_1\"), named files ({resourceId, title}), folders ({folder: \"Unit 1\", items: […]}) or other products ({productId}) for a bundle"
               }
             ]
-          },
-          "appOnly": true
+          }
         },
         {
           "action": "list-purchases",
@@ -1014,8 +839,7 @@
                 "description": "true lists only what was bought in YOUR app"
               }
             ]
-          },
-          "appOnly": true
+          }
         },
         {
           "action": "get-purchase-contents",
@@ -1033,8 +857,7 @@
               }
             ],
             "optional": []
-          },
-          "appOnly": true
+          }
         },
         {
           "action": "preview-purchase",
@@ -1058,8 +881,7 @@
                 "description": "the file of that purchase to open on"
               }
             ]
-          },
-          "appOnly": true
+          }
         },
         {
           "action": "mark-purchase-file-seen",
@@ -1100,8 +922,7 @@
                 "description": "a product the user owns; omit for everything they bought"
               }
             ]
-          },
-          "appOnly": true
+          }
         },
         {
           "action": "open-cart",
@@ -1119,8 +940,7 @@
                 "description": "true draws the surface over YOUR app's own pane instead of docking the application, so the page the user was on stays visible and usable behind it. Where your app is not on screen it falls back to a window over the whole page."
               }
             ]
-          },
-          "appOnly": true
+          }
         },
         {
           "action": "open-purchases",
@@ -1143,8 +963,7 @@
                 "description": "true draws the surface over YOUR app's own pane instead of docking the application, so the page the user was on stays visible and usable behind it. Where your app is not on screen it falls back to a window over the whole page."
               }
             ]
-          },
-          "appOnly": true
+          }
         },
         {
           "action": "open-products",
@@ -1162,8 +981,7 @@
                 "description": "true draws the surface over YOUR app's own pane instead of docking the application, so the page the user was on stays visible and usable behind it. Where your app is not on screen it falls back to a window over the whole page."
               }
             ]
-          },
-          "appOnly": true
+          }
         },
         {
           "action": "update-cart-item",
@@ -1197,8 +1015,7 @@
                 "description": "true moves it out of the cart into saved for later; false brings it back"
               }
             ]
-          },
-          "appOnly": true
+          }
         },
         {
           "action": "remove-from-cart",
@@ -1216,8 +1033,7 @@
               }
             ],
             "optional": []
-          },
-          "appOnly": true
+          }
         },
         {
           "action": "clear-cart",
@@ -1229,8 +1045,7 @@
           "params": {
             "required": [],
             "optional": []
-          },
-          "appOnly": true
+          }
         },
         {
           "action": "preview-promo",
@@ -1248,8 +1063,7 @@
               }
             ],
             "optional": []
-          },
-          "appOnly": true
+          }
         },
         {
           "action": "get-display",
@@ -1261,8 +1075,7 @@
           "params": {
             "required": [],
             "optional": []
-          },
-          "appOnly": true
+          }
         },
         {
           "action": "checkout",
@@ -1285,8 +1098,7 @@
                 "description": "false docks My Cart instead of drawing its cart over your app (default true)"
               }
             ]
-          },
-          "appOnly": true
+          }
         },
         {
           "action": "open-order",
@@ -1310,8 +1122,7 @@
                 "description": "true draws the surface over YOUR app's own pane instead of docking the application, so the page the user was on stays visible and usable behind it. Where your app is not on screen it falls back to a window over the whole page."
               }
             ]
-          },
-          "appOnly": true
+          }
         },
         {
           "action": "list-orders",
@@ -1361,8 +1172,7 @@
                 "description": "true keeps only orders with at least one item bought in YOUR app"
               }
             ]
-          },
-          "appOnly": true
+          }
         },
         {
           "action": "get-order",
@@ -1380,8 +1190,7 @@
               }
             ],
             "optional": []
-          },
-          "appOnly": true
+          }
         },
         {
           "action": "rate-product",
@@ -1410,8 +1219,7 @@
                 "description": "the review to propose, up to 4000 characters"
               }
             ]
-          },
-          "appOnly": true
+          }
         },
         {
           "action": "get-my-store",
@@ -1423,8 +1231,7 @@
           "params": {
             "required": [],
             "optional": []
-          },
-          "appOnly": true
+          }
         },
         {
           "action": "create-store",
@@ -1447,8 +1254,7 @@
                 "description": "what they sell, at most 2000 characters"
               }
             ]
-          },
-          "appOnly": true
+          }
         },
         {
           "action": "set-donation-tiers",
@@ -1466,8 +1272,7 @@
               }
             ],
             "optional": []
-          },
-          "appOnly": true
+          }
         },
         {
           "action": "list-network-access",
@@ -1479,8 +1284,7 @@
           "params": {
             "required": [],
             "optional": []
-          },
-          "appOnly": true
+          }
         },
         {
           "action": "request-network-access",
@@ -1504,8 +1308,7 @@
                 "description": "a word to the admins, at most 2000 characters"
               }
             ]
-          },
-          "appOnly": true
+          }
         },
         {
           "action": "quote-bundle",
@@ -1544,8 +1347,7 @@
                 "description": "the seller's own price on top of the parts, zero or more"
               }
             ]
-          },
-          "appOnly": true
+          }
         },
         {
           "action": "publish-product",
@@ -1569,8 +1371,7 @@
                 "description": "networks to start ticked in the dialog; the user decides"
               }
             ]
-          },
-          "appOnly": true
+          }
         },
         {
           "action": "unlist-product",
@@ -1588,8 +1389,7 @@
               }
             ],
             "optional": []
-          },
-          "appOnly": true
+          }
         },
         {
           "action": "archive-product",
@@ -1607,8 +1407,7 @@
               }
             ],
             "optional": []
-          },
-          "appOnly": true
+          }
         },
         {
           "action": "delete-product",
@@ -1626,8 +1425,7 @@
               }
             ],
             "optional": []
-          },
-          "appOnly": true
+          }
         },
         {
           "action": "list-promotions",
@@ -1639,8 +1437,7 @@
           "params": {
             "required": [],
             "optional": []
-          },
-          "appOnly": true
+          }
         },
         {
           "action": "set-sale",
@@ -1689,8 +1486,7 @@
                 "description": "ISO date it ends; omit to run until end-sale"
               }
             ]
-          },
-          "appOnly": true
+          }
         },
         {
           "action": "end-sale",
@@ -1708,8 +1504,7 @@
               }
             ],
             "optional": []
-          },
-          "appOnly": true
+          }
         },
         {
           "action": "set-volume-tier",
@@ -1738,8 +1533,7 @@
                 "description": "the discount to edit, from list-promotions"
               }
             ]
-          },
-          "appOnly": true
+          }
         },
         {
           "action": "remove-volume-tier",
@@ -1757,8 +1551,7 @@
               }
             ],
             "optional": []
-          },
-          "appOnly": true
+          }
         },
         {
           "action": "create-discount-code",
@@ -1837,8 +1630,7 @@
                 "description": "ISO date it ends; omit for no end"
               }
             ]
-          },
-          "appOnly": true
+          }
         },
         {
           "action": "update-discount-code",
@@ -1887,8 +1679,7 @@
                 "description": "how many times one buyer can use it, at least 1"
               }
             ]
-          },
-          "appOnly": true
+          }
         },
         {
           "action": "delete-discount-code",
@@ -1906,8 +1697,7 @@
               }
             ],
             "optional": []
-          },
-          "appOnly": true
+          }
         },
         {
           "action": "get-analytics",
@@ -1935,8 +1725,7 @@
                 "description": "true reads the test orders' figures instead of the real ones (never mixed)"
               }
             ]
-          },
-          "appOnly": true
+          }
         },
         {
           "action": "subscribe-events",
@@ -1954,8 +1743,7 @@
               }
             ],
             "optional": []
-          },
-          "appOnly": true
+          }
         },
         {
           "action": "unsubscribe-events",
@@ -1973,8 +1761,7 @@
                 "description": "the event names to stop receiving (see subscribe-events); omit to stop them all"
               }
             ]
-          },
-          "appOnly": true
+          }
         }
       ]
     },
@@ -1982,7 +1769,6 @@
       "id": "Community",
       "title": "Community Service",
       "description": "Community service for browsing communities, listing channels, and loading posts within channels.",
-      "source": "src/Services/Community/CommunityService.js",
       "intents": [
         {
           "action": "search-communities",
@@ -2011,17 +1797,6 @@
                 "description": "Pagination cursor — ID of the last community from previous page."
               }
             ]
-          },
-          "server": {
-            "channel": "roomful",
-            "mutates": false,
-            "cache": "read-through",
-            "scopes": [
-              "community:read"
-            ],
-            "serverTool": "service__Community__search_communities",
-            "returns": "{communities: object[]}",
-            "status": "implemented"
           }
         },
         {
@@ -2041,17 +1816,6 @@
               }
             ],
             "optional": []
-          },
-          "server": {
-            "channel": "roomful",
-            "mutates": false,
-            "cache": "read-through",
-            "scopes": [
-              "community:read"
-            ],
-            "serverTool": "service__Community__get_community_info",
-            "returns": "{community: object}",
-            "status": "implemented"
           }
         },
         {
@@ -2077,17 +1841,6 @@
                 "description": "Maximum number of channels to return. Defaults to 100."
               }
             ]
-          },
-          "server": {
-            "channel": "roomful",
-            "mutates": false,
-            "cache": "read-through",
-            "scopes": [
-              "community:read"
-            ],
-            "serverTool": "service__Community__get_channels",
-            "returns": "{communityId: string, channels: object[]}",
-            "status": "implemented"
           }
         },
         {
@@ -2128,17 +1881,6 @@
                 "description": "Pagination cursor — ID of the last message from previous page."
               }
             ]
-          },
-          "server": {
-            "channel": "roomful",
-            "mutates": false,
-            "cache": "read-through",
-            "scopes": [
-              "community:read"
-            ],
-            "serverTool": "service__Community__get_posts",
-            "returns": "{rootChannelId: string, messages: object[]}",
-            "status": "implemented"
           }
         }
       ]
@@ -2147,7 +1889,6 @@
       "id": "DataProvider",
       "title": "Data Provider Service",
       "description": "Picker service for selecting items from data providers (rooms, contacts, etc.) via modal or inline overlay.",
-      "source": "src/Services/DataProvider/DataProviderService.js",
       "intents": [
         {
           "action": "pick-single",
@@ -2182,8 +1923,7 @@
                 "description": "CSS height for the modal (desktop only)."
               }
             ]
-          },
-          "appOnly": true
+          }
         },
         {
           "action": "pick-multiple",
@@ -2228,8 +1968,7 @@
                 "description": "CSS height for the modal (desktop only)."
               }
             ]
-          },
-          "appOnly": true
+          }
         }
       ]
     },
@@ -2237,7 +1976,6 @@
       "id": "Developer",
       "title": "Developer Service",
       "description": "Developer Portal service for creating and listing the current user's applications.",
-      "source": "src/Applications/DeveloperPortal/Services/DeveloperService.js",
       "intents": [
         {
           "action": "create-application",
@@ -2272,16 +2010,6 @@
                 "description": "Font Awesome icon for the application, in the \"fa-light fa-<name>\" format (e.g. \"fa-light fa-newspaper\"). Set this for EVERY app you create, choosing an icon that represents what the app does — if omitted it falls back to a generic lightbulb. Pick the best match from this set: fa-light fa-robot, fa-light fa-brain-circuit, fa-light fa-microchip-ai, fa-light fa-user-robot, fa-light fa-message-bot, fa-light fa-cpu, fa-light fa-binary, fa-light fa-code, fa-light fa-terminal, fa-light fa-database, fa-light fa-network-wired, fa-light fa-satellite-dish, fa-light fa-palette, fa-light fa-pen-fancy, fa-light fa-paintbrush, fa-light fa-music, fa-light fa-camera, fa-light fa-film, fa-light fa-photo-film, fa-light fa-wand-magic-sparkles, fa-light fa-sparkles, fa-light fa-stars, fa-light fa-hat-wizard, fa-light fa-crystal-ball, fa-light fa-graduation-cap, fa-light fa-book-open, fa-light fa-books, fa-light fa-lightbulb, fa-light fa-magnifying-glass-chart, fa-light fa-chart-mixed, fa-light fa-flask, fa-light fa-microscope, fa-light fa-atom, fa-light fa-dna, fa-light fa-briefcase, fa-light fa-user-tie, fa-light fa-user-astronaut, fa-light fa-user-secret, fa-light fa-user-ninja, fa-light fa-users, fa-light fa-handshake, fa-light fa-comments, fa-light fa-bullhorn, fa-light fa-headset, fa-light fa-shield-check, fa-light fa-dragon, fa-light fa-unicorn, fa-light fa-cat, fa-light fa-dog, fa-light fa-rocket, fa-light fa-planet-ringed, fa-light fa-fire-flame-curved, fa-light fa-bolt, fa-light fa-leaf, fa-light fa-gem, fa-light fa-trophy. Any other valid Font Awesome 6 icon name is accepted too — always keep the \"fa-light\" weight."
               }
             ]
-          },
-          "server": {
-            "channel": "app-state",
-            "mutates": true,
-            "cache": "none",
-            "scopes": [
-              "developer:write"
-            ],
-            "returns": "{appId: string, devId: string, name: string, slug: string, url: string}",
-            "status": "implemented"
           }
         },
         {
@@ -2295,16 +2023,6 @@
           "params": {
             "required": [],
             "optional": []
-          },
-          "server": {
-            "channel": "app-state",
-            "mutates": false,
-            "cache": "none",
-            "scopes": [
-              "developer:read"
-            ],
-            "returns": "{applications: object[]}",
-            "status": "implemented"
           }
         },
         {
@@ -2326,7 +2044,6 @@
       "id": "Events",
       "title": "Events Service",
       "description": "Calendar service for listing, creating, and editing meetings.",
-      "source": "src/Applications/EventsApplication/Services/EventsService.js",
       "intents": [
         {
           "action": "list-events",
@@ -2360,17 +2077,6 @@
                 "description": "ID of the room, group, user, or community. Used when filter is not all."
               }
             ]
-          },
-          "server": {
-            "channel": "roomful",
-            "mutates": false,
-            "cache": "read-through",
-            "scopes": [
-              "events:read"
-            ],
-            "serverTool": "service__Events__list_events",
-            "returns": "{events: object[]}",
-            "status": "implemented"
           }
         },
         {
@@ -2446,17 +2152,6 @@
                 "description": "The community global event ID. Required when type is \"community\"."
               }
             ]
-          },
-          "server": {
-            "channel": "roomful",
-            "mutates": true,
-            "cache": "none",
-            "scopes": [
-              "events:write"
-            ],
-            "serverTool": "service__Events__create_meeting",
-            "returns": "{meetingId: string, meeting: object}",
-            "status": "implemented"
           }
         },
         {
@@ -2507,17 +2202,6 @@
                 "description": "Updated list of invited participant user IDs."
               }
             ]
-          },
-          "server": {
-            "channel": "roomful",
-            "mutates": true,
-            "cache": "none",
-            "scopes": [
-              "events:write"
-            ],
-            "serverTool": "service__Events__edit_meeting",
-            "returns": "{meetingId: string, meeting: object}",
-            "status": "implemented"
           }
         }
       ]
@@ -2526,7 +2210,6 @@
       "id": "Groups",
       "title": "Groups Service",
       "description": "Group management service for listing groups the current user belongs to and their participants.",
-      "source": "src/Services/Groups/GroupsService.js",
       "intents": [
         {
           "action": "list-groups",
@@ -2555,17 +2238,6 @@
                 "description": "Pagination cursor for fetching the next page of results."
               }
             ]
-          },
-          "server": {
-            "channel": "roomful",
-            "mutates": false,
-            "cache": "read-through",
-            "scopes": [
-              "groups:read"
-            ],
-            "serverTool": "service__Groups__list_groups",
-            "returns": "{groups: object[], hasMore: boolean, cursor: string}",
-            "status": "implemented"
           }
         },
         {
@@ -2601,17 +2273,6 @@
                 "description": "Pagination cursor for fetching the next page of results."
               }
             ]
-          },
-          "server": {
-            "channel": "roomful",
-            "mutates": false,
-            "cache": "read-through",
-            "scopes": [
-              "groups:read"
-            ],
-            "serverTool": "service__Groups__list_group_participants",
-            "returns": "{participants: object[], hasMore: boolean, cursor: string}",
-            "status": "implemented"
           }
         },
         {
@@ -2641,16 +2302,6 @@
                 "description": "Pagination cursor for fetching the next page of results."
               }
             ]
-          },
-          "server": {
-            "channel": "roomful",
-            "mutates": false,
-            "cache": "read-through",
-            "scopes": [
-              "groups:read"
-            ],
-            "returns": "{groups: object[], hasMore: boolean, cursor: string}",
-            "status": "implemented"
           }
         },
         {
@@ -2670,16 +2321,6 @@
               }
             ],
             "optional": []
-          },
-          "server": {
-            "channel": "roomful",
-            "mutates": true,
-            "cache": "none",
-            "scopes": [
-              "groups:write"
-            ],
-            "returns": "void",
-            "status": "implemented"
           }
         }
       ]
@@ -2688,7 +2329,6 @@
       "id": "Http",
       "title": "HTTP Service",
       "description": "Generic HTTP utility: reachability ping, GET, and POST against any URL. Requests are sent without user credentials (cookies are stripped); responses include status, headers, and body. Timeouts are capped server-side.",
-      "source": "src/Services/Http/HttpService.js",
       "intents": [
         {
           "action": "ping",
@@ -2712,16 +2352,6 @@
                 "description": "Request timeout in milliseconds. Defaults to 10000, max 60000."
               }
             ]
-          },
-          "server": {
-            "channel": "local",
-            "mutates": false,
-            "cache": "none",
-            "scopes": [
-              "http:read"
-            ],
-            "returns": "{up: boolean, latency: number, status: number}",
-            "status": "implemented"
           }
         },
         {
@@ -2756,16 +2386,6 @@
                 "description": "How to parse the response body: \"auto\" (default — JSON if Content-Type matches, else text), \"json\", or \"text\"."
               }
             ]
-          },
-          "server": {
-            "channel": "local",
-            "mutates": false,
-            "cache": "none",
-            "scopes": [
-              "http:read"
-            ],
-            "returns": "{ok: boolean, status: number, statusText: string, headers: object, body: any, bodyType: string, latency: number}",
-            "status": "implemented"
           }
         },
         {
@@ -2810,16 +2430,6 @@
                 "description": "How to parse the response body: \"auto\" (default), \"json\", or \"text\"."
               }
             ]
-          },
-          "server": {
-            "channel": "local",
-            "mutates": true,
-            "cache": "none",
-            "scopes": [
-              "http:write"
-            ],
-            "returns": "{ok: boolean, status: number, statusText: string, headers: object, body: any, bodyType: string, latency: number}",
-            "status": "implemented"
           }
         }
       ]
@@ -2828,7 +2438,6 @@
       "id": "Logging",
       "title": "Logging Service",
       "description": "Exposes the in-memory console log buffer captured by ConsoleLogCapture for diagnostics and bug reporting.",
-      "source": "src/Services/Logging/LoggingService.js",
       "intents": [
         {
           "action": "get-logs",
@@ -2846,8 +2455,7 @@
                 "description": "Output format. Must be one of: \"text\", \"file\". Defaults to \"text\"."
               }
             ]
-          },
-          "appOnly": true
+          }
         }
       ]
     },
@@ -2855,7 +2463,6 @@
       "id": "Networks",
       "title": "Networks Service",
       "description": "Network management service for retrieving information about the current network.",
-      "source": "src/Applications/NetworksApplication/Services/NetworksService.js",
       "intents": [
         {
           "action": "get-current-network",
@@ -2868,17 +2475,6 @@
           "params": {
             "required": [],
             "optional": []
-          },
-          "server": {
-            "channel": "roomful",
-            "mutates": false,
-            "cache": "read-through",
-            "scopes": [
-              "networks:read"
-            ],
-            "serverTool": "service__Networks__get_current_network",
-            "returns": "{networkId: string, name: string|null}",
-            "status": "implemented"
           }
         }
       ]
@@ -2887,7 +2483,6 @@
       "id": "Profile",
       "title": "Profile Service",
       "description": "Read-only access to a user's public profile artifacts — Verus verifiable credentials and network badges — addressed by userId. No UI side effects.",
-      "source": "src/Services/Profile/ProfileService.js",
       "intents": [
         {
           "action": "get-user-credentials",
@@ -2912,16 +2507,6 @@
                 "description": "Optional claim status filter (e.g. \"Verified And Persisted\"). Omit to return credentials of all statuses the caller may see."
               }
             ]
-          },
-          "server": {
-            "channel": "roomful",
-            "mutates": false,
-            "cache": "read-through",
-            "scopes": [
-              "profile:read"
-            ],
-            "returns": "{credentials: object[]}",
-            "status": "implemented"
           }
         },
         {
@@ -2947,16 +2532,6 @@
                 "description": "Network scope for the badges. Defaults to \"all\", which fetches badges from every network shared with the target user."
               }
             ]
-          },
-          "server": {
-            "channel": "roomful",
-            "mutates": false,
-            "cache": "read-through",
-            "scopes": [
-              "profile:read"
-            ],
-            "returns": "{badges: object[]}",
-            "status": "implemented"
           }
         }
       ]
@@ -2965,7 +2540,6 @@
       "id": "Resources",
       "title": "Resource Service",
       "description": "Low-level resource service for generating URLs (thumbnails, public links, direct downloads) for resources.",
-      "source": "src/Services/Resources/ResourceService.js",
       "intents": [
         {
           "action": "get-thumbnail-url",
@@ -2989,16 +2563,6 @@
                 "description": "The desired thumbnail size in pixels. Defaults to 256."
               }
             ]
-          },
-          "server": {
-            "channel": "local",
-            "mutates": false,
-            "cache": "none",
-            "scopes": [
-              "resources:read"
-            ],
-            "returns": "{url: string}",
-            "status": "implemented"
           }
         },
         {
@@ -3018,17 +2582,6 @@
               }
             ],
             "optional": []
-          },
-          "server": {
-            "channel": "local",
-            "mutates": false,
-            "cache": "none",
-            "scopes": [
-              "resources:read"
-            ],
-            "serverTool": "service__Resources__generate_public_url",
-            "returns": "{url: string}",
-            "status": "implemented"
           }
         },
         {
@@ -3048,17 +2601,6 @@
               }
             ],
             "optional": []
-          },
-          "server": {
-            "channel": "local",
-            "mutates": false,
-            "cache": "none",
-            "scopes": [
-              "resources:read"
-            ],
-            "serverTool": "service__Resources__generate_best_view_url",
-            "returns": "{url: string}",
-            "status": "implemented"
           }
         },
         {
@@ -3078,17 +2620,6 @@
               }
             ],
             "optional": []
-          },
-          "server": {
-            "channel": "local",
-            "mutates": false,
-            "cache": "none",
-            "scopes": [
-              "resources:read"
-            ],
-            "serverTool": "service__Resources__generate_direct_public_url",
-            "returns": "{url: string}",
-            "status": "implemented"
           }
         },
         {
@@ -3108,16 +2639,6 @@
                 "description": "Max avatars to return. Defaults to 50."
               }
             ]
-          },
-          "server": {
-            "channel": "roomful",
-            "mutates": false,
-            "cache": "read-through",
-            "scopes": [
-              "resources:read"
-            ],
-            "returns": "{avatars: object[]}",
-            "status": "implemented"
           }
         }
       ]
@@ -3126,7 +2647,6 @@
       "id": "RoomPoints",
       "title": "Room Points Service",
       "description": "GoTo points of a room (server name \"cameraPosition\"): list them, save or delete one directly, or open the point editor and let the user do it. Editing points requires the room's edit permission. Position and rotation are metres and EULER DEGREES in the room's own space — they cannot be computed from outside the 3D scene, so prefer create-point / edit-point (which receive the live camera pose from Unity) over save-point unless you are re-using a pose you already read.",
-      "source": "src/Services/RoomPoints/RoomPointsService.js",
       "intents": [
         {
           "action": "list-room-points",
@@ -3151,8 +2671,7 @@
                 "description": "Network the room belongs to. Defaults to the current network."
               }
             ]
-          },
-          "appOnly": true
+          }
         },
         {
           "action": "create-room-point",
@@ -3207,8 +2726,7 @@
                 "description": "Network the room belongs to. Defaults to the current network."
               }
             ]
-          },
-          "appOnly": true
+          }
         },
         {
           "action": "edit-room-point",
@@ -3268,8 +2786,7 @@
                 "description": "Network the room belongs to. Defaults to the current network."
               }
             ]
-          },
-          "appOnly": true
+          }
         },
         {
           "action": "save-room-point",
@@ -3292,8 +2809,7 @@
               }
             ],
             "optional": []
-          },
-          "appOnly": true
+          }
         },
         {
           "action": "delete-room-point",
@@ -3316,8 +2832,7 @@
               }
             ],
             "optional": []
-          },
-          "appOnly": true
+          }
         }
       ]
     },
@@ -3325,7 +2840,6 @@
       "id": "RoomZones",
       "title": "Room Zones Service",
       "description": "Zones of a room and the claims on them (docs/superpowers/specs/2026-10-16-room-claiming-zones-design.md). A zone is an invisible box in a room: it can join its video call when someone walks in, it can be claimed as somebody's personal space, or both. A CLAIM IS A PROP INVITATION on the master server — there is no other store — so the occupant also gets edit rights on the zone prop. The server does not enforce exclusivity: the earliest claim wins and the loser is withdrawn, so always read the occupancy back rather than assuming a claim held.",
-      "source": "src/Services/RoomZones/RoomZonesService.js",
       "intents": [
         {
           "action": "list-room-zones",
@@ -3469,7 +2983,6 @@
       "id": "Rooms",
       "title": "Rooms Service",
       "description": "Room management service for searching rooms, browsing room templates, creating rooms from templates, retrieving room details, managing prop content, and checking permissions.",
-      "source": "src/Applications/RoomsApplication/Services/RoomsService.js",
       "intents": [
         {
           "action": "search-rooms",
@@ -3498,17 +3011,6 @@
                 "description": "Number of results to return. Defaults to 10."
               }
             ]
-          },
-          "server": {
-            "channel": "roomful",
-            "mutates": false,
-            "cache": "read-through",
-            "scopes": [
-              "rooms:read"
-            ],
-            "serverTool": "service__Rooms__search_rooms",
-            "returns": "{rooms: object[]}",
-            "status": "implemented"
           }
         },
         {
@@ -3544,17 +3046,6 @@
                 "description": "Number of results to return. Defaults to 10."
               }
             ]
-          },
-          "server": {
-            "channel": "roomful",
-            "mutates": false,
-            "cache": "read-through",
-            "scopes": [
-              "rooms:read"
-            ],
-            "serverTool": "service__Rooms__search_my_rooms",
-            "returns": "{rooms: object[]}",
-            "status": "implemented"
           }
         },
         {
@@ -3579,16 +3070,6 @@
                 "description": "Network ID the room belongs to."
               }
             ]
-          },
-          "server": {
-            "channel": "roomful",
-            "mutates": false,
-            "cache": "read-through",
-            "scopes": [
-              "rooms:read"
-            ],
-            "returns": "{room: object}",
-            "status": "implemented"
           }
         },
         {
@@ -3608,17 +3089,6 @@
               }
             ],
             "optional": []
-          },
-          "server": {
-            "channel": "roomful",
-            "mutates": false,
-            "cache": "read-through",
-            "scopes": [
-              "rooms:read"
-            ],
-            "serverTool": "service__Rooms__get_permissions",
-            "returns": "{permissions: object}",
-            "status": "implemented"
           }
         },
         {
@@ -3644,17 +3114,6 @@
                 "description": "Network ID the room belongs to."
               }
             ]
-          },
-          "server": {
-            "channel": "roomful",
-            "mutates": false,
-            "cache": "read-through",
-            "scopes": [
-              "rooms:read"
-            ],
-            "serverTool": "service__Rooms__get_room_props",
-            "returns": "{props: object[], propOrder: object}",
-            "status": "implemented"
           }
         },
         {
@@ -3685,17 +3144,6 @@
                 "description": "Network ID the room belongs to."
               }
             ]
-          },
-          "server": {
-            "channel": "roomful",
-            "mutates": false,
-            "cache": "read-through",
-            "scopes": [
-              "rooms:read"
-            ],
-            "serverTool": "service__Rooms__get_prop",
-            "returns": "{prop: object|null, propOrder: object}",
-            "status": "implemented"
           }
         },
         {
@@ -3720,17 +3168,6 @@
               }
             ],
             "optional": []
-          },
-          "server": {
-            "channel": "roomful",
-            "mutates": false,
-            "cache": "read-through",
-            "scopes": [
-              "rooms:read"
-            ],
-            "serverTool": "service__Rooms__list_prop_team_members",
-            "returns": "{invitations: object[]}",
-            "status": "implemented"
           }
         },
         {
@@ -3771,17 +3208,6 @@
                 "description": "Arbitrary metadata stored on the invitation. To assign an AI agent to this team member, pass `customParams: { agentInfo: { id: \"<agent-id>\", avatarResourceId: \"<picked-3d-avatar-resource-id>\" | null } }` (id-only — do NOT include name/description/avatarUrl, those are resolved from the live agent). `avatarResourceId` is the team member's picked 3D avatar for this prop, or `null` when nothing has been picked — readers fall back to the user's own 3D profile avatar in that case. Pass `customParams: null` to clear a previously assigned agent. The full-snapshot shape `agentInfo: { id, name, description, avatarUrl }` is still read for backwards compatibility but only `id` is used."
               }
             ]
-          },
-          "server": {
-            "channel": "roomful",
-            "mutates": true,
-            "cache": "none",
-            "scopes": [
-              "rooms:write"
-            ],
-            "serverTool": "service__Rooms__invite_to_prop",
-            "returns": "{invitation: object|null}",
-            "status": "implemented"
           }
         },
         {
@@ -3811,17 +3237,6 @@
               }
             ],
             "optional": []
-          },
-          "server": {
-            "channel": "roomful",
-            "mutates": true,
-            "cache": "none",
-            "scopes": [
-              "rooms:write"
-            ],
-            "serverTool": "service__Rooms__delete_prop_invitation",
-            "returns": "void",
-            "status": "implemented"
           }
         },
         {
@@ -3856,16 +3271,6 @@
                 "description": "Number of results to return. Defaults to 20."
               }
             ]
-          },
-          "server": {
-            "channel": "roomful",
-            "mutates": false,
-            "cache": "read-through",
-            "scopes": [
-              "rooms:read"
-            ],
-            "returns": "{templates: object[], hasMore: boolean, filteredOutCount: number}",
-            "status": "implemented"
           }
         },
         {
@@ -3896,16 +3301,6 @@
                 "description": "The template's price in USD as list-room-templates returned it (0 = free). Optional: the tool resolves the price from the approved list itself and only falls back to this value when the template cannot be found there. A price above 0 creates a PAID room that the user must purchase within 15 minutes to keep."
               }
             ]
-          },
-          "server": {
-            "channel": "roomful",
-            "mutates": true,
-            "cache": "none",
-            "scopes": [
-              "rooms:write"
-            ],
-            "returns": "{roomId: string, name: string, networkId: string, price: number, isFree: boolean, paymentRequired: boolean}",
-            "status": "implemented"
           }
         },
         {
@@ -3951,16 +3346,6 @@
                 "description": "Network ID the room belongs to. Defaults to the current network."
               }
             ]
-          },
-          "server": {
-            "channel": "roomful",
-            "mutates": true,
-            "cache": "none",
-            "scopes": [
-              "rooms:write"
-            ],
-            "returns": "{roomId: string, propId: string, name: string, addedResourceIds: string[], failed: object[], removedTemplateStubs: string[], skippedAlreadyPresent: string[], sliderEnabled: boolean}",
-            "status": "implemented"
           }
         },
         {
@@ -3986,16 +3371,6 @@
                 "description": "Network ID the room belongs to."
               }
             ]
-          },
-          "server": {
-            "channel": "roomful",
-            "mutates": false,
-            "cache": "read-through",
-            "scopes": [
-              "rooms:read"
-            ],
-            "returns": "{roomId: string, networkId: string, propOrder: object, groupIds: string[], groups: object[]}",
-            "status": "implemented"
           }
         },
         {
@@ -4046,16 +3421,6 @@
                 "description": "Network ID the room belongs to. Defaults to the current network."
               }
             ]
-          },
-          "server": {
-            "channel": "roomful",
-            "mutates": true,
-            "cache": "none",
-            "scopes": [
-              "rooms:write"
-            ],
-            "returns": "{roomId: string, groupIds: string[], distribution: string, placements: object[], unplacedResourceIds: string[], eligiblePropCount: number, skippedProps: object[]}",
-            "status": "implemented"
           }
         },
         {
@@ -4091,16 +3456,6 @@
                 "description": "Network ID the room belongs to. Defaults to the current network."
               }
             ]
-          },
-          "server": {
-            "channel": "roomful",
-            "mutates": true,
-            "cache": "none",
-            "scopes": [
-              "rooms:write"
-            ],
-            "returns": "{roomId: string, groupId: string, name: string, hasLabels: boolean, renamedLabelPropIds: string[], failed: object[]}",
-            "status": "implemented"
           }
         }
       ]
@@ -4109,7 +3464,6 @@
       "id": "TextChat",
       "title": "Text Chat Service",
       "description": "Headless text-chat I/O for non-UI callers (agents, sub-agents, scripts). Read channel history and send messages without opening the TextChat application or changing the active channel. Encryption and decryption are handled automatically.",
-      "source": "src/Services/TextChat/TextChatService.js",
       "intents": [
         {
           "action": "get-channel-history",
@@ -4143,16 +3497,6 @@
                 "description": "Load messages newer than this messageId (for paginating forwards)."
               }
             ]
-          },
-          "server": {
-            "channel": "roomful",
-            "mutates": false,
-            "cache": "read-through",
-            "scopes": [
-              "textchat:read"
-            ],
-            "returns": "{channelId: string, messages: object[], hasPrevious: boolean, hasNext: boolean}",
-            "status": "implemented"
           }
         },
         {
@@ -4192,66 +3536,6 @@
                 "description": "Optional message customParams. Only the key `open-thread` is accepted (any other key is dropped by the service). Pass `{\"open-thread\": true}` ONLY when the recipient explicitly expects your outreach (e.g. you are responding to their team-member avatar click) — it force-opens the chat thread on their screen, which is invasive."
               }
             ]
-          },
-          "server": {
-            "channel": "roomful",
-            "mutates": true,
-            "cache": "none",
-            "scopes": [
-              "textchat:write"
-            ],
-            "returns": "{channelId: string, messageId: string, createdAt: string}",
-            "status": "implemented"
-          }
-        },
-        {
-          "action": "message-owner",
-          "description": "Delivers a message authored by the AI agent itself (NOT by the logged-in user) into a user's dedicated agent-to-user channel, resolved from source `userAIAgent:{userId}:{agentId}`. The recipient sees the agent as the author and the channel is created on first use. This is the INVASIVE owner-notification channel: use it to ping/notify the owner (pass the owner's userId) — or, occasionally, any other user. Unlike send-message (which sends as the logged-in user), this is authored by the agent. Silent toward the UI — does NOT open the TextChat application or change the active channel.",
-          "availability": [
-            "ai"
-          ],
-          "permissions": [],
-          "params": {
-            "required": [
-              {
-                "name": "userId",
-                "type": "string",
-                "description": "Recipient user ID. The user who will receive the message in their agent channel."
-              },
-              {
-                "name": "agentId",
-                "type": "string",
-                "description": "The calling agent's own ID. Used to address the dedicated `userAIAgent:{userId}:{agentId}` channel so the message is authored by this agent."
-              },
-              {
-                "name": "text",
-                "type": "string",
-                "description": "The message body to send."
-              }
-            ],
-            "optional": [
-              {
-                "name": "buttons",
-                "type": "object[]",
-                "description": "Optional interactive buttons rendered below the message body. Pass a real JSON array (NOT a JSON-stringified array). Each entry MUST be an object with this exact NESTED shape: `{text: string, intent: {applicationId: string, action: string, params?: object}}`. Do NOT flatten `applicationId`/`action` onto the button itself — `intent` is a sub-object. `text` is the visible label. Clicking dispatches `intent` via Application.run on the recipient's client (use an `applicationId` + `action` the recipient's app exposes — see other service manifests for valid pairs). Entries that are malformed are repaired-or-dropped by the service and reported back in `buttonWarnings`; check that field on the response and use the canonical shape going forward. Example: `[{\"text\":\"Open profile\",\"intent\":{\"applicationId\":\"valuguru\",\"action\":\"open-agent\",\"params\":{\"agentId\":\"agent_xxx\"}}}]`."
-              },
-              {
-                "name": "customParams",
-                "type": "object",
-                "description": "Optional message customParams. Only the key `open-thread` is accepted (any other key is dropped by the service). Pass `{\"open-thread\": true}` ONLY when the recipient explicitly expects your outreach (e.g. you are responding to their team-member avatar click) — it force-opens the chat thread on their screen, which is invasive."
-              }
-            ]
-          },
-          "server": {
-            "channel": "roomful",
-            "mutates": true,
-            "cache": "none",
-            "scopes": [
-              "textchat:write"
-            ],
-            "serverTool": "service__TextChat__message_owner",
-            "returns": "{channelId: string, messageId: string, createdAt: string}",
-            "status": "implemented"
           }
         }
       ]
@@ -4260,7 +3544,6 @@
       "id": "Time",
       "title": "Time Service",
       "description": "Returns the current user's local clock context — local ISO with offset, UTC ISO for the same instant, IANA timezone, offset in minutes, day-of-week, and resolved locale. Use this before any \"today\"/\"tomorrow\"/\"now\" reasoning or when converting natural-language times to ISO strings.",
-      "source": "src/Services/Time/TimeService.js",
       "intents": [
         {
           "action": "get-local-time",
@@ -4272,16 +3555,6 @@
           "params": {
             "required": [],
             "optional": []
-          },
-          "server": {
-            "channel": "local",
-            "mutates": false,
-            "cache": "none",
-            "scopes": [
-              "time:read"
-            ],
-            "returns": "{iso: string, utcIso: string, timezone: string, offsetMinutes: number, dayOfWeek: string, localDate: string, localTime: string, locale: string}",
-            "status": "implemented"
           }
         }
       ]
@@ -4290,7 +3563,6 @@
       "id": "Users",
       "title": "Users Service",
       "description": "User management service for getting current user info, looking up users by ID, searching contacts/followers/following, and managing connection requests.",
-      "source": "src/Services/Users/UsersService.js",
       "intents": [
         {
           "action": "current",
@@ -4303,17 +3575,6 @@
           "params": {
             "required": [],
             "optional": []
-          },
-          "server": {
-            "channel": "roomful",
-            "mutates": false,
-            "cache": "read-through",
-            "scopes": [
-              "users:read"
-            ],
-            "serverTool": "service__Users__current",
-            "returns": "{user: object}",
-            "status": "implemented"
           }
         },
         {
@@ -4333,17 +3594,6 @@
               }
             ],
             "optional": []
-          },
-          "server": {
-            "channel": "roomful",
-            "mutates": false,
-            "cache": "read-through",
-            "scopes": [
-              "users:read"
-            ],
-            "serverTool": "service__Users__get",
-            "returns": "{user: object}",
-            "status": "implemented"
           }
         },
         {
@@ -4379,17 +3629,6 @@
                 "description": "Number of results to return. Defaults to 10."
               }
             ]
-          },
-          "server": {
-            "channel": "roomful",
-            "mutates": false,
-            "cache": "read-through",
-            "scopes": [
-              "users:read"
-            ],
-            "serverTool": "service__Users__search_users",
-            "returns": "{users: object[]}",
-            "status": "implemented"
           }
         },
         {
@@ -4419,17 +3658,6 @@
                 "description": "Number of results to return. Defaults to 10."
               }
             ]
-          },
-          "server": {
-            "channel": "roomful",
-            "mutates": false,
-            "cache": "read-through",
-            "scopes": [
-              "users:read"
-            ],
-            "serverTool": "service__Users__find_user",
-            "returns": "{users: object[]}",
-            "status": "implemented"
           }
         },
         {
@@ -4449,17 +3677,6 @@
               }
             ],
             "optional": []
-          },
-          "server": {
-            "channel": "roomful",
-            "mutates": true,
-            "cache": "none",
-            "scopes": [
-              "users:write"
-            ],
-            "serverTool": "service__Users__send_connection_request",
-            "returns": "void",
-            "status": "implemented"
           }
         },
         {
@@ -4479,17 +3696,6 @@
               }
             ],
             "optional": []
-          },
-          "server": {
-            "channel": "roomful",
-            "mutates": true,
-            "cache": "none",
-            "scopes": [
-              "users:write"
-            ],
-            "serverTool": "service__Users__accept_connection_request",
-            "returns": "void",
-            "status": "implemented"
           }
         },
         {
@@ -4509,17 +3715,6 @@
               }
             ],
             "optional": []
-          },
-          "server": {
-            "channel": "roomful",
-            "mutates": true,
-            "cache": "none",
-            "scopes": [
-              "users:write"
-            ],
-            "serverTool": "service__Users__decline_connection_request",
-            "returns": "void",
-            "status": "implemented"
           }
         },
         {
@@ -4539,17 +3734,6 @@
               }
             ],
             "optional": []
-          },
-          "server": {
-            "channel": "roomful",
-            "mutates": true,
-            "cache": "none",
-            "scopes": [
-              "users:write"
-            ],
-            "serverTool": "service__Users__cancel_connection_request",
-            "returns": "void",
-            "status": "implemented"
           }
         }
       ]
@@ -4558,87 +3742,7 @@
       "id": "AiGuru",
       "title": "Valu Guru Service",
       "description": "System service for managing applications via AI. Provides tools to open, close, list, and check application status.",
-      "source": "src/Services/AiGuru/AiGuruService.js",
       "intents": [
-        {
-          "action": "open",
-          "description": "Opens (loads) an application by its ID into the dock.",
-          "availability": [],
-          "permissions": [],
-          "params": {
-            "required": [
-              {
-                "name": "applicationId",
-                "type": "string",
-                "description": "The unique identifier of the application to open."
-              }
-            ],
-            "optional": []
-          },
-          "appOnly": true
-        },
-        {
-          "action": "close",
-          "description": "Closes (unloads) an application by its ID from the dock.",
-          "availability": [],
-          "permissions": [],
-          "params": {
-            "required": [
-              {
-                "name": "applicationId",
-                "type": "string",
-                "description": "The unique identifier of the application to close."
-              }
-            ],
-            "optional": []
-          },
-          "appOnly": true
-        },
-        {
-          "action": "has-application",
-          "description": "Checks whether an application with the given ID exists in the registry.",
-          "availability": [],
-          "permissions": [],
-          "params": {
-            "required": [
-              {
-                "name": "applicationId",
-                "type": "string",
-                "description": "The unique identifier of the application to check."
-              }
-            ],
-            "optional": []
-          },
-          "appOnly": true
-        },
-        {
-          "action": "get-applications",
-          "description": "Returns a list of all registered applications with their id, slug, icon, and title.",
-          "availability": [],
-          "permissions": [],
-          "params": {
-            "required": [],
-            "optional": []
-          },
-          "appOnly": true
-        },
-        {
-          "action": "is-application-loaded",
-          "description": "Checks whether an application with the given ID is currently loaded (open) in the dock.",
-          "availability": [],
-          "permissions": [],
-          "params": {
-            "required": [
-              {
-                "name": "applicationId",
-                "type": "string",
-                "description": "The unique identifier of the application to check."
-              }
-            ],
-            "optional": []
-          },
-          "appOnly": true
-        },
         {
           "action": "get-chat-history",
           "description": "Returns the in-memory message history for a chat session. Omit chatId to get the currently active session.",
@@ -4655,8 +3759,7 @@
                 "description": "ID of the chat session. Omit to use the currently active session."
               }
             ]
-          },
-          "appOnly": true
+          }
         },
         {
           "action": "get-agent-history",
@@ -4674,8 +3777,7 @@
               }
             ],
             "optional": []
-          },
-          "appOnly": true
+          }
         },
         {
           "action": "query-knowledge-base",
@@ -4704,8 +3806,7 @@
                 "description": "Extra arguments merged into the RAG tool call alongside `query` (tool-specific, e.g. scope filters)."
               }
             ]
-          },
-          "appOnly": true
+          }
         }
       ]
     },
@@ -4713,7 +3814,6 @@
       "id": "VerusWallet",
       "title": "Verus Wallet Service",
       "description": "Executes on-chain transfers from an AI agent's attached Verus wallet identity. Every call takes an agentId — the client resolves which wallet is attached to that agent. Returns an error if the agent has no wallet attached or the wallet has not finished being provisioned on-chain.",
-      "source": "src/Services/AiGuru/VerusWalletService.js",
       "intents": [
         {
           "action": "transfer",
@@ -4753,17 +3853,6 @@
                 "description": "Optional memo attached to the transaction."
               }
             ]
-          },
-          "server": {
-            "channel": "roomful",
-            "mutates": true,
-            "cache": "none",
-            "scopes": [
-              "veruswallet:write"
-            ],
-            "serverTool": "service__VerusWallet__transfer",
-            "returns": "{txid: string}",
-            "status": "implemented"
           }
         },
         {
@@ -4783,86 +3872,9 @@
               }
             ],
             "optional": []
-          },
-          "server": {
-            "channel": "app-state",
-            "mutates": false,
-            "cache": "seeded",
-            "scopes": [
-              "veruswallet:read"
-            ],
-            "serverTool": "service__VerusWallet__get_balance",
-            "returns": "{identityName: string, iAddress: string, balance: number|null}",
-            "status": "implemented"
           }
         }
       ]
-    }
-  ],
-  "sdkOnly": [
-    {
-      "service": "Users",
-      "action": "list-connection-requests",
-      "server": {
-        "channel": "roomful",
-        "mutates": false,
-        "cache": "read-through",
-        "scopes": [
-          "users:read"
-        ],
-        "returns": "{requests: object[], users: object[], hasMore: boolean}",
-        "status": "implemented"
-      }
-    }
-  ],
-  "serverOnlyTools": [
-    {
-      "name": "service__Http__curl",
-      "kind": "binding",
-      "summary": "A curl command line is an INPUT FORMAT, not a capability: http.ts parses it (curl-parse.ts) and then performs exactly what Http.get / Http.post / Http.ping already declare — `curl -I` IS the ping. It stays a server-side binding that parses the command and calls the declared function; the SDK gains nothing by declaring a fourth way to say GET.",
-      "equivalents": [
-        "Http.get",
-        "Http.post",
-        "Http.ping"
-      ]
-    },
-    {
-      "name": "system__get_user_timezone",
-      "kind": "declared",
-      "summary": "Both answer the same question — what time is it where the user is — and differ only in WHOSE clock: in the browser the caller IS the user, so Time.get-local-time reads the local one; headless the user is somebody else, so system.ts asks `user:getTimezone`. Time.get-local-time is canonical for the caller's own clock and the SDK implements exactly that. Asking about ANOTHER user is not declared anywhere: the intent takes no params, and widening it is the app's manifest to change, not this package's. So the server tool stays a binding over `user:getTimezone` until the manifest grows an optional userId — noted for Phase 3, not smuggled in here.",
-      "equivalents": [
-        "Time.get-local-time"
-      ]
-    },
-    {
-      "name": "service__TextChat__message_user",
-      "kind": "internal",
-      "summary": "AGENT-AUTHORED, and that is the whole difference. TextChat.send-message posts as the current USER; message_user resolves (or spawns) the agent's own thread off a direct channel and posts as the AGENT. Only a runtime that HAS an agent identity can call it — an embedded third-party app has none — so declaring it would put a function in the manifest that no manifest caller can satisfy. Stays server-only until an agent identity is part of the SDK context.",
-      "equivalents": []
-    },
-    {
-      "name": "service__TextChat__send_card",
-      "kind": "internal",
-      "summary": "Agent-authored, for the same reason as message_user, and additionally server-resolved (meeting occurrences are looked up backend-side). Stays server-only.",
-      "equivalents": []
-    },
-    {
-      "name": "service__Torah__corpora",
-      "kind": "internal",
-      "summary": "A corpus-specific retrieval index that lives in the Valu Guru server and has no platform surface: no manifest entry, no browser path, no socket RPC. Declaring it would make the platform catalogue carry one deployment's content. Stays server-only.",
-      "equivalents": []
-    },
-    {
-      "name": "service__Torah__search",
-      "kind": "internal",
-      "summary": "Same index as Torah.corpora, same reason. Stays server-only.",
-      "equivalents": []
-    },
-    {
-      "name": "service__generate_image",
-      "kind": "internal",
-      "summary": "Image generation is a MODEL capability, not a platform service: it needs the server's provider credentials, and its result is written into the caller's CMS session folder. A declared intent would hand a third-party app the server's inference budget. Stays server-only.",
-      "equivalents": []
     }
   ]
 }

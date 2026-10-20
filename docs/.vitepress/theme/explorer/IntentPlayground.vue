@@ -32,8 +32,6 @@
           :group="selected.group"
           :intent="selected.intent"
           :state="stateFor(selectedKey, selected.intent)"
-          :sdk-package="sdkPackage"
-          @select="selectByName"
         />
       </div>
     </div>
@@ -50,46 +48,9 @@ import {changesData, matches} from './format.mjs';
 const props = defineProps({
   kind: {type: String, required: true}, // 'application' | 'service'
   groups: {type: Array, required: true},
-  sdkPackage: {type: String, default: '@arkeytyp/valu-api'},
-  /** Service page only: tools no manifest declares, and SDK-only functions. */
-  serverOnlyTools: {type: Array, default: () => []},
-  sdkOnly: {type: Array, default: () => []},
 });
 
 const groupNoun = computed(() => (props.kind === 'application' ? 'Applications' : 'Services'));
-
-// The catalogue, plus the read-only groups the service page browses too.
-const allGroups = computed(() => {
-  const list = [...props.groups];
-  if (props.serverOnlyTools.length) {
-    list.push({
-      id: 'server-only',
-      title: 'Server-only tools',
-      docOnly: true,
-      intents: props.serverOnlyTools.map(t => ({
-        action: t.name,
-        description: t.summary,
-        toolKind: t.kind,
-        equivalents: t.equivalents,
-        docOnly: true,
-      })),
-    });
-  }
-  if (props.sdkOnly.length) {
-    list.push({
-      id: 'sdk-only',
-      title: 'SDK only',
-      docOnly: true,
-      intents: props.sdkOnly.map(f => ({
-        action: `${f.service}.${f.action}`,
-        description: `Declared by ${props.sdkPackage} itself. It runs over a socket, but the Valu Social manifest does not list it, so callService cannot reach it.`,
-        server: f.server,
-        docOnly: true,
-      })),
-    });
-  }
-  return list;
-});
 
 // ── filter ───────────────────────────────────────────────────────────────
 
@@ -102,35 +63,30 @@ const FILTERS = {
   ],
   service: [
     {id: 'all', label: 'All', test: () => true},
-    {id: 'server', label: 'Runs on server', test: i => Boolean(i.server) && !i.docOnly},
-    {id: 'app-only', label: 'App only', test: i => Boolean(i.appOnly)},
-    {id: 'bridge', label: 'Bridge only', test: i => !i.server && !i.appOnly && !i.docOnly},
-    {id: 'reads', label: 'Reads', test: i => !i.docOnly && !changesData(i)},
-    {id: 'writes', label: 'Changes data', test: i => !i.docOnly && changesData(i)},
+    {id: 'reads', label: 'Reads', test: i => !changesData(i)},
+    {id: 'writes', label: 'Changes data', test: i => changesData(i)},
   ],
 };
 
 const query = ref('');
 const filter = ref('all');
 
-const runnable = computed(() => allGroups.value.filter(g => !g.docOnly).flatMap(g => g.intents));
-const total = computed(() => runnable.value.length);
+const all = computed(() => props.groups.flatMap(g => g.intents));
+const total = computed(() => all.value.length);
 
 const filters = computed(() => FILTERS[props.kind].map(f => ({
   ...f,
-  count: runnable.value.filter(f.test).length,
+  count: all.value.filter(f.test).length,
 })));
 
 const haystack = (g, i) => [
   g.id, g.title, i.action, i.description,
   ...(i.params?.required ?? []).map(p => p.name), ...(i.params?.optional ?? []).map(p => p.name),
-  i.server?.serverTool ?? '',
 ].join(' ');
 
 const visible = computed(() => {
   const test = FILTERS[props.kind].find(f => f.id === filter.value)?.test ?? (() => true);
-  return allGroups.value
-    .filter(g => filter.value === 'all' || !g.docOnly)
+  return props.groups
     .map(g => ({...g, shown: g.intents.filter(i => test(i) && matches(haystack(g, i), query.value))}))
     .filter(g => g.shown.length);
 });
@@ -139,16 +95,12 @@ const visible = computed(() => {
 const navGroups = computed(() => visible.value.map(g => ({
   id: g.id,
   title: g.title,
-  muted: g.docOnly,
   source: g,
   items: g.shown.map(i => ({
     key: keyOf(g, i),
     label: i.action,
     source: i,
-    dots: [
-      ...(i.server && !i.docOnly ? [{tone: 'green', title: 'Runs on server'}] : []),
-      ...(!i.docOnly && changesData(i) ? [{tone: 'amber', title: 'Changes data'}] : []),
-    ],
+    dots: changesData(i) ? [{tone: 'amber', title: 'Changes data'}] : [],
   })),
 })));
 
@@ -169,7 +121,7 @@ const selectedKey = ref('');
 const navOpen = ref(false);
 
 const selected = computed(() => {
-  for (const group of allGroups.value) {
+  for (const group of props.groups) {
     for (const intent of group.intents) {
       if (keyOf(group, intent) === selectedKey.value) return {group, intent};
     }
@@ -190,21 +142,9 @@ function select(group, intent) {
 const navEl = ref(null);
 const revealActive = () => navEl.value?.reveal();
 
-/** "Http.get" → that intent (a server-only tool's declared equivalent). */
-function selectByName(name) {
-  const [groupId, action] = name.split('.');
-  const group = allGroups.value.find(g => g.id.toLowerCase() === String(groupId).toLowerCase());
-  const intent = group?.intents.find(i => i.action === action);
-  if (group && intent) {
-    query.value = '';
-    filter.value = 'all';
-    select(group, intent);
-  }
-}
-
 function selectFromHash() {
   const hash = decodeURIComponent(window.location.hash.slice(1));
-  for (const group of allGroups.value) {
+  for (const group of props.groups) {
     const intent = group.intents.find(i => keyOf(group, i) === hash);
     if (intent) {
       select(group, intent);
@@ -216,7 +156,7 @@ function selectFromHash() {
 
 onMounted(() => {
   if (!selectFromHash()) {
-    const first = allGroups.value.find(g => g.intents.length);
+    const first = props.groups.find(g => g.intents.length);
     if (first) {
       selectedKey.value = keyOf(first, first.intents[0]);
       openGroups.add(first.id);

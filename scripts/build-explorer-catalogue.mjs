@@ -1,29 +1,26 @@
 #!/usr/bin/env node
 // Builds the two catalogues the in-app Explorer pages read:
 //
-//   docs/.vitepress/explorer/intents.json         application intents (valuApi.sendIntent)
-//   docs/.vitepress/explorer/server-intents.json  service intents (valuApi.callService), with
-//                                                 what serves each one outside the browser
+//   docs/.vitepress/explorer/intents.json          application intents (valuApi.sendIntent)
+//   docs/.vitepress/explorer/service-intents.json  service intents (valuApi.callService)
 //
-// Sources, both checked out next to this repo (the same layout the
-// "Update Intents Documentation" workflow uses):
+// Source: a valusocial-web checkout next to this repo (the same layout the
+// "Update Intents Documentation" workflow uses) — src/Configs/Application_
+// Manifests.js and Service_Manifests.js, the manifests the platform registers,
+// so the authority on which intents exist and what they take.
 //
-//   valusocial-web  src/Configs/Application_Manifests.js, Service_Manifests.js —
-//                   the manifests the platform registers, so the authority on
-//                   which intents exist and what they take.
-//   valu-api        docs/parity-matrix.csv, docs/parity.md — which service intents
-//                   the SDK also runs over a socket (on the Valu Guru server, in a
-//                   Node agent), which only the application can serve, and the
-//                   server tools no manifest declares.
+// The service catalogue holds only what an iframe application may call over
+// the bridge: intents whose availability includes `developer`. The rest are
+// offered to AI agents alone.
 //
-// The REST catalogue is not built here: docs/apidocs lives in this repo, so a
-// VitePress data loader reads it at build time and it can never go stale.
+// The REST catalogue is not built here: it comes from the running platform
+// (Developer.list-application-apis) when the page opens.
 //
 // No timestamps or commit ids go into the output, on purpose: the workflow
 // commits only when `git diff` sees a change, and a field that changes on every
 // run would turn each dispatch into a commit.
 //
-// Usage: node scripts/build-explorer-catalogue.mjs [--web <dir>] [--valu-api <dir>]
+// Usage: node scripts/build-explorer-catalogue.mjs [--web <dir>]
 
 import fs from 'node:fs';
 import path from 'node:path';
@@ -38,7 +35,6 @@ function arg(name, fallback) {
 }
 
 const webDir = path.resolve(root, arg('web', process.env.VALUSOCIAL_WEB || '../valusocial-web'));
-const valuApiDir = path.resolve(root, arg('valu-api', process.env.VALU_API || '../valu-api'));
 
 function requireFile(file, hint) {
   if (!fs.existsSync(file)) {
@@ -47,8 +43,6 @@ function requireFile(file, hint) {
   }
   return file;
 }
-
-// ── manifests ───────────────────────────────────────────────────────────────
 
 const appManifests = requireFile(
   path.join(webDir, 'src/Configs/Application_Manifests.js'),
@@ -105,127 +99,18 @@ const applications = PREDEFINED_APPLICATIONS
   }))
   .sort(byTitle);
 
-// ── parity (valu-api) ──────────────────────────────────────────────────────
+// INTENT_AVAILABILITY.DEVELOPER — "available to developers (dev portal, API bridge)".
+const bridgeCallable = intent => (intent.availability ?? []).includes('developer');
 
-const parityCsv = requireFile(
-  path.join(valuApiDir, 'docs/parity-matrix.csv'),
-  'Point --valu-api at a Roomful/valu-api checkout.',
-);
-const parityMd = requireFile(
-  path.join(valuApiDir, 'docs/parity.md'),
-  'Point --valu-api at a Roomful/valu-api checkout.',
-);
-const valuApiPkg = JSON.parse(fs.readFileSync(path.join(valuApiDir, 'package.json'), 'utf8'));
-
-/** RFC 4180-ish: quoted fields, "" for a quote, commas inside quotes. */
-function parseCsv(text) {
-  const rows = [];
-  let row = [], field = '', quoted = false;
-  for (let i = 0; i < text.length; i++) {
-    const c = text[i];
-    if (quoted) {
-      if (c === '"' && text[i + 1] === '"') { field += '"'; i++; }
-      else if (c === '"') quoted = false;
-      else field += c;
-    } else if (c === '"') quoted = true;
-    else if (c === ',') { row.push(field); field = ''; }
-    else if (c === '\n' || c === '\r') {
-      if (c === '\r' && text[i + 1] === '\n') i++;
-      row.push(field); field = '';
-      if (row.some(f => f !== '')) rows.push(row);
-      row = [];
-    } else field += c;
-  }
-  if (field !== '' || row.length) { row.push(field); rows.push(row); }
-  const [header, ...body] = rows;
-  return body.map(r => Object.fromEntries(header.map((h, i) => [h, r[i] ?? ''])));
-}
-
-const parity = new Map();
-for (const row of parseCsv(fs.readFileSync(parityCsv, 'utf8'))) {
-  parity.set(`${row.service}.${row.function}`, {
-    channel: row.channel,
-    mutates: row.mutates === 'write',
-    cache: row.cache,
-    scopes: row.scopes ? row.scopes.split(/\s+/).filter(Boolean) : [],
-    serverTool: row.server_tool || undefined,
-    returns: row.returns || undefined,
-    status: row.status,
-  });
-}
-
-/** The body of one `## …` section of parity.md, heading excluded. */
-function section(md, headingStart) {
-  const start = md.split('\n').findIndex(l => l.startsWith(`## ${headingStart}`));
-  if (start < 0) return [];
-  const lines = md.split('\n').slice(start + 1);
-  const end = lines.findIndex(l => l.startsWith('## '));
-  return end < 0 ? lines : lines.slice(0, end);
-}
-
-const parityText = fs.readFileSync(parityMd, 'utf8');
-
-// "Declared, and deliberately not here": declared in the manifest, but only the
-// application can serve them (they open a dock, render a picker, …).
-const appOnly = new Set(
-  section(parityText, 'Declared, and deliberately not here')
-    .map(l => l.match(/^- `([^`]+)`/)?.[1])
-    .filter(Boolean),
-);
-
-// "Server-only tools": tools the Valu Guru server runs that no manifest declares.
-const serverOnlyTools = [];
-{
-  let current = null;
-  for (const line of section(parityText, 'Server-only tools')) {
-    const head = line.match(/^### `([^`]+)`\s*[—-]\s*(\S+)/);
-    if (head) {
-      current = {name: head[1], kind: head[2], summary: '', equivalents: []};
-      serverOnlyTools.push(current);
-      continue;
-    }
-    if (!current) continue;
-    const eq = line.match(/^Declared equivalent:\s*(.+)$/);
-    if (eq) {
-      current.equivalents = [...eq[1].matchAll(/`([^`]+)`/g)].map(m => m[1]);
-    } else if (line.trim() && !current.summary) {
-      current.summary = line.trim();
-    }
-  }
-}
-
-// ── services ───────────────────────────────────────────────────────────────
-
-const declared = new Set();
 const services = SERVICE_MANIFESTS
   .map(svc => ({
     id: String(svc.id),
     title: String(svc.title || svc.id),
     description: String(svc.description ?? ''),
-    source: svc.source ? String(svc.source) : undefined,
-    intents: svc.intents.map(intent => {
-      const key = `${svc.id}.${intent.action}`;
-      declared.add(key);
-      const out = normalizeIntent(intent);
-      const facts = parity.get(key);
-      if (facts) out.server = facts;
-      if (appOnly.has(key)) out.appOnly = true;
-      return out;
-    }),
+    intents: svc.intents.filter(bridgeCallable).map(normalizeIntent),
   }))
+  .filter(svc => svc.intents.length)
   .sort(byTitle);
-
-// Functions the SDK declares itself (scripts/extensions.js) — callable over a
-// socket, absent from the platform manifest, so not reachable by callService.
-const sdkOnly = [...parity.entries()]
-  .filter(([key]) => !declared.has(key))
-  .map(([key, facts]) => {
-    const [service, action] = key.split('.');
-    return {service, action, server: facts};
-  })
-  .sort((a, b) => a.service.localeCompare(b.service) || a.action.localeCompare(b.action));
-
-// ── write ──────────────────────────────────────────────────────────────────
 
 fs.mkdirSync(outDir, {recursive: true});
 
@@ -235,17 +120,6 @@ const write = (name, data) => {
   return path.relative(root, file);
 };
 
-const intentsFile = write('intents.json', {applications});
-const serverFile = write('server-intents.json', {
-  sdk: {package: valuApiPkg.name, version: valuApiPkg.version},
-  services,
-  sdkOnly,
-  serverOnlyTools,
-});
-
 const count = list => list.reduce((n, x) => n + x.intents.length, 0);
-console.log(`${intentsFile}: ${count(applications)} intents in ${applications.length} applications`);
-console.log(
-  `${serverFile}: ${count(services)} intents in ${services.length} services, `
-  + `${parity.size} SDK functions, ${appOnly.size} application-only, ${serverOnlyTools.length} server-only tools`,
-);
+console.log(`${write('intents.json', {applications})}: ${count(applications)} intents in ${applications.length} applications`);
+console.log(`${write('service-intents.json', {services})}: ${count(services)} bridge-callable intents in ${services.length} services`);

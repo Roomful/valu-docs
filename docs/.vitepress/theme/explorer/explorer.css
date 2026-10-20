@@ -59,39 +59,7 @@ html:not(.valu-framed) .VPNavScreenMenuLink[href^="/explorer/"] {
   50% { opacity: 0.3; }
 }
 
-/* ── chips, counts ─────────────────────────────────────────────────────── */
-
-.vx-chip {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  padding: 4px 12px;
-  border: 1px solid var(--vp-c-divider);
-  border-radius: 999px;
-  background: transparent;
-  color: var(--vp-c-text-2);
-  font-size: 13px;
-  font-weight: 500;
-  line-height: 20px;
-  cursor: pointer;
-  transition: color 0.2s, border-color 0.2s, background-color 0.2s;
-}
-
-.vx-chip:hover:not(:disabled) {
-  color: var(--vp-c-text-1);
-  border-color: var(--vp-c-brand-1);
-}
-
-.vx-chip:disabled {
-  opacity: 0.45;
-  cursor: default;
-}
-
-.vx-chip.small {
-  padding: 1px 9px;
-  font-family: var(--vp-font-family-mono);
-  font-size: 12px;
-}
+/* ── counts ─────────────────────────────────────────────────────────────── */
 
 .vx-count {
   color: var(--vp-c-text-3);
@@ -538,7 +506,6 @@ img.vx-avatar {
 }
 
 .pg-group-head:hover { background: var(--vp-c-default-soft); }
-.pg-group.doc .pg-group-head { color: var(--vp-c-text-2); }
 
 .pg-group-title {
   flex: 1;
@@ -671,14 +638,6 @@ img.vx-avatar {
 .pg-title-row .vx-badges { margin-left: 0; }
 
 .vp-doc .pg-desc p:first-child { margin-top: 10px; }
-
-.vp-doc .pg-equivalents {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: 6px;
-  margin: 14px 0 0;
-}
 
 .pg-work {
   display: grid;

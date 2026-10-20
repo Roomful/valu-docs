@@ -6,7 +6,7 @@
     </select>
 
     <nav ref="treeEl" class="pg-tree">
-      <div v-for="g in groups" :key="g.id" class="pg-group" :class="{doc: g.muted}">
+      <div v-for="g in groups" :key="g.id" class="pg-group">
         <button type="button" class="pg-group-head" :aria-expanded="isOpen(g)" @click="$emit('toggle', g)">
           <span class="pg-caret" aria-hidden="true"></span>
           <span class="pg-group-title">{{ g.title }}</span>
@@ -46,7 +46,7 @@ import {ref} from 'vue';
 const props = defineProps({
   label: {type: String, required: true},
   placeholder: {type: String, required: true},
-  /** [{id, title, items: [{key, label, method?, title?, plain?, dots?}], count?, note?, noteTone?, muted?}] */
+  /** [{id, title, items: [{key, label, method?, title?, plain?, dots?}], count?, note?, noteTone?}] */
   groups: {type: Array, required: true},
   filters: {type: Array, default: () => []},
   selectedKey: {type: String, default: ''},

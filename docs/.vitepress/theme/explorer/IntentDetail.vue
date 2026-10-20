@@ -3,7 +3,7 @@
     <header class="pg-head">
       <div class="pg-crumb">
         <span>{{ group.title }}</span>
-        <code v-if="!group.docOnly">{{ group.id }}</code>
+        <code>{{ group.id }}</code>
       </div>
       <div class="pg-title-row">
         <div class="pg-title" role="heading" aria-level="2"><code>{{ intent.action }}</code></div>
@@ -22,182 +22,159 @@
       </template>
     </dl>
 
-    <p v-if="intent.equivalents?.length" class="pg-equivalents">
-      <span class="vx-muted">Declared equivalent:</span>
-      <button
-        v-for="e in intent.equivalents"
-        :key="e"
-        type="button"
-        class="vx-chip small"
-        @click="$emit('select', e)"
-      >{{ e }}</button>
-    </p>
-
-    <template v-if="!intent.docOnly">
-      <div class="pg-work">
-        <!-- ── request ─────────────────────────────────────────────────── -->
-        <section class="pg-pane" aria-label="Parameters">
-          <header class="pg-pane-head">
-            <span class="pg-pane-title">Parameters</span>
-            <span class="pg-seg" role="group" aria-label="Edit as">
-              <button type="button" :class="{active: state.mode === 'form'}" :aria-pressed="state.mode === 'form'" @click="toForm">Form</button>
-              <button type="button" :class="{active: state.mode === 'json'}" :aria-pressed="state.mode === 'json'" @click="toJson">JSON</button>
-            </span>
-          </header>
-
-          <div v-if="state.mode === 'form'" class="pg-fields">
-            <p v-if="!params.length" class="vx-muted pg-none">This intent takes no parameters.</p>
-            <div v-for="p in params" :key="p.name" class="pg-field" :class="{invalid: built.fieldErrors[p.name]}">
-              <label class="pg-field-label" :for="fieldId(p)">
-                <code>{{ p.name }}</code>
-                <span class="pg-type">{{ p.type }}</span>
-                <span v-if="p.required" class="pg-req">required</span>
-              </label>
-
-              <select v-if="kindOf(p) === 'select'" :id="fieldId(p)" v-model="state.values[p.name]" class="pg-input">
-                <option value="">{{ p.required ? 'Choose…' : '— not set —' }}</option>
-                <option v-for="o in p.options" :key="o.value" :value="o.value">{{ o.label === o.value ? o.value : `${o.label} (${o.value})` }}</option>
-              </select>
-              <label v-else-if="kindOf(p) === 'boolean' && p.required" class="pg-check">
-                <input :id="fieldId(p)" v-model="state.values[p.name]" type="checkbox" />
-                <span>{{ state.values[p.name] ? 'true' : 'false' }}</span>
-              </label>
-              <select v-else-if="kindOf(p) === 'boolean'" :id="fieldId(p)" v-model="state.values[p.name]" class="pg-input">
-                <option value="">— not set —</option>
-                <option value="true">true</option>
-                <option value="false">false</option>
-              </select>
-              <input
-                v-else-if="kindOf(p) === 'number'"
-                :id="fieldId(p)"
-                v-model="state.values[p.name]"
-                class="pg-input"
-                type="number"
-                inputmode="decimal"
-              />
-              <textarea
-                v-else-if="kindOf(p) === 'json'"
-                :id="fieldId(p)"
-                v-model="state.values[p.name]"
-                class="pg-input pg-json-field"
-                rows="3"
-                spellcheck="false"
-                :placeholder="p.type.endsWith('[]') || p.type === 'array' ? '[ ]' : '{ }'"
-              ></textarea>
-              <div v-else-if="kindOf(p) === 'file'" class="pg-input pg-input-off">A FileList cannot be sent from here.</div>
-              <input v-else :id="fieldId(p)" v-model="state.values[p.name]" class="pg-input" type="text" spellcheck="false" />
-
-              <span v-if="built.fieldErrors[p.name]" class="pg-field-error">{{ built.fieldErrors[p.name] }}</span>
-              <div v-if="p.description" class="pg-help">
-                <span v-if="!expanded[p.name] && isLong(p.description)" v-html="inlineMd(firstSentence(p.description, 140))"></span>
-                <span v-else v-html="inlineMd(p.description)"></span>
-                <button
-                  v-if="isLong(p.description)"
-                  type="button"
-                  class="vx-link-button"
-                  @click="expanded[p.name] = !expanded[p.name]"
-                >{{ expanded[p.name] ? 'Less' : 'More' }}</button>
-              </div>
-            </div>
-            <p v-if="extraKeys.length" class="vx-muted pg-none">Also sent from the JSON: <code v-for="k in extraKeys" :key="k">{{ k }}</code></p>
-          </div>
-
-          <div v-else class="pg-fields">
-            <textarea
-              v-model="state.jsonText"
-              class="pg-input pg-json"
-              :rows="Math.min(18, Math.max(6, state.jsonText.split('\n').length + 1))"
-              spellcheck="false"
-              aria-label="Parameters as JSON"
-            ></textarea>
-            <p v-if="built.error" class="pg-field-error">{{ built.error }}</p>
-          </div>
-
-          <div v-if="state.confirming" class="vx-confirm" role="alert">
-            <span>
-              <template v-if="built.missing.length">Missing {{ built.missing.join(', ') }}. </template>
-              <template v-if="writes"><strong>{{ intent.action }}</strong> changes data in your account. </template>
-              Run it?
-            </span>
-            <button type="button" class="vx-button danger" @click="run(true)">Run it</button>
-            <button type="button" class="vx-button" @click="state.confirming = false">Cancel</button>
-          </div>
-          <div v-else class="pg-actions">
-            <button
-              type="button"
-              class="vx-button brand"
-              :disabled="!connected || !built.ok || state.running"
-              :title="connected ? '' : 'Runs only inside Valu Social'"
-              @click="run(false)"
-            >{{ state.running ? 'Running…' : 'Run' }}</button>
-            <button v-if="state.running" type="button" class="vx-button" @click="stop">Stop waiting</button>
-            <button v-else type="button" class="vx-link-button" @click="reset">Reset</button>
-          </div>
-        </section>
-
-        <!-- ── response ────────────────────────────────────────────────── -->
-        <section class="pg-pane pg-response" aria-label="Response">
-          <header class="pg-pane-head">
-            <span class="pg-pane-title">Response</span>
-            <template v-if="shownRun">
-              <span class="vx-badge" :class="shownRun.ok ? 'green' : 'red'">{{ shownRun.ok ? 'OK' : 'Error' }}</span>
-              <span class="vx-muted">{{ shownRun.ms }} ms · {{ clockTime(shownRun.at) }}</span>
-              <button type="button" class="vx-link-button pg-copy" @click="copy(shownRun.text, 'result')">
-                {{ copied === 'result' ? 'Copied' : 'Copy' }}
-              </button>
-            </template>
-          </header>
-
-          <div v-if="state.running" class="pg-waiting">
-            <span class="vx-dot" aria-hidden="true"></span>
-            Waiting for Valu Social… {{ elapsed }}s<template v-if="elapsed >= 3"> — it may be waiting for you there</template>
-          </div>
-          <pre v-if="shownRun" class="pg-out" :class="{err: !shownRun.ok}"><code>{{ shownRun.text }}</code></pre>
-          <p v-else-if="!state.running" class="vx-muted pg-empty">
-            {{ connected ? 'Run the intent to see what comes back.' : framed ? 'Waiting for Valu Social to connect…' : 'Runs only inside Valu Social.' }}
-          </p>
-
-          <div v-if="state.runs.length > 1" class="pg-history" aria-label="Earlier runs">
-            <button
-              v-for="(r, n) in state.runs"
-              :key="r.at"
-              type="button"
-              class="pg-run"
-              :class="{active: n === state.shown, err: !r.ok}"
-              :title="JSON.stringify(r.params)"
-              @click="state.shown = n"
-            >{{ r.ok ? '✓' : '✕' }} {{ clockTime(r.at) }}</button>
-          </div>
-        </section>
-      </div>
-
-      <!-- ── code ──────────────────────────────────────────────────────── -->
-      <section class="pg-pane pg-code" aria-label="Code">
+    <div class="pg-work">
+      <!-- ── request ─────────────────────────────────────────────────── -->
+      <section class="pg-pane" aria-label="Parameters">
         <header class="pg-pane-head">
-          <span class="pg-seg" role="tablist">
-            <button
-              v-for="t in codeTabs"
-              :key="t.id"
-              type="button"
-              role="tab"
-              :class="{active: codeTab === t.id}"
-              :aria-selected="codeTab === t.id"
-              @click="codeTab = t.id"
-            >{{ t.label }}</button>
+          <span class="pg-pane-title">Parameters</span>
+          <span class="pg-seg" role="group" aria-label="Edit as">
+            <button type="button" :class="{active: state.mode === 'form'}" :aria-pressed="state.mode === 'form'" @click="toForm">Form</button>
+            <button type="button" :class="{active: state.mode === 'json'}" :aria-pressed="state.mode === 'json'" @click="toJson">JSON</button>
           </span>
-          <button type="button" class="vx-link-button pg-copy" @click="copy(currentCode, 'code')">
-            {{ copied === 'code' ? 'Copied' : 'Copy' }}
-          </button>
         </header>
-        <pre class="pg-out"><code>{{ currentCode }}</code></pre>
+
+        <div v-if="state.mode === 'form'" class="pg-fields">
+          <p v-if="!params.length" class="vx-muted pg-none">This intent takes no parameters.</p>
+          <div v-for="p in params" :key="p.name" class="pg-field" :class="{invalid: built.fieldErrors[p.name]}">
+            <label class="pg-field-label" :for="fieldId(p)">
+              <code>{{ p.name }}</code>
+              <span class="pg-type">{{ p.type }}</span>
+              <span v-if="p.required" class="pg-req">required</span>
+            </label>
+
+            <select v-if="kindOf(p) === 'select'" :id="fieldId(p)" v-model="state.values[p.name]" class="pg-input">
+              <option value="">{{ p.required ? 'Choose…' : '— not set —' }}</option>
+              <option v-for="o in p.options" :key="o.value" :value="o.value">{{ o.label === o.value ? o.value : `${o.label} (${o.value})` }}</option>
+            </select>
+            <label v-else-if="kindOf(p) === 'boolean' && p.required" class="pg-check">
+              <input :id="fieldId(p)" v-model="state.values[p.name]" type="checkbox" />
+              <span>{{ state.values[p.name] ? 'true' : 'false' }}</span>
+            </label>
+            <select v-else-if="kindOf(p) === 'boolean'" :id="fieldId(p)" v-model="state.values[p.name]" class="pg-input">
+              <option value="">— not set —</option>
+              <option value="true">true</option>
+              <option value="false">false</option>
+            </select>
+            <input
+              v-else-if="kindOf(p) === 'number'"
+              :id="fieldId(p)"
+              v-model="state.values[p.name]"
+              class="pg-input"
+              type="number"
+              inputmode="decimal"
+            />
+            <textarea
+              v-else-if="kindOf(p) === 'json'"
+              :id="fieldId(p)"
+              v-model="state.values[p.name]"
+              class="pg-input pg-json-field"
+              rows="3"
+              spellcheck="false"
+              :placeholder="p.type.endsWith('[]') || p.type === 'array' ? '[ ]' : '{ }'"
+            ></textarea>
+            <div v-else-if="kindOf(p) === 'file'" class="pg-input pg-input-off">A FileList cannot be sent from here.</div>
+            <input v-else :id="fieldId(p)" v-model="state.values[p.name]" class="pg-input" type="text" spellcheck="false" />
+
+            <span v-if="built.fieldErrors[p.name]" class="pg-field-error">{{ built.fieldErrors[p.name] }}</span>
+            <div v-if="p.description" class="pg-help">
+              <span v-if="!expanded[p.name] && isLong(p.description)" v-html="inlineMd(firstSentence(p.description, 140))"></span>
+              <span v-else v-html="inlineMd(p.description)"></span>
+              <button
+                v-if="isLong(p.description)"
+                type="button"
+                class="vx-link-button"
+                @click="expanded[p.name] = !expanded[p.name]"
+              >{{ expanded[p.name] ? 'Less' : 'More' }}</button>
+            </div>
+          </div>
+          <p v-if="extraKeys.length" class="vx-muted pg-none">Also sent from the JSON: <code v-for="k in extraKeys" :key="k">{{ k }}</code></p>
+        </div>
+
+        <div v-else class="pg-fields">
+          <textarea
+            v-model="state.jsonText"
+            class="pg-input pg-json"
+            :rows="Math.min(18, Math.max(6, state.jsonText.split('\n').length + 1))"
+            spellcheck="false"
+            aria-label="Parameters as JSON"
+          ></textarea>
+          <p v-if="built.error" class="pg-field-error">{{ built.error }}</p>
+        </div>
+
+        <div v-if="state.confirming" class="vx-confirm" role="alert">
+          <span>
+            <template v-if="built.missing.length">Missing {{ built.missing.join(', ') }}. </template>
+            <template v-if="writes"><strong>{{ intent.action }}</strong> changes data in your account. </template>
+            Run it?
+          </span>
+          <button type="button" class="vx-button danger" @click="run(true)">Run it</button>
+          <button type="button" class="vx-button" @click="state.confirming = false">Cancel</button>
+        </div>
+        <div v-else class="pg-actions">
+          <button
+            type="button"
+            class="vx-button brand"
+            :disabled="!connected || !built.ok || state.running"
+            :title="connected ? '' : 'Runs only inside Valu Social'"
+            @click="run(false)"
+          >{{ state.running ? 'Running…' : 'Run' }}</button>
+          <button v-if="state.running" type="button" class="vx-button" @click="stop">Stop waiting</button>
+          <button v-else type="button" class="vx-link-button" @click="reset">Reset</button>
+        </div>
       </section>
-    </template>
+
+      <!-- ── response ────────────────────────────────────────────────── -->
+      <section class="pg-pane pg-response" aria-label="Response">
+        <header class="pg-pane-head">
+          <span class="pg-pane-title">Response</span>
+          <template v-if="shownRun">
+            <span class="vx-badge" :class="shownRun.ok ? 'green' : 'red'">{{ shownRun.ok ? 'OK' : 'Error' }}</span>
+            <span class="vx-muted">{{ shownRun.ms }} ms · {{ clockTime(shownRun.at) }}</span>
+            <button type="button" class="vx-link-button pg-copy" @click="copy(shownRun.text, 'result')">
+              {{ copied === 'result' ? 'Copied' : 'Copy' }}
+            </button>
+          </template>
+        </header>
+
+        <div v-if="state.running" class="pg-waiting">
+          <span class="vx-dot" aria-hidden="true"></span>
+          Waiting for Valu Social… {{ elapsed }}s<template v-if="elapsed >= 3"> — it may be waiting for you there</template>
+        </div>
+        <pre v-if="shownRun" class="pg-out" :class="{err: !shownRun.ok}"><code>{{ shownRun.text }}</code></pre>
+        <p v-else-if="!state.running" class="vx-muted pg-empty">
+          {{ connected ? 'Run the intent to see what comes back.' : framed ? 'Waiting for Valu Social to connect…' : 'Runs only inside Valu Social.' }}
+        </p>
+
+        <div v-if="state.runs.length > 1" class="pg-history" aria-label="Earlier runs">
+          <button
+            v-for="(r, n) in state.runs"
+            :key="r.at"
+            type="button"
+            class="pg-run"
+            :class="{active: n === state.shown, err: !r.ok}"
+            :title="JSON.stringify(r.params)"
+            @click="state.shown = n"
+          >{{ r.ok ? '✓' : '✕' }} {{ clockTime(r.at) }}</button>
+        </div>
+      </section>
+    </div>
+
+    <!-- ── code ──────────────────────────────────────────────────────── -->
+    <section class="pg-pane pg-code" aria-label="Code">
+      <header class="pg-pane-head">
+        <span class="pg-pane-title">From an iframe app</span>
+        <button type="button" class="vx-link-button pg-copy" @click="copy(currentCode, 'code')">
+          {{ copied === 'code' ? 'Copied' : 'Copy' }}
+        </button>
+      </header>
+      <pre class="pg-out"><code>{{ currentCode }}</code></pre>
+    </section>
   </article>
 </template>
 
 <script setup>
 import {computed, onBeforeUnmount, onMounted, reactive, ref} from 'vue';
-import {camelCase, changesData, copyText, escapeHtml, firstSentence, inlineMd, prettyJson, richText} from './format.mjs';
+import {changesData, copyText, escapeHtml, firstSentence, inlineMd, prettyJson, richText} from './format.mjs';
 import {callService, replyError, runIntent, useValuBridge} from './valuBridge.mjs';
 
 const props = defineProps({
@@ -205,9 +182,7 @@ const props = defineProps({
   group: {type: Object, required: true},
   intent: {type: Object, required: true},
   state: {type: Object, required: true}, // per-intent, owned by the playground
-  sdkPackage: {type: String, default: '@arkeytyp/valu-api'},
 });
-defineEmits(['select']);
 
 const {framed, connected} = useValuBridge();
 
@@ -218,31 +193,17 @@ const params = computed(() => [
   ...(props.intent.params?.optional ?? []).map(p => ({...p, required: false})),
 ]);
 
-const writes = computed(() => !props.intent.docOnly && changesData(props.intent));
-
-const KIND_TONE = {binding: 'green', declared: 'brand', internal: 'gray'};
+const writes = computed(() => changesData(props.intent));
 
 const badges = computed(() => {
   const i = props.intent;
   const list = [];
-  if (i.toolKind) list.push({label: i.toolKind, tone: KIND_TONE[i.toolKind] ?? 'gray', title: 'Server-only tool'});
-  if (props.kind === 'service' && !i.docOnly) {
-    if (i.server) list.push({label: 'Server', tone: 'green', title: `Also runs without a browser, over the ${i.server.channel} channel`});
-    else if (i.appOnly) list.push({label: 'App only', tone: 'gray', title: 'Only the Valu Social application can serve it'});
-    else list.push({label: 'Bridge', tone: 'gray', title: `Not in the ${props.sdkPackage} catalogue yet`});
-  }
   if (writes.value) list.push({label: 'Writes', tone: 'amber', title: 'Changes data — Run asks first'});
   if (i.availability?.includes('ai')) list.push({label: 'AI', tone: 'brand', title: 'Offered to AI agents as a tool'});
   if (i.headless) list.push({label: 'Headless', tone: 'gray', title: 'Works without opening the application'});
   return list;
 });
 
-const CHANNELS = {
-  roomful: 'the Roomful platform socket',
-  valuguru: 'the Valu Guru server\'s data channel',
-  'app-state': 'state the running application holds',
-  local: 'computed by the SDK, no call',
-};
 const codeList = items => items.map(s => `<code>${escapeHtml(s)}</code>`).join(' ');
 
 const facts = computed(() => {
@@ -252,13 +213,6 @@ const facts = computed(() => {
   if (i.availability?.length) {
     const who = {ai: 'AI agents', developer: 'developers'};
     list.push({term: 'Offered to', html: i.availability.map(a => escapeHtml(who[a] ?? a)).join(', ')});
-  }
-  if (i.server) {
-    const s = i.server;
-    list.push({term: 'Channel', html: `<code>${escapeHtml(s.channel)}</code> — ${escapeHtml(CHANNELS[s.channel] ?? '')}`});
-    if (s.returns) list.push({term: 'Returns', html: `<code>${escapeHtml(s.returns)}</code>`});
-    if (s.scopes?.length) list.push({term: 'Scopes', html: codeList(s.scopes)});
-    if (s.serverTool) list.push({term: 'Server tool', html: `<code>${escapeHtml(s.serverTool)}</code>`});
   }
   return list;
 });
@@ -404,21 +358,10 @@ async function run(confirmed) {
 
 // ── code ─────────────────────────────────────────────────────────────────
 
-const codeTab = ref('bridge');
-const codeTabs = computed(() => [
-  {id: 'bridge', label: 'iframe app (bridge)'},
-  ...(props.kind === 'service' && props.intent.server ? [{id: 'sdk', label: `Headless (${props.sdkPackage})`}] : []),
-]);
-
 const currentCode = computed(() => {
   const args = JSON.stringify(built.value.ok ? built.value.params : {}, null, 2);
   const target = JSON.stringify(props.group.id);
   const action = JSON.stringify(props.intent.action);
-  if (codeTab.value === 'sdk' && props.intent.server) {
-    const sdkArgs = args === '{}' ? '' : args;
-    return `const valu = createValuServices({socket, guru});\n`
-      + `const data = await valu.data.${props.group.id}.${camelCase(props.intent.action)}(${sdkArgs});`;
-  }
   return props.kind === 'application'
     ? `await valuApi.sendIntent(new Intent(${target}, ${action}, ${args}));`
     : `const result = await valuApi.callService(new Intent(${target}, ${action}, ${args}));`;

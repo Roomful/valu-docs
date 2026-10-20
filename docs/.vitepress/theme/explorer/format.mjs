@@ -63,20 +63,16 @@ export function sampleValue(param) {
 export const sampleParams = params =>
   Object.fromEntries((params?.required ?? []).map(p => [p.name, sampleValue(p)]));
 
-// Words that mark an action as changing data. Used when the SDK catalogue has
-// no `mutates` fact for the intent (application intents, newer services).
+// Words that mark an action as changing data. The manifests do not say, so the
+// action's own name does: it decides the "Changes data" filter and when Run
+// asks before sending.
 const WRITE_WORDS = new Set([
   'accept', 'add', 'archive', 'assign', 'cancel', 'checkout', 'claim', 'clear', 'create', 'decline',
   'delete', 'edit', 'end', 'invite', 'join', 'mark', 'message', 'paste', 'post', 'publish', 'rate',
   'release', 'remove', 'rename', 'request', 'save', 'send', 'set', 'transfer', 'unlist', 'update', 'upload',
 ]);
 
-export function changesData(intent) {
-  if (intent.server) return intent.server.mutates;
-  return intent.action.split(/[-_]/).some(word => WRITE_WORDS.has(word));
-}
-
-export const camelCase = s => String(s).replace(/[-_]+([a-z0-9])/g, (_, c) => c.toUpperCase());
+export const changesData = intent => intent.action.split(/[-_]/).some(word => WRITE_WORDS.has(word));
 
 /** Pretty JSON for display; never throws on what a reply can hold. */
 export function prettyJson(value) {
