@@ -2,7 +2,6 @@
 title: Intents
 aside: false
 outline: false
-prev: false
 search: false
 pageClass: explorer-page
 ---
@@ -17,7 +16,7 @@ An application intent asks a Valu Social application to do something on screen: 
 show a user, connect to a meeting. An iframe application sends one with
 `valuApi.sendIntent(new Intent(applicationId, action, params))` and the platform opens the
 application to handle it. For calls that return data instead, see
-[Server Intents](./server-intents).
+[Service Intents](./service-intents).
 
 Inside Valu Social, **Run** sends the intent through the bridge, as you.
 

@@ -1,9 +1,6 @@
 <template>
   <div class="vx">
-    <div class="vx-status" :class="statusTone" role="status">
-      <span class="vx-dot" aria-hidden="true"></span>
-      <span>{{ statusText }}</span>
-    </div>
+    <BridgeStatus />
 
     <div class="vx-toolbar">
       <input
@@ -64,9 +61,9 @@
 
 <script setup>
 import {computed, nextTick, onBeforeUnmount, onMounted, ref} from 'vue';
+import BridgeStatus from './BridgeStatus.vue';
 import IntentCard from './IntentCard.vue';
 import {changesData, inlineMd, matches} from './format.mjs';
-import {useValuBridge} from './valuBridge.mjs';
 
 const props = defineProps({
   kind: {type: String, required: true}, // 'application' | 'service'
@@ -74,16 +71,7 @@ const props = defineProps({
   sdkPackage: {type: String, default: '@arkeytyp/valu-api'},
 });
 
-const {framed, connected, applicationId} = useValuBridge();
-
 const groupNoun = computed(() => (props.kind === 'application' ? 'applications' : 'services'));
-
-const statusTone = computed(() => (connected.value ? 'ok' : framed.value ? 'wait' : 'off'));
-const statusText = computed(() => {
-  if (connected.value) return `Connected to Valu Social as ${applicationId.value || 'valu_docs'} — Run sends the call for real, as you.`;
-  if (framed.value) return 'Waiting for Valu Social to connect…';
-  return 'Reference only. Open Valu Docs inside Valu Social to run these calls.';
-});
 
 // ── filters ──────────────────────────────────────────────────────────────
 

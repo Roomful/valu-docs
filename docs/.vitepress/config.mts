@@ -88,45 +88,50 @@ export default defineConfigWithTheme({
       {text: 'Docs', link: '/valu-overview'},
       {text: 'API', link: '/valu-api'},
       // Shown only inside Valu Social (html.valu-framed).
-      {text: 'Explorer', link: '/explorer/intents', activeMatch: '/explorer/'}
+      {text: 'Explorer', link: '/explorer/', activeMatch: '/explorer/'}
     ],
 
     search: {
       provider: 'local'
     },
 
-    sidebar: [
-      {
-        text: 'Docs',
-        items: [
-          {text: 'Valu Overview', link: '/valu-overview'},
-          {text: 'Valuverse SuperApp API', link: '/valu-api'},
-          {text: 'Valuverse Bootsrap Pipeline', link: '/application-pipeline'},
-          {text: 'Valuverse API Snippets', link: 'valu-snippets'},
-          {text: 'Identity Token Validation', link: '/identity-token-validation'},
-          {text: 'Intents Reference', link: '/intents-doc'},
-          {text: 'Valu Routing', link: '/valu-routing'},
-          {text: 'CMS Service API', link: '/cms-service'},
-          {text: 'Valuverse Backend Server', link: '/Valuverse_Backend'},
-          {text: 'Valuverse Backend API', link: '/apidocs/Readme'},
-          {text: 'Gaming Architecture Overview', link: '/netcode'},
-          {text: 'Gaming Backend Server', link: '/netcode-topology'},
-          {text: 'Gaming Client Engine', link: '/netcode-client'},
-          {text: 'Crypto Server', link: '/crypto_server'},
-          {text: 'Valu Wallet API', link: 'https://valu-verse.github.io/valuapi/'},
-        ]
-      },
-      {
-        // Shown only inside Valu Social (html.valu-framed): there the pages can
-        // run calls through the host's bridge.
-        text: 'Explorer',
-        items: [
-          {text: 'Intents', link: '/explorer/intents'},
-          {text: 'Server Intents', link: '/explorer/server-intents'},
-          {text: 'REST APIs', link: '/explorer/rest-apis'},
-        ]
-      }
-    ],
+    // Two sidebars: the Explorer is its own section, entered from the nav (shown
+    // only inside Valu Social, where its pages can call the host's bridge).
+    sidebar: {
+      '/explorer/': [
+        {
+          text: 'Explorer',
+          items: [
+            {text: 'Your session', link: '/explorer/'},
+            {text: 'Intents', link: '/explorer/intents'},
+            {text: 'Service Intents', link: '/explorer/service-intents'},
+            {text: 'REST APIs', link: '/explorer/rest-apis'},
+          ]
+        }
+      ],
+      '/': [
+        {
+          text: 'Docs',
+          items: [
+            {text: 'Valu Overview', link: '/valu-overview'},
+            {text: 'Valuverse SuperApp API', link: '/valu-api'},
+            {text: 'Valuverse Bootsrap Pipeline', link: '/application-pipeline'},
+            {text: 'Valuverse API Snippets', link: 'valu-snippets'},
+            {text: 'Identity Token Validation', link: '/identity-token-validation'},
+            {text: 'Intents Reference', link: '/intents-doc'},
+            {text: 'Valu Routing', link: '/valu-routing'},
+            {text: 'CMS Service API', link: '/cms-service'},
+            {text: 'Valuverse Backend Server', link: '/Valuverse_Backend'},
+            {text: 'Valuverse Backend API', link: '/apidocs/Readme'},
+            {text: 'Gaming Architecture Overview', link: '/netcode'},
+            {text: 'Gaming Backend Server', link: '/netcode-topology'},
+            {text: 'Gaming Client Engine', link: '/netcode-client'},
+            {text: 'Crypto Server', link: '/crypto_server'},
+            {text: 'Valu Wallet API', link: 'https://valu-verse.github.io/valuapi/'},
+          ]
+        }
+      ],
+    },
 
     socialLinks: [
       {icon: 'github', link: 'https://github.com/Roomful/valu-docs'}

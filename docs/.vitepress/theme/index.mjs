@@ -3,6 +3,7 @@ import Mermaid from "./Mermaid.vue";
 import IntentExplorer from "./explorer/IntentExplorer.vue";
 import RestExplorer from "./explorer/RestExplorer.vue";
 import ServerOnlyTools from "./explorer/ServerOnlyTools.vue";
+import SessionOverview from "./explorer/SessionOverview.vue";
 import "./explorer/explorer.css";
 
 export default {
@@ -12,5 +13,6 @@ export default {
     app.component('IntentExplorer', IntentExplorer);
     app.component('RestExplorer', RestExplorer);
     app.component('ServerOnlyTools', ServerOnlyTools);
+    app.component('SessionOverview', SessionOverview);
   }
 };

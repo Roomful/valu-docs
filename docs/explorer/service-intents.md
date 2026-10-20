@@ -1,5 +1,5 @@
 ---
-title: Server Intents
+title: Service Intents
 aside: false
 outline: false
 search: false
@@ -10,7 +10,7 @@ pageClass: explorer-page
 import catalogue from '../.vitepress/explorer/server-intents.json'
 </script>
 
-# Server Intents
+# Service Intents
 
 A service intent asks a platform service for data or an action and returns the result:
 search rooms, read the current user, send a message. An iframe application calls one with

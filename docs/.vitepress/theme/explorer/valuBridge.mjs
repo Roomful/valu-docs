@@ -10,6 +10,8 @@
 //
 //   api:run-intent      {applicationId, action, params, requestId}  → api:run-completed
 //   api:service-intent  {applicationId, action, params, requestId}  → api:run-console-completed
+//   api:create-pointer  {api, version?, guid, requestId}            → api:pointer-created
+//   api:run             {apiPointerId, functionName, params, requestId} → api:run-completed
 //
 // A failure comes back as the reply's message `{error}`.
 
@@ -48,7 +50,10 @@ function install() {
   installed = true;
   framed.value = window.self !== window.top;
   sync();
-  window.addEventListener('valu_api-ready', sync);
+  window.addEventListener('valu_api-ready', () => {
+    pointers.clear();
+    sync();
+  });
   window.addEventListener('message', onMessage);
 }
 
@@ -95,6 +100,38 @@ export const runIntent = (applicationId, action, params) =>
 /** valuApi.callService — a service intent. */
 export const callService = (serviceId, action, params) =>
   request('api:service-intent', {applicationId: serviceId, action, params});
+
+// One pointer per API name, created on first use and dropped when the host
+// connects again (a new api:ready means a fresh pointer table on its side).
+const pointers = new Map();
+
+function pointerFor(api) {
+  if (!pointers.has(api)) {
+    const guid = `valu-docs-${api}-${Date.now().toString(36)}`;
+    const created = request('api:create-pointer', {api, guid}).promise.then(reply => {
+      const error = replyError(reply);
+      if (error) throw new Error(error);
+      return guid;
+    });
+    created.catch(() => pointers.delete(api));
+    pointers.set(api, created);
+  }
+  return pointers.get(api);
+}
+
+/** `(await valuApi.getApi(api)).run(functionName, params)` — a system API call. */
+export async function runApi(api, functionName, params) {
+  const apiPointerId = await pointerFor(api);
+  return request('api:run', {apiPointerId, functionName, params}).promise;
+}
+
+/** A reply as a value: the bridge's `{error}` envelope becomes a thrown Error. */
+export async function settle(promise) {
+  const reply = await promise;
+  const error = replyError(reply);
+  if (error) throw new Error(error);
+  return reply;
+}
 
 /** The reply is a failure when it is the bridge's `{error}` envelope and nothing else. */
 export function replyError(reply) {
