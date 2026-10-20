@@ -1902,6 +1902,14 @@ Lists every application published in the current network that declares a REST AP
 
 *No parameters.*
 
+#### `list-my-application-apis`
+
+Lists the REST APIs of the applications the current user develops or tests, unreleased drafts included — what list-application-apis does not show. Returns {success, apis}; each api carries the same fields as list-application-apis plus devId, version (the version that describes the API: the released one when it declares an API, otherwise the newest that does) and live (true when that version is the released one). Read-only.
+
+**Availability:** AI, Developer
+
+*No parameters.*
+
 ---
 
 ### Events Service (`Events`)
