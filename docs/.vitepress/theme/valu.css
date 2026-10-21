@@ -110,3 +110,12 @@ html.valu-framed .VPNavScreenAppearance,
 html.valu-framed .VPNavBarExtra .item.appearance {
   display: none !important;
 }
+
+/*
+ * Carbon's "…" overflow menu (narrower widths) would sit right beside the
+ * Valu app menu (AppMenu.vue) — two ellipsis buttons side by side. In the
+ * frame it holds nothing but the GitHub link, so it goes.
+ */
+html.valu-framed .VPNavBarExtra {
+  display: none !important;
+}

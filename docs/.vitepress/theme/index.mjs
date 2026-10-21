@@ -1,6 +1,7 @@
-import {onMounted} from "vue";
+import {h, onMounted} from "vue";
 import {useData} from "vitepress";
 import {VPCarbon} from "vitepress-carbon";
+import AppMenu from "./AppMenu.vue";
 import Mermaid from "./Mermaid.vue";
 import ApiPlayground from "./explorer/ApiPlayground.vue";
 import IntentPlayground from "./explorer/IntentPlayground.vue";
@@ -10,6 +11,11 @@ import "./explorer/explorer.css";
 
 export default {
   extends: VPCarbon,
+  // Carbon's layout, with the Valu app menu (Expand / Close) at the end of the
+  // nav bar. It renders nothing outside Valu Social.
+  Layout: () => h(VPCarbon.Layout, null, {
+    'nav-bar-content-after': () => h(AppMenu),
+  }),
   enhanceApp({app}) {
     app.component('Mermaid', Mermaid);
     app.component('ApiPlayground', ApiPlayground);
