@@ -1,7 +1,7 @@
 # Intents Reference
 
 > Auto-generated from application and service manifests.  
-> Generated on: 2026-10-20
+> Generated on: 2026-10-22
 
 ## Table of Contents
 
@@ -1214,6 +1214,19 @@ Deletes a resource or removes it from a prop or post.
 | `postId` | string | No | The post to remove the resource from (removes association, does not delete the resource). |
 | `roomId` | string | No | The room the resource belongs to. |
 | `propId` | string | No | The prop to remove the resource from (removes association, does not delete the resource). |
+
+#### `pick-resource`
+
+Opens a file picker over the Network Resources of the current network so a network admin can choose ONE file, and waits for the choice. The popup opens over whatever is on screen and does not open Media. BLOCKS until the user picks or cancels. Returns the picked resource `{id, title, contentType, thumbnailUrl}` or `null` when the user cancels or closes the popup. Refused (an error, and no popup) for anyone who is not an admin of the network, for an unknown source, and for a folderId outside the requested sources. The returned resource is always inside the requested sources.
+
+**Availability:** Developer
+
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `sources` | string[] | Yes | Where files may be picked from. Only "networkResources" (the public files of the network, `networkPublic:{networkId}`) is supported. Nothing outside these sources is shown or reachable. |
+| `accept` | string[] | No | File types that can be picked: a family ("image"), a family wildcard ("image/*") or an exact type ("image/png"). Other files are shown disabled. Omit to allow any file. |
+| `folderId` | string | No | Folder to open in. Must be a folder inside the requested sources, otherwise the call is refused. |
+| `title` | string | No | Popup title. Defaults to "Choose a file". |
 
 ---
 

@@ -441,6 +441,40 @@
               }
             ]
           }
+        },
+        {
+          "action": "pick-resource",
+          "description": "Opens a file picker over the Network Resources of the current network so a network admin can choose ONE file, and waits for the choice. The popup opens over whatever is on screen and does not open Media. BLOCKS until the user picks or cancels. Returns the picked resource `{id, title, contentType, thumbnailUrl}` or `null` when the user cancels or closes the popup. Refused (an error, and no popup) for anyone who is not an admin of the network, for an unknown source, and for a folderId outside the requested sources. The returned resource is always inside the requested sources.",
+          "availability": [
+            "developer"
+          ],
+          "permissions": [],
+          "params": {
+            "required": [
+              {
+                "name": "sources",
+                "type": "string[]",
+                "description": "Where files may be picked from. Only \"networkResources\" (the public files of the network, `networkPublic:{networkId}`) is supported. Nothing outside these sources is shown or reachable."
+              }
+            ],
+            "optional": [
+              {
+                "name": "accept",
+                "type": "string[]",
+                "description": "File types that can be picked: a family (\"image\"), a family wildcard (\"image/*\") or an exact type (\"image/png\"). Other files are shown disabled. Omit to allow any file."
+              },
+              {
+                "name": "folderId",
+                "type": "string",
+                "description": "Folder to open in. Must be a folder inside the requested sources, otherwise the call is refused."
+              },
+              {
+                "name": "title",
+                "type": "string",
+                "description": "Popup title. Defaults to \"Choose a file\"."
+              }
+            ]
+          }
         }
       ]
     },
