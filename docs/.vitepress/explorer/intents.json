@@ -281,7 +281,8 @@
           "params": {
             "required": [],
             "optional": []
-          }
+          },
+          "headless": true
         },
         {
           "action": "options",
