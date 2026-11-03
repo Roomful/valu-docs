@@ -56,24 +56,28 @@ Here you’ll find:
 - SDKs for Valu Social and Wallet
 - Example dApps and community integrations
 
-Documentation is available through the **developer portal** (coming soon).
+This site is that documentation. Apps are built and published in the **Developer Portal** inside Valu Social (or by the AI builder in Workspaces).
 
 ---
 
-### Start Here: Valu Frontend API
-If you’re a developer, begin with the **Valu Frontend API**.  
-It allows you to:
-- Connect your applications to the Valuverse network
-- Authenticate users via **Valu ID**
-- Access wallet data, token balances, and community assets
-- Manage user sessions and interactions within the Super App
+### Start Here: the Valu API package
+If you're a developer, begin with **[`@arkeytyp/valu-api`](/valu-api)**, the JavaScript package every Valu app uses.
+It lets your app:
+- Run inside Valu Social, or at its own address with **Sign in with Valu** (a popup; your page never holds a session or token)
+- Read the signed-in user, network, rooms, communities, chat and resources
+- Sell through the shared cart and read what the user owns (Commerce)
+- Open Valu Social's own windows and other apps
+- Prove the user's identity to your own backend ([identity token](/identity-token-validation))
 
-Example use cases:
 ```js
-// Example pseudo-code: connecting to Valu Frontend API
-import { ValuAPI } from 'valuverse-sdk'
+import { createValuApp } from '@arkeytyp/valu-api'
 
-const valu = new ValuAPI({ apiKey: process.env.VALU_KEY })
+const valu = await createValuApp()      // inside Valu Social or at your own address
 
-const user = await valu.auth.loginWithValuID()
-console.log('Welcome to Valuverse,', user.name)
+// At your own address, from a click: opens the Valu sign-in popup.
+signInButton.onclick = () => valu.auth.signIn()
+
+const { user } = await valu.data.Users.current()
+```
+
+Next: [Valu API](/valu-api) (install, permissions, Commerce), [snippets](/valu-snippets) (React hooks), and the **Explorer** (try intents live; shown when this site is opened inside Valu Social).

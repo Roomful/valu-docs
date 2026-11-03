@@ -362,9 +362,10 @@ const currentCode = computed(() => {
   const args = JSON.stringify(built.value.ok ? built.value.params : {}, null, 2);
   const target = JSON.stringify(props.group.id);
   const action = JSON.stringify(props.intent.action);
+  // `valu` is the object createValuApp() returns (@arkeytyp/valu-api 2).
   return props.kind === 'application'
-    ? `await valuApi.sendIntent(new Intent(${target}, ${action}, ${args}));`
-    : `const result = await valuApi.callService(new Intent(${target}, ${action}, ${args}));`;
+    ? `await valu.sendIntent(new Intent(${target}, ${action}, ${args}));`
+    : `const result = await valu.callService(new Intent(${target}, ${action}, ${args}));`;
 });
 
 const copied = ref('');

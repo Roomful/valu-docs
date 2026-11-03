@@ -2,7 +2,7 @@ name: Sync Valu Package Docs
 
 on:
   repository_dispatch:
-    types: [update-valu-api-docs, update-valu-routing-docs]
+    types: [update-valu-api-docs]
   workflow_dispatch:
 
 jobs:
@@ -19,20 +19,13 @@ jobs:
         uses: actions/checkout@v4
         with:
           repository: Roomful/valu-api
-          token: ${{ secrets.GITHUB_TOKEN }}
           path: valu-api
 
-      - name: Checkout valu-routing
-        uses: actions/checkout@v4
-        with:
-          repository: Roomful/valu-routing
-          token: ${{ secrets.GITHUB_TOKEN }}
-          path: valu-routing
-
+      # valu-routing.md lives in valu-api (there is no valu-routing repository).
+      # The script also points the README's relative links at GitHub, because
+      # VitePress fails the deploy on a dead link.
       - name: Copy docs
-        run: |
-          cp valu-api/README.md valu-docs/docs/valu-api.md
-          cp valu-routing/README.md valu-docs/docs/valu-routing.md
+        run: node valu-docs/scripts/sync-valu-api-docs.mjs valu-api
 
       - name: Commit and push
         working-directory: valu-docs

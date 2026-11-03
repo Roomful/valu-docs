@@ -23,16 +23,13 @@ From the miniapp, call the `Application` service intent `get-identity-token` to 
 ### Usage example
 
 ```javascript
-import { ValuApi } from "@arkeytyp/valu-api";
+import { createValuApp } from "@arkeytyp/valu-api";
 
-let valuApi = globalThis.valuApi;
-if (!valuApi) {
-  valuApi = globalThis.valuApi = new ValuApi();
-}
+const valu = await createValuApp();
 
 async function fetchIdentityToken() {
-  const appService = await valuApi.getApi('Application');
-  const token = await appService.run('get-identity-token');
+  // The payload; throws ValuServiceError when the call is refused (e.g. sign_in_required).
+  const { token } = await valu.data.Application.getIdentityToken();
 
   // Send the token to your backend with each request
   const res = await fetch('https://your-backend.example.com/api/data', {
@@ -41,6 +38,8 @@ async function fetchIdentityToken() {
   return res.json();
 }
 ```
+
+It works in both places an app runs: inside Valu Social, and at the app's own address once the user has signed in (`valu.auth.signIn()`). Its scope, `application:identity`, is basic: nobody is asked, but the app must list it in `valu-permissions.json`.
 
 ::: warning
 The token is valid for **5 minutes**. You can reuse it for multiple requests within that window — just make sure to request a fresh one before it expires.
