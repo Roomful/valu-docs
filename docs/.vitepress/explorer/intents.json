@@ -1955,6 +1955,24 @@
           }
         },
         {
+          "action": "show-chatbots",
+          "description": "Opens the Valu Guru app on the Chatbot Library — the browse list of published chatbots, not one chatbot's detail page (that is open-chatbot). Pass `tags` to land with the tag filter already applied, so the grid shows only the chatbots carrying those tags. Several tags NARROW the result (a chatbot must carry all of them). Matching is case-insensitive, and a tag no published chatbot in this network uses is dropped rather than leaving an empty grid.",
+          "availability": [
+            "developer"
+          ],
+          "permissions": [],
+          "params": {
+            "required": [],
+            "optional": [
+              {
+                "name": "tags",
+                "type": "string[]",
+                "description": "Discovery tags to pre-select in the library's tag filter (e.g. [\"Shabbat\"]). Omit to open the library unfiltered."
+              }
+            ]
+          }
+        },
+        {
           "action": "open-chatbot",
           "description": "Opens the Valu Guru app on a library chatbot's detail page. Unlike open-chat, the target is not personal — any user in the network can view it (used e.g. by the bot badge on shared chatbot replies).",
           "availability": [

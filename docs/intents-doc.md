@@ -1,7 +1,7 @@
 # Intents Reference
 
 > Auto-generated from application and service manifests.  
-> Generated on: 2026-11-03
+> Generated on: 2026-11-04
 
 ## Table of Contents
 
@@ -963,6 +963,16 @@ Opens the Valu Guru app and navigates to a specific agent chat by ID.
 | Parameter | Type | Required | Description |
 |-----------|------|----------|-------------|
 | `agentId` | string | Yes | The agent ID to open. |
+
+#### `show-chatbots`
+
+Opens the Valu Guru app on the Chatbot Library — the browse list of published chatbots, not one chatbot's detail page (that is open-chatbot). Pass `tags` to land with the tag filter already applied, so the grid shows only the chatbots carrying those tags. Several tags NARROW the result (a chatbot must carry all of them). Matching is case-insensitive, and a tag no published chatbot in this network uses is dropped rather than leaving an empty grid.
+
+**Availability:** Developer
+
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `tags` | string[] | No | Discovery tags to pre-select in the library's tag filter (e.g. ["Shabbat"]). Omit to open the library unfiltered. |
 
 #### `open-chatbot`
 
