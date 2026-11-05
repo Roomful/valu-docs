@@ -649,6 +649,157 @@
       ]
     },
     {
+      "id": "cms",
+      "title": "Files",
+      "description": "Content management module",
+      "group": "default",
+      "intents": [
+        {
+          "action": "show-chat-channel",
+          "description": "Open and display the specified chat channel",
+          "availability": [
+            "ai",
+            "developer"
+          ],
+          "permissions": [],
+          "params": {
+            "required": [
+              {
+                "name": "channelId",
+                "type": "string",
+                "description": "The unique identifier of the chat channel to display"
+              }
+            ],
+            "optional": []
+          }
+        },
+        {
+          "action": "show-folder",
+          "description": "Navigate to and open a specific folder in the CMS by its folder ID",
+          "availability": [
+            "ai",
+            "developer"
+          ],
+          "permissions": [],
+          "params": {
+            "required": [
+              {
+                "name": "folderId",
+                "type": "string",
+                "description": "The unique identifier of the folder to open"
+              }
+            ],
+            "optional": [
+              {
+                "name": "resourceId",
+                "type": "string",
+                "description": "A resource inside that folder to open in the Edit side panel after navigating."
+              }
+            ]
+          }
+        },
+        {
+          "action": "show-resource",
+          "description": "Reveal a resource in the CMS file browser by its resource ID — navigates to the folder holding it (or to its section root when it is not in a folder), selects it and opens its Edit side panel. Use this when you only have a resource id and want to show the user where that file lives; use preview-resource instead to just view its contents.",
+          "availability": [
+            "ai",
+            "developer"
+          ],
+          "permissions": [],
+          "params": {
+            "required": [
+              {
+                "name": "resourceId",
+                "type": "string",
+                "description": "The unique identifier of the resource to reveal"
+              }
+            ],
+            "optional": []
+          }
+        },
+        {
+          "action": "preview-resource",
+          "description": "Open a resource (file) in the CMS preview viewer by its resource ID",
+          "availability": [
+            "ai",
+            "developer"
+          ],
+          "permissions": [],
+          "params": {
+            "required": [
+              {
+                "name": "resourceId",
+                "type": "string",
+                "description": "The unique identifier of the resource to preview"
+              }
+            ],
+            "optional": []
+          }
+        },
+        {
+          "action": "show-my-files",
+          "description": "Navigate to the user's own files in the CMS (the \"My Files\" view). Use this when the user asks about their files, uploads, or personal content — do not use show-folder for this.",
+          "availability": [
+            "ai",
+            "developer"
+          ],
+          "permissions": [],
+          "params": {
+            "required": [],
+            "optional": []
+          }
+        },
+        {
+          "action": "show-application-storage",
+          "description": "Open an application's storage folder in the CMS — the files that app has stored under the current user, shown at Applications › <app>. Provide the application id (e.g. \"valuguru\"). The app must declare `storage: true` in its manifest.",
+          "availability": [
+            "ai",
+            "developer"
+          ],
+          "permissions": [],
+          "params": {
+            "required": [
+              {
+                "name": "applicationId",
+                "type": "string",
+                "description": "The id of the application whose storage folder to open (e.g. \"valuguru\")."
+              }
+            ],
+            "optional": [
+              {
+                "name": "resourceId",
+                "type": "string",
+                "description": "A resource inside that storage folder to open in the Edit side panel after navigating."
+              }
+            ]
+          }
+        },
+        {
+          "action": "show-community-channel",
+          "description": "Open and display the specified community channel",
+          "availability": [
+            "developer"
+          ],
+          "permissions": [],
+          "params": {
+            "required": [
+              {
+                "name": "communityId",
+                "type": "string",
+                "description": "The unique identifier of the community"
+              },
+              {
+                "name": "communityChannelId",
+                "type": "string",
+                "description": "The unique identifier of the channel within the community"
+              }
+            ],
+            "optional": []
+          }
+        }
+      ]
+    },
+    {
       "id": "groups",
       "title": "Groups",
       "description": "",
@@ -745,157 +896,6 @@
                 "name": "runId",
                 "type": "string",
                 "description": "The run id (agentRunId/chatbotRunId) to open."
-              }
-            ],
-            "optional": []
-          }
-        }
-      ]
-    },
-    {
-      "id": "cms",
-      "title": "Media",
-      "description": "Content management module",
-      "group": "default",
-      "intents": [
-        {
-          "action": "show-chat-channel",
-          "description": "Open and display the specified chat channel",
-          "availability": [
-            "ai",
-            "developer"
-          ],
-          "permissions": [],
-          "params": {
-            "required": [
-              {
-                "name": "channelId",
-                "type": "string",
-                "description": "The unique identifier of the chat channel to display"
-              }
-            ],
-            "optional": []
-          }
-        },
-        {
-          "action": "show-folder",
-          "description": "Navigate to and open a specific folder in the CMS by its folder ID",
-          "availability": [
-            "ai",
-            "developer"
-          ],
-          "permissions": [],
-          "params": {
-            "required": [
-              {
-                "name": "folderId",
-                "type": "string",
-                "description": "The unique identifier of the folder to open"
-              }
-            ],
-            "optional": [
-              {
-                "name": "resourceId",
-                "type": "string",
-                "description": "A resource inside that folder to open in the Edit side panel after navigating."
-              }
-            ]
-          }
-        },
-        {
-          "action": "show-resource",
-          "description": "Reveal a resource in the CMS file browser by its resource ID — navigates to the folder holding it (or to its section root when it is not in a folder), selects it and opens its Edit side panel. Use this when you only have a resource id and want to show the user where that file lives; use preview-resource instead to just view its contents.",
-          "availability": [
-            "ai",
-            "developer"
-          ],
-          "permissions": [],
-          "params": {
-            "required": [
-              {
-                "name": "resourceId",
-                "type": "string",
-                "description": "The unique identifier of the resource to reveal"
-              }
-            ],
-            "optional": []
-          }
-        },
-        {
-          "action": "preview-resource",
-          "description": "Open a resource (file) in the CMS preview viewer by its resource ID",
-          "availability": [
-            "ai",
-            "developer"
-          ],
-          "permissions": [],
-          "params": {
-            "required": [
-              {
-                "name": "resourceId",
-                "type": "string",
-                "description": "The unique identifier of the resource to preview"
-              }
-            ],
-            "optional": []
-          }
-        },
-        {
-          "action": "show-my-files",
-          "description": "Navigate to the user's own files in the CMS (the \"My Files\" / \"My Content\" view). Use this when the user asks about their files, uploads, or personal content — do not use show-folder for this.",
-          "availability": [
-            "ai",
-            "developer"
-          ],
-          "permissions": [],
-          "params": {
-            "required": [],
-            "optional": []
-          }
-        },
-        {
-          "action": "show-application-storage",
-          "description": "Open an application's storage folder in the CMS — the files that app has stored under the current user, shown at Applications › <app>. Provide the application id (e.g. \"valuguru\"). The app must declare `storage: true` in its manifest.",
-          "availability": [
-            "ai",
-            "developer"
-          ],
-          "permissions": [],
-          "params": {
-            "required": [
-              {
-                "name": "applicationId",
-                "type": "string",
-                "description": "The id of the application whose storage folder to open (e.g. \"valuguru\")."
-              }
-            ],
-            "optional": [
-              {
-                "name": "resourceId",
-                "type": "string",
-                "description": "A resource inside that storage folder to open in the Edit side panel after navigating."
-              }
-            ]
-          }
-        },
-        {
-          "action": "show-community-channel",
-          "description": "Open and display the specified community channel",
-          "availability": [
-            "developer"
-          ],
-          "permissions": [],
-          "params": {
-            "required": [
-              {
-                "name": "communityId",
-                "type": "string",
-                "description": "The unique identifier of the community"
-              },
-              {
-                "name": "communityChannelId",
-                "type": "string",
-                "description": "The unique identifier of the channel within the community"
               }
             ],
             "optional": []

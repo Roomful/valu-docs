@@ -1,7 +1,7 @@
 # Intents Reference
 
 > Auto-generated from application and service manifests.  
-> Generated on: 2026-11-04
+> Generated on: 2026-11-05
 
 ## Table of Contents
 
@@ -14,9 +14,9 @@
 - [Contacts (`contacts`)](#contacts-contacts)
 - [Content Studio (`content-studio`)](#content-studio-content-studio)
 - [Content Studio (`staging-content-studio`)](#content-studio-staging-content-studio)
+- [Files (`cms`)](#files-cms)
 - [Groups (`groups`)](#groups-groups)
 - [LLM Debug (`iframe_llm_debug`)](#llm-debug-iframe-llm-debug)
-- [Media (`cms`)](#media-cms)
 - [Merchant Console (`merchant`)](#merchant-console-merchant)
 - [Metaverse (`metaverse`)](#metaverse-metaverse)
 - [Metaverse 2D (`hubs`)](#metaverse-2d-hubs)
@@ -341,6 +341,83 @@ Navigate to a specific route within Content Studio
 
 ---
 
+### Files (`cms`)
+
+Content management module
+
+#### `show-chat-channel`
+
+Open and display the specified chat channel
+
+**Availability:** AI, Developer
+
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `channelId` | string | Yes | The unique identifier of the chat channel to display |
+
+#### `show-folder`
+
+Navigate to and open a specific folder in the CMS by its folder ID
+
+**Availability:** AI, Developer
+
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `folderId` | string | Yes | The unique identifier of the folder to open |
+| `resourceId` | string | No | A resource inside that folder to open in the Edit side panel after navigating. |
+
+#### `show-resource`
+
+Reveal a resource in the CMS file browser by its resource ID — navigates to the folder holding it (or to its section root when it is not in a folder), selects it and opens its Edit side panel. Use this when you only have a resource id and want to show the user where that file lives; use preview-resource instead to just view its contents.
+
+**Availability:** AI, Developer
+
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `resourceId` | string | Yes | The unique identifier of the resource to reveal |
+
+#### `preview-resource`
+
+Open a resource (file) in the CMS preview viewer by its resource ID
+
+**Availability:** AI, Developer
+
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `resourceId` | string | Yes | The unique identifier of the resource to preview |
+
+#### `show-my-files`
+
+Navigate to the user's own files in the CMS (the "My Files" view). Use this when the user asks about their files, uploads, or personal content — do not use show-folder for this.
+
+**Availability:** AI, Developer
+
+*No parameters.*
+
+#### `show-application-storage`
+
+Open an application's storage folder in the CMS — the files that app has stored under the current user, shown at Applications › `<app>`. Provide the application id (e.g. "valuguru"). The app must declare `storage: true` in its manifest.
+
+**Availability:** AI, Developer
+
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `applicationId` | string | Yes | The id of the application whose storage folder to open (e.g. "valuguru"). |
+| `resourceId` | string | No | A resource inside that storage folder to open in the Edit side panel after navigating. |
+
+#### `show-community-channel`
+
+Open and display the specified community channel
+
+**Availability:** Developer
+
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `communityId` | string | Yes | The unique identifier of the community |
+| `communityChannelId` | string | Yes | The unique identifier of the channel within the community |
+
+---
+
 ### Groups (`groups`)
 
 #### `open`
@@ -391,83 +468,6 @@ Opens the LLM Debug panel on a specific agent/chatbot RUN by its run id. Pass th
 | `entityKind` | string | Yes | The entity kind: "agent" or "chatbot". |
 | `entityId` | string | Yes | The agent or chatbot id the run belongs to. |
 | `runId` | string | Yes | The run id (agentRunId/chatbotRunId) to open. |
-
----
-
-### Media (`cms`)
-
-Content management module
-
-#### `show-chat-channel`
-
-Open and display the specified chat channel
-
-**Availability:** AI, Developer
-
-| Parameter | Type | Required | Description |
-|-----------|------|----------|-------------|
-| `channelId` | string | Yes | The unique identifier of the chat channel to display |
-
-#### `show-folder`
-
-Navigate to and open a specific folder in the CMS by its folder ID
-
-**Availability:** AI, Developer
-
-| Parameter | Type | Required | Description |
-|-----------|------|----------|-------------|
-| `folderId` | string | Yes | The unique identifier of the folder to open |
-| `resourceId` | string | No | A resource inside that folder to open in the Edit side panel after navigating. |
-
-#### `show-resource`
-
-Reveal a resource in the CMS file browser by its resource ID — navigates to the folder holding it (or to its section root when it is not in a folder), selects it and opens its Edit side panel. Use this when you only have a resource id and want to show the user where that file lives; use preview-resource instead to just view its contents.
-
-**Availability:** AI, Developer
-
-| Parameter | Type | Required | Description |
-|-----------|------|----------|-------------|
-| `resourceId` | string | Yes | The unique identifier of the resource to reveal |
-
-#### `preview-resource`
-
-Open a resource (file) in the CMS preview viewer by its resource ID
-
-**Availability:** AI, Developer
-
-| Parameter | Type | Required | Description |
-|-----------|------|----------|-------------|
-| `resourceId` | string | Yes | The unique identifier of the resource to preview |
-
-#### `show-my-files`
-
-Navigate to the user's own files in the CMS (the "My Files" / "My Content" view). Use this when the user asks about their files, uploads, or personal content — do not use show-folder for this.
-
-**Availability:** AI, Developer
-
-*No parameters.*
-
-#### `show-application-storage`
-
-Open an application's storage folder in the CMS — the files that app has stored under the current user, shown at Applications › `<app>`. Provide the application id (e.g. "valuguru"). The app must declare `storage: true` in its manifest.
-
-**Availability:** AI, Developer
-
-| Parameter | Type | Required | Description |
-|-----------|------|----------|-------------|
-| `applicationId` | string | Yes | The id of the application whose storage folder to open (e.g. "valuguru"). |
-| `resourceId` | string | No | A resource inside that storage folder to open in the Edit side panel after navigating. |
-
-#### `show-community-channel`
-
-Open and display the specified community channel
-
-**Availability:** Developer
-
-| Parameter | Type | Required | Description |
-|-----------|------|----------|-------------|
-| `communityId` | string | Yes | The unique identifier of the community |
-| `communityChannelId` | string | Yes | The unique identifier of the channel within the community |
 
 ---
 
@@ -1227,7 +1227,7 @@ Deletes a resource or removes it from a prop or post.
 
 #### `pick-resource`
 
-Opens a file picker over the Network Resources of the current network so a network admin can choose ONE file, and waits for the choice. The popup opens over whatever is on screen and does not open Media. BLOCKS until the user picks or cancels. Returns the picked resource `{id, title, contentType, thumbnailUrl}` or `null` when the user cancels or closes the popup. Refused (an error, and no popup) for anyone who is not an admin of the network, for an unknown source, and for a folderId outside the requested sources. The returned resource is always inside the requested sources.
+Opens a file picker over the Network Resources of the current network so a network admin can choose ONE file, and waits for the choice. The popup opens over whatever is on screen and does not open Files. BLOCKS until the user picks or cancels. Returns the picked resource `{id, title, contentType, thumbnailUrl}` or `null` when the user cancels or closes the popup. Refused (an error, and no popup) for anyone who is not an admin of the network, for an unknown source, and for a folderId outside the requested sources. The returned resource is always inside the requested sources.
 
 **Availability:** Developer
 
@@ -1312,7 +1312,7 @@ Reads the user's cart — every item in it, from every app, as the buyer will ch
 
 #### `create-product`
 
-Create a product for the seller, as a DRAFT. Two ways in. With no params it opens the platform's own 'list something for sale' form in a modal and BLOCKS until the seller creates a product or cancels. With a `title` it creates the draft directly from the fields given — name, description, price, category, tags, cover and content — without a form: use this when you already have the resource ids (a generated cover, files found in Media). Either way returns `{success: true, product}` (or `{success: false, product: null, code}`; `cancelled` when the seller backed out of the form), and the product is already in the seller's catalogue. It is NEVER published here: publishing decides money and networks, so the seller confirms it separately — in the publish dialog an app opens with publish-product, or in the Merchant Console. Opening a store first (a verified Verus identity) is handled inside.
+Create a product for the seller, as a DRAFT. Two ways in. With no params it opens the platform's own 'list something for sale' form in a modal and BLOCKS until the seller creates a product or cancels. With a `title` it creates the draft directly from the fields given — name, description, price, category, tags, cover and content — without a form: use this when you already have the resource ids (a generated cover, files found in Files). Either way returns `{success: true, product}` (or `{success: false, product: null, code}`; `cancelled` when the seller backed out of the form), and the product is already in the seller's catalogue. It is NEVER published here: publishing decides money and networks, so the seller confirms it separately — in the publish dialog an app opens with publish-product, or in the Merchant Console. Opening a store first (a verified Verus identity) is handled inside.
 
 **Availability:** AI, Developer
 
@@ -1324,7 +1324,7 @@ Create a product for the seller, as a DRAFT. Two ways in. With no params it open
 | `priceCurrency` | string | No | VRSC (default) or USD |
 | `category` | string | No | one of the platform's category ids — see list-categories; required before the seller can publish |
 | `tags` | array | No | up to 10 tags of up to 24 characters; normalised (lowercase, trimmed) |
-| `imageResourceId` | string | No | the cover: a resource id in the seller's own Media, e.g. one you generated |
+| `imageResourceId` | string | No | the cover: a resource id in the seller's own Files, e.g. one you generated |
 | `items` | array | No | the content a buyer receives: resource ids ("res_1"), named files ({resourceId, title}), folders ({folder: "Unit 1", items: […]}) or other products ({productId}) for a bundle |
 | `stock` | number | No | how many may be sold; omit for unlimited |
 
@@ -1377,12 +1377,12 @@ Edit one of the seller's own DRAFT products — one never published, or one the 
 | `unlimitedStock` | boolean | No | true removes the quantity limit |
 | `category` | string | No | one of the platform's category ids — see list-categories; an empty string clears it |
 | `tags` | array | No | the full tag list (replaces the current one): up to 10 tags of up to 24 characters |
-| `imageResourceId` | string | No | the cover: a resource id in the seller's own Media |
+| `imageResourceId` | string | No | the cover: a resource id in the seller's own Files |
 | `items` | array | No | the WHOLE new content: resource ids ("res_1"), named files ({resourceId, title}), folders ({folder: "Unit 1", items: […]}) or other products ({productId}) for a bundle |
 
 #### `list-purchases`
 
-What the signed-in user OWNS — every product they bought, wherever they bought it, as My Cart's Orders tab lists it. Returns `{purchases: [{productId, title, coverResourceId, purchasedAt, orderId, boughtInAppId, isBundlePart, delivered, deletedBySeller, progress}]}`. `delivered` is true once the buyer's own copy is in their Media; `isBundlePart` marks a product that came inside a bundle; a purchase the seller deleted is still theirs. `progress` is `{openedFiles, totalFiles, complete}` — how many of its files the user has opened (a bundle counts its parts); `complete` marks a purchase read to the end. Null when unknown.
+What the signed-in user OWNS — every product they bought, wherever they bought it, as My Cart's Orders tab lists it. Returns `{purchases: [{productId, title, coverResourceId, purchasedAt, orderId, boughtInAppId, isBundlePart, delivered, deletedBySeller, progress}]}`. `delivered` is true once the buyer's own copy is in their Files; `isBundlePart` marks a product that came inside a bundle; a purchase the seller deleted is still theirs. `progress` is `{openedFiles, totalFiles, complete}` — how many of its files the user has opened (a bundle counts its parts); `complete` marks a purchase read to the end. Null when unknown.
 
 **Availability:** Developer
 
@@ -1392,7 +1392,7 @@ What the signed-in user OWNS — every product they bought, wherever they bought
 
 #### `get-purchase-contents`
 
-One purchase opened up: the version the user BOUGHT (frozen at purchase, not the product as it is now), as a tree to draw. Returns `{productId, title, deletedBySeller, contents, progress}`; contents nodes are `{type: "folder", title, items}`, `{type: "file", resourceId, title, kind, contentType, fileSize, deliveredResourceId, seen}` and `{type: "product", productId, title}` (a product inside a bundle — open it with its own get-purchase-contents). `deliveredResourceId` is the buyer's own copy in Media, null until delivered. `seen` is true once the user has opened that file (draw a green check — bought products are often lessons); a file whose `kind` is "folder" has no `seen`. `progress` is `{openedFiles, totalFiles, complete}` (a bundle counts its parts; `complete` once every file is opened), null when unknown. Refused with code `not_owned` when the user does not own the product — the server decides.
+One purchase opened up: the version the user BOUGHT (frozen at purchase, not the product as it is now), as a tree to draw. Returns `{productId, title, deletedBySeller, contents, progress}`; contents nodes are `{type: "folder", title, items}`, `{type: "file", resourceId, title, kind, contentType, fileSize, deliveredResourceId, seen}` and `{type: "product", productId, title}` (a product inside a bundle — open it with its own get-purchase-contents). `deliveredResourceId` is the buyer's own copy in Files, null until delivered. `seen` is true once the user has opened that file (draw a green check — bought products are often lessons); a file whose `kind` is "folder" has no `seen`. `progress` is `{openedFiles, totalFiles, complete}` (a bundle counts its parts; `complete` once every file is opened), null when unknown. Refused with code `not_owned` when the user does not own the product — the server decides.
 
 **Availability:** Developer
 
@@ -1424,7 +1424,7 @@ Mark one of the user's purchased files as OPENED, for an app that shows a purcha
 
 #### `open-purchase-in-media`
 
-Open a purchase where it lives, in Media's Purchased section — the Orders tab's "Show in Media". The buyer's delivered folder when there is one, otherwise a read-only view of the version they bought. Without `productId`, the whole Purchased section. Media docks beside your app. Returns `{success: true}`, or `{success: false, code: "not_owned"}` without opening anything.
+Open a purchase where it lives, in the Purchased section of Files — the Orders tab's "Show in Files". The buyer's delivered folder when there is one, otherwise a read-only view of the version they bought. Without `productId`, the whole Purchased section. Files docks beside your app. Returns `{success: true}`, or `{success: false, code: "not_owned"}` without opening anything.
 
 **Availability:** Developer
 
@@ -1779,7 +1779,7 @@ The store's own numbers over a range — the Merchant Console's Analytics — ex
 
 #### `subscribe-events`
 
-Be told when commerce changes instead of polling. Name the events you want; the answer is `{success: true, events}`, your app's whole set now: each call REPLACES the previous one, and an empty list stops them all. An unknown name is refused with `validation_failed` and nothing changes; a caller that is not an embedded app is refused with `unsupported`. Each event arrives as a host push, `api:trigger` with `{action: "commerce", data: {event, …}}` (the SDK emits `ValuApi.ON_COMMERCE` with that `data`). The events and their data: `cart-updated {count}` — the cart changed; `count` is what the cart badge shows (saved-for-later excluded), never which items: re-read with get-cart. `order-updated {orderId, status}` — an order holding at least one of YOUR app's items changed: pending_payment, paid, failed, expired, cancelled or deleted. Orders without your items are never sent to you. `delivery-updated {orderId, status}` — that order's files: delivered (they are in the buyer's Media; re-read with list-purchases), unavailable or failed. `catalogue-updated {productId, change}` — the shelf of this network changed: change is added, updated or removed; productId null means re-read the whole shelf with list-products. `seller-product-updated {productId, change}` — one of the signed-in seller's own products: created, updated, content-updated, published, unlisted, archived, deleted, broken, sale-started, sale-ended, blocked or unblocked; re-read with list-seller-products. `seller-store-updated {change, networkId?}` — their store: created, updated, donation-updated or network-access-updated (networkId names the network when there is one). `seller-promotions-updated {change}` — a promotion changed: sale, tier or code. An event says WHAT changed, never the new state: treat it as a hint to re-read with the matching intent, never as data, and expect to miss one now and then (a missed event is a stale screen until the next read). Subscriptions last until unsubscribe-events, until your app's frame closes or until it reloads — moving the app to another dock reloads its frame — so subscribe again every time your app starts, after api:ready.
+Be told when commerce changes instead of polling. Name the events you want; the answer is `{success: true, events}`, your app's whole set now: each call REPLACES the previous one, and an empty list stops them all. An unknown name is refused with `validation_failed` and nothing changes; a caller that is not an embedded app is refused with `unsupported`. Each event arrives as a host push, `api:trigger` with `{action: "commerce", data: {event, …}}` (the SDK emits `ValuApi.ON_COMMERCE` with that `data`). The events and their data: `cart-updated {count}` — the cart changed; `count` is what the cart badge shows (saved-for-later excluded), never which items: re-read with get-cart. `order-updated {orderId, status}` — an order holding at least one of YOUR app's items changed: pending_payment, paid, failed, expired, cancelled or deleted. Orders without your items are never sent to you. `delivery-updated {orderId, status}` — that order's files: delivered (they are in the buyer's Files; re-read with list-purchases), unavailable or failed. `catalogue-updated {productId, change}` — the shelf of this network changed: change is added, updated or removed; productId null means re-read the whole shelf with list-products. `seller-product-updated {productId, change}` — one of the signed-in seller's own products: created, updated, content-updated, published, unlisted, archived, deleted, broken, sale-started, sale-ended, blocked or unblocked; re-read with list-seller-products. `seller-store-updated {change, networkId?}` — their store: created, updated, donation-updated or network-access-updated (networkId names the network when there is one). `seller-promotions-updated {change}` — a promotion changed: sale, tier or code. An event says WHAT changed, never the new state: treat it as a hint to re-read with the matching intent, never as data, and expect to miss one now and then (a missed event is a stale screen until the next read). Subscriptions last until unsubscribe-events, until your app's frame closes or until it reloads — moving the app to another dock reloads its frame — so subscribe again every time your app starts, after api:ready.
 
 **Availability:** Developer
 
