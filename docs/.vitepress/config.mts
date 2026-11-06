@@ -130,7 +130,7 @@ export default defineConfigWithTheme({
             {text: 'Valuverse Bootsrap Pipeline', link: '/application-pipeline'},
             {text: 'Valu API Snippets', link: '/valu-snippets'},
             {text: 'Identity Token Validation', link: '/identity-token-validation'},
-            {text: 'Intents Reference', link: '/intents-doc'},
+            {text: 'Valu API Functions', link: '/valu-api-functions'},
             {text: 'Valu Routing', link: '/valu-routing'},
             {text: 'CMS Service API', link: '/cms-service'},
             {text: 'Valuverse Backend Server', link: '/Valuverse_Backend'},

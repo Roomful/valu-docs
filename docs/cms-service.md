@@ -186,20 +186,18 @@ const result = await valu.data.CMS.resourceDelete({
 
 ### Let an Admin Pick a File (`pick-resource`)
 
-Opens Valu Social's file picker over the network's resources and waits until a network admin picks one file or cancels. Inside Valu Social only: it has no function on the app object, so call it by name.
+Opens Valu Social's file picker over the network's resources and waits until a network admin picks one file or cancels. Inside Valu Social only: at the app's own address it is skipped (`{data: {skipped: true}}`), so hide the control when `valu.mode === 'dedicated'`.
 
 ```javascript
-import { Intent } from "@arkeytyp/valu-api";
-
-const picked = await valu.callService(new Intent('CMS', 'pick-resource', {
+const picked = await valu.data.CMS.pickResource({
   sources: ['networkResources'],   // the only source today
   accept: ['image/*'],
   title: 'Choose a cover image'
-}));
+});
 // {id, title, contentType, thumbnailUrl}, or null when the user cancels
 ```
 
-It is refused, and nothing opens, for anyone who is not an admin of the network. The full parameter list is in the [Intents Reference](/intents-doc).
+It is refused, and nothing opens, for anyone who is not an admin of the network. The full parameter list is in [Valu API Functions](/valu-api-functions#cms).
 
 ## Parameters Reference
 
