@@ -7,7 +7,7 @@ outline: deep
 All snippets use `createValuApp()`, the package's one entry point. The same code runs inside Valu Social (*embedded*) and at the app's own address (*dedicated*, where the user signs in through a Valu popup). Install from GitHub until version 2 is on npm:
 
 ```bash
-npm install github:Roomful/valu-api#b951fb7
+npm install github:Roomful/valu-api#b0c67e0
 ```
 
 ## React Hook: useValu
