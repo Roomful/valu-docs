@@ -83,7 +83,8 @@ export async function callData(name, params = {}, options) {
 export function errorOf(reply) {
   const error = reply?.error;
   if (!error || error.status === false) return '';
-  const parts = [error.message || 'The call failed.'];
+  // valu-api's refusals: `message` is the name (`forbidden`), `description` the sentence.
+  const parts = [error.description ? `${error.description} — ${error.message}` : error.message || 'The call failed.'];
   if (error.code !== undefined) parts.push(`(${error.code})`);
   if (error.scope) parts.push(`scope ${error.scope}`);
   return parts.join(' ');
