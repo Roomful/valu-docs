@@ -39,37 +39,25 @@
 
 <script setup>
 import {nextTick, onBeforeUnmount, onMounted, ref} from 'vue';
-import {runApi, settle, useValuBridge} from './explorer/valuBridge.mjs';
+import {call, useValu} from './explorer/valuClient.mjs';
 
 // The app menu every iframe app with `header: false` owes (valusocial-web
 // DeveloperPortal/Components/Header/headerStandard.js): Expand Application and
 // Close Application behind a circle-ellipsis button, Close destructive, and a
-// double-click on the bar that expands. Over the `app` API: expand / close take
-// the bare application id (never [id]); getLoadedApplications answers which
-// apps are open, asked each time the menu opens because the host sends no
-// event when other apps open or close.
+// double-click on the bar that expands. Through valu-api's typed intents,
+// `valu.Application.expandApplication()` and `closeApplication()`, which act
+// on the calling app. Expand is always offered: valu-api has no typed way to
+// ask which other apps are open, and Expand is a no-op when none is.
 
-const {connected, applicationId} = useValuBridge();
+const {connected} = useValu();
 
 const root = ref(null);
 const open = ref(false);
-const canExpand = ref(false);
-
-const appId = () => applicationId.value || window.__valuBridge?.applicationId || '';
+const canExpand = ref(true);
 
 async function toggle() {
   if (open.value) return closeMenu();
-  canExpand.value = false;
   open.value = true;
-  try {
-    const loaded = await settle(runApi('app', 'getLoadedApplications'));
-    canExpand.value = Array.isArray(loaded) && loaded.some(id => id !== appId());
-  } catch {
-    // An older host without getLoadedApplications: offer Expand rather than
-    // hide it — it is a no-op when nothing else is open.
-    canExpand.value = true;
-  }
-  // Focus the first item once the list is final, so it is Expand when shown.
   await nextTick();
   if (open.value) root.value?.querySelector('[role="menuitem"]')?.focus();
 }
@@ -81,12 +69,12 @@ function closeMenu(refocus = false) {
 
 async function expand() {
   closeMenu();
-  await settle(runApi('app', 'expand', appId())).catch(() => {});
+  await call('Application.expandApplication').catch(() => {});
 }
 
 async function closeApp() {
   closeMenu();
-  await settle(runApi('app', 'close', appId())).catch(() => {});
+  await call('Application.closeApplication').catch(() => {});
 }
 
 // Click outside closes the menu.

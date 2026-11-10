@@ -6,14 +6,14 @@
         <code>{{ group.id }}</code>
       </div>
       <div class="pg-title-row">
-        <div class="pg-title" role="heading" aria-level="2"><code>{{ intent.action }}</code></div>
+        <div class="pg-title" role="heading" aria-level="2"><code>{{ fn.method }}</code></div>
         <span class="vx-badges">
           <span v-for="b in badges" :key="b.label" class="vx-badge" :class="b.tone" :title="b.title">{{ b.label }}</span>
         </span>
       </div>
     </header>
 
-    <div v-if="intent.description" class="vx-desc pg-desc" v-html="richText(intent.description)"></div>
+    <div v-if="fn.description" class="vx-desc pg-desc" v-html="richText(fn.description)"></div>
 
     <dl v-if="facts.length" class="vx-facts pg-facts">
       <template v-for="f in facts" :key="f.term">
@@ -34,7 +34,7 @@
         </header>
 
         <div v-if="state.mode === 'form'" class="pg-fields">
-          <p v-if="!params.length" class="vx-muted pg-none">This intent takes no parameters.</p>
+          <p v-if="!params.length" class="vx-muted pg-none">This function takes no parameters.</p>
           <div v-for="p in params" :key="p.name" class="pg-field" :class="{invalid: built.fieldErrors[p.name]}">
             <label class="pg-field-label" :for="fieldId(p)">
               <code>{{ p.name }}</code>
@@ -104,7 +104,7 @@
         <div v-if="state.confirming" class="vx-confirm" role="alert">
           <span>
             <template v-if="built.missing.length">Missing {{ built.missing.join(', ') }}. </template>
-            <template v-if="writes"><strong>{{ intent.action }}</strong> changes data in your account. </template>
+            <template v-if="writes"><strong>{{ fn.call }}</strong> changes data in your account. </template>
             Run it?
           </span>
           <button type="button" class="vx-button danger" @click="run(true)">Run it</button>
@@ -142,7 +142,7 @@
         </div>
         <pre v-if="shownRun" class="pg-out" :class="{err: !shownRun.ok}"><code>{{ shownRun.text }}</code></pre>
         <p v-else-if="!state.running" class="vx-muted pg-empty">
-          {{ connected ? 'Run the intent to see what comes back.' : framed ? 'Waiting for Valu Social to connect…' : 'Runs only inside Valu Social.' }}
+          {{ connected ? 'Run the function to see what comes back.' : framed ? 'Waiting for Valu Social to connect…' : 'Runs only inside Valu Social.' }}
         </p>
 
         <div v-if="state.runs.length > 1" class="pg-history" aria-label="Earlier runs">
@@ -162,7 +162,7 @@
     <!-- ── code ──────────────────────────────────────────────────────── -->
     <section class="pg-pane pg-code" aria-label="Code">
       <header class="pg-pane-head">
-        <span class="pg-pane-title">From an iframe app</span>
+        <span class="pg-pane-title">In your app</span>
         <button type="button" class="vx-link-button pg-copy" @click="copy(currentCode, 'code')">
           {{ copied === 'code' ? 'Copied' : 'Copy' }}
         </button>
@@ -175,44 +175,54 @@
 <script setup>
 import {computed, onBeforeUnmount, onMounted, reactive, ref} from 'vue';
 import {changesData, copyText, escapeHtml, firstSentence, inlineMd, prettyJson, richText} from './format.mjs';
-import {callService, replyError, runIntent, useValuBridge} from './valuBridge.mjs';
+import {call, errorOf, useValu} from './valuClient.mjs';
 
 const props = defineProps({
-  kind: {type: String, required: true}, // 'application' | 'service'
   group: {type: Object, required: true},
-  intent: {type: Object, required: true},
-  state: {type: Object, required: true}, // per-intent, owned by the playground
+  fn: {type: Object, required: true}, // one function of functions.data.mjs
+  state: {type: Object, required: true}, // per-function, owned by the playground
 });
 
-const {framed, connected} = useValuBridge();
+const {framed, connected} = useValu();
 
 // ── what it is ───────────────────────────────────────────────────────────
 
 const params = computed(() => [
-  ...(props.intent.params?.required ?? []).map(p => ({...p, required: true})),
-  ...(props.intent.params?.optional ?? []).map(p => ({...p, required: false})),
+  ...props.fn.params.required.map(p => ({...p, required: true})),
+  ...props.fn.params.optional.map(p => ({...p, required: false})),
 ]);
 
-const writes = computed(() => changesData(props.intent));
+const writes = computed(() => changesData(props.fn));
+
+// Where it works, as valu-api's catalogue says (a typed intent's `mode`).
+const MODES = {
+  'window': {label: 'Opens a window', tone: 'gray', title: 'At the app\'s own address it opens Valu Social in a tab: call it from a click'},
+  'embedded-only': {label: 'Inside Valu Social only', tone: 'gray', title: 'At the app\'s own address it is skipped: {data: {skipped: true}}'},
+  'embedded-served': {label: 'Inside Valu Social only', tone: 'gray', title: 'At the app\'s own address it answers 501 not_available'},
+};
 
 const badges = computed(() => {
-  const i = props.intent;
+  const f = props.fn;
   const list = [];
   if (writes.value) list.push({label: 'Writes', tone: 'amber', title: 'Changes data — Run asks first'});
-  if (i.availability?.includes('ai')) list.push({label: 'AI', tone: 'brand', title: 'Offered to AI agents as a tool'});
-  if (i.headless) list.push({label: 'Headless', tone: 'gray', title: 'Works without opening the application'});
+  if (MODES[f.mode]) list.push(MODES[f.mode]);
+  if (f.channel === 'local') list.push({label: 'Runs in the page', tone: 'gray', title: 'valu-api answers it in the app itself; nothing is sent'});
   return list;
 });
 
 const codeList = items => items.map(s => `<code>${escapeHtml(s)}</code>`).join(' ');
 
 const facts = computed(() => {
-  const i = props.intent;
+  const f = props.fn;
   const list = [];
-  if (i.permissions?.length) list.push({term: 'Permissions', html: codeList(i.permissions)});
-  if (i.availability?.length) {
-    const who = {ai: 'AI agents', developer: 'developers'};
-    list.push({term: 'Offered to', html: i.availability.map(a => escapeHtml(who[a] ?? a)).join(', ')});
+  if (f.scopes.length) list.push({term: 'Scope', html: codeList(f.scopes)});
+  if (f.returns?.type && f.returns.type !== 'unknown') {
+    const what = f.returns.description ? ` — ${inlineMd(f.returns.description)}` : '';
+    list.push({term: 'Returns', html: `<code>${escapeHtml(f.returns.type)}</code>${what}`});
+  }
+  if (f.channel === 'intent' && f.to) {
+    const kind = f.target === 'application' ? 'the app' : 'the service';
+    list.push({term: 'Sent to', html: `${kind} <code>${escapeHtml(f.to)}</code>, as <code>${escapeHtml(f.action)}</code>`});
   }
   return list;
 });
@@ -228,7 +238,7 @@ const kindOf = p => {
   return 'json';
 };
 
-const fieldId = p => `pg-${props.group.id}-${props.intent.action}-${p.name}`.replace(/[^\w-]/g, '-');
+const fieldId = p => `pg-${props.fn.call}-${p.name}`.replace(/[^\w-]/g, '-');
 const expanded = reactive({});
 const isLong = text => String(text ?? '').replace(/\s+/g, ' ').trim().length > 150;
 
@@ -322,7 +332,7 @@ function reset() {
 }
 
 // The run writes into `state`, not into this component: switching to another
-// intent mid-call unmounts the detail, and the reply still lands where it
+// function mid-call unmounts the detail, and the reply still lands where it
 // belongs.
 async function run(confirmed) {
   const state = props.state;
@@ -334,18 +344,20 @@ async function run(confirmed) {
   }
   state.confirming = false;
 
-  const send = props.kind === 'application' ? runIntent : callService;
-  const call = send(props.group.id, props.intent.action, b.params);
-  state.cancel = call.cancel;
+  // `valu.call(name)` is `valu.<Namespace>.<method>()` by name: the same
+  // function, the same envelope. Stop waiting only stops this page waiting.
+  let stopped = null;
+  const gaveUp = new Promise(resolve => { stopped = resolve; });
+  state.cancel = () => stopped({error: {status: true, message: 'Stopped waiting for a reply.'}});
   state.running = true;
   state.startedAt = Date.now();
   const started = performance.now();
 
   let entry;
   try {
-    const reply = await call.promise;
-    const error = replyError(reply);
-    entry = error ? {ok: false, text: error} : {ok: true, text: prettyJson(reply)};
+    const reply = await Promise.race([call(props.fn.call, b.params), gaveUp]);
+    const error = errorOf(reply);
+    entry = {ok: !error, text: prettyJson(reply)};
   } catch (e) {
     entry = {ok: false, text: e?.message ?? String(e)};
   }
@@ -359,13 +371,16 @@ async function run(confirmed) {
 // ── code ─────────────────────────────────────────────────────────────────
 
 const currentCode = computed(() => {
-  const args = JSON.stringify(built.value.ok ? built.value.params : {}, null, 2);
-  const target = JSON.stringify(props.group.id);
-  const action = JSON.stringify(props.intent.action);
+  const params = built.value.ok ? built.value.params : {};
+  const args = Object.keys(params).length ? JSON.stringify(params, null, 2) : '';
   // `valu` is the object createValuApp() returns (@arkeytyp/valu-api 2).
-  return props.kind === 'application'
-    ? `await valu.sendIntent(new Intent(${target}, ${action}, ${args}));`
-    : `const result = await valu.callService(new Intent(${target}, ${action}, ${args}));`;
+  return [
+    '// The envelope {data} | {error}; it never throws.',
+    `const reply = await valu.${props.fn.call}(${args});`,
+    '',
+    '// Or the payload alone; a failure throws ValuServiceError.',
+    `const data = await valu.data.${props.fn.call}(${args});`,
+  ].join('\n');
 });
 
 const copied = ref('');

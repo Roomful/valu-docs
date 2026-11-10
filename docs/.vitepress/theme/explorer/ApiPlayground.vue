@@ -133,9 +133,22 @@ import BridgeStatus from './BridgeStatus.vue';
 import PlaygroundNav from './PlaygroundNav.vue';
 import {copyText, matches, richText} from './format.mjs';
 import {isSafeMethod, operationsOf, sampleFromSchema} from './openapi.mjs';
-import {callService, identityToken, settle, useValuBridge} from './valuBridge.mjs';
+import {getValu, identityToken, useValu} from './valuClient.mjs';
 
-const {connected} = useValuBridge();
+const {connected} = useValu();
+
+/**
+ * A Developer intent that has no typed function yet, through the package's
+ * `valu.callService(new Intent(...))`: the older bridge, until valu-api types it.
+ */
+async function developerIntent(action) {
+  const valu = await getValu();
+  const {Intent} = await import('@arkeytyp/valu-api');
+  const reply = await valu.callService(new Intent('Developer', action, {}));
+  const error = reply && typeof reply === 'object' && Object.keys(reply).length === 1 ? reply.error : undefined;
+  if (error) throw new Error(typeof error === 'string' ? error : error.message ?? JSON.stringify(error));
+  return reply;
+}
 
 const USER_CONTEXT = {
   required: 'Every call acts for a signed-in user',
@@ -222,10 +235,10 @@ async function load() {
   list.status = 'loading';
   try {
     const [published, mine] = await Promise.all([
-      settle(callService('Developer', 'list-application-apis', {}).promise),
+      developerIntent('list-application-apis'),
       // Newer than the published list: an older build answers nothing, which
       // only means there is no development section yet.
-      settle(callService('Developer', 'list-my-application-apis', {}).promise).catch(() => undefined),
+      developerIntent('list-my-application-apis').catch(() => undefined),
     ]);
     // An older Valu Social build has no such intent and answers nothing at all.
     if (published === undefined || published === null) {

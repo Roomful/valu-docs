@@ -186,7 +186,7 @@
 import {computed, onBeforeUnmount, onMounted, ref} from 'vue';
 import {copyText, escapeHtml, inlineMd, richText} from './format.mjs';
 import {isSafeMethod, schemaLabel} from './openapi.mjs';
-import {identityToken, useValuBridge} from './valuBridge.mjs';
+import {identityToken, useValu} from './valuClient.mjs';
 
 const props = defineProps({
   api: {type: Object, required: true}, // a Developer.list-application-apis entry
@@ -197,7 +197,7 @@ const props = defineProps({
   stage: {type: String, default: ''},
 });
 
-const {connected} = useValuBridge();
+const {connected} = useValu();
 
 const safe = computed(() => isSafeMethod(props.op.method));
 

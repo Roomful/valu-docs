@@ -1,3 +1,4 @@
+import {fileURLToPath} from "node:url";
 import {defineConfigWithTheme} from "vitepress";
 import baseConfig from "vitepress-carbon/config";
 import mermaidPlugin from "./mermaidPlugin.mjs";
@@ -10,6 +11,16 @@ export default defineConfigWithTheme({
   title: "Valuverse Docs",
   description: "Developers documentation for developers",
   
+  vite: {
+    resolve: {
+      alias: {
+        // valu-api imports socket.io-client only on the socket path, which an
+        // embedded app never takes; it is not the package's dependency either.
+        'socket.io-client': fileURLToPath(new URL('./explorer/socket-io-absent.mjs', import.meta.url)),
+      },
+    },
+  },
+
   markdown: {
     config: md => {
       md.use(mermaidPlugin);
@@ -22,70 +33,25 @@ export default defineConfigWithTheme({
       'script',
       {},
       `;(() => {
-        let applicationId, source, origin;
-
         // Framed = opened as the Valu Docs application inside Valu Social. Set
         // before first paint so the Explorer section (shown only in the
         // iframe, see theme/explorer/explorer.css) never flashes in or out.
         if (window.self !== window.top) document.documentElement.classList.add('valu-framed');
 
-        // What the Explorer pages need to call the host: filled on api:ready,
-        // which can arrive before the Vue app has mounted.
-        const bridge = window.__valuBridge = {ready: false, applicationId: '', source: null, origin: ''};
-
+        // Everything the pages ask of Valu Social goes through the valu-api
+        // package (theme/explorer/valuClient.mjs). This listens for one thing
+        // only, the light/dark scheme the host pushes when the frame loads and
+        // on every switch (valusocial-web IframeComponentLoader). Painted here,
+        // before Vue mounts, so the first frame is already right; the theme's
+        // setup (theme/index.mjs) then hands it to VitePress's isDark.
         window.addEventListener('message', event => {
-          if (event.data?.target !== 'valuApi') return;
-
-          const message = event.data.message;
-
-          switch (event.data.name) {
-            case 'api:ready': {
-              applicationId = message.applicationId;
-              source = event.source;
-              origin = event.origin;
-              Object.assign(bridge, {ready: true, applicationId, source, origin});
-              window.dispatchEvent(new CustomEvent('valu_api-ready', {detail: {}}));
-              console.info('Valu API Ready, from: ' + applicationId);
-              break;
-            }
-            // The host pushes its light/dark scheme when the frame loads and on
-            // every switch (valusocial-web IframeComponentLoader). Painted here,
-            // before Vue mounts, so the first frame is already right; the theme's
-            // setup (theme/index.mjs) then hands it to VitePress's isDark.
-            case 'api:color-scheme': {
-              const scheme = message?.scheme;
-              if (scheme !== 'light' && scheme !== 'dark') break;
-              bridge.colorScheme = scheme;
-              document.documentElement.classList.toggle('dark', scheme === 'dark');
-              window.dispatchEvent(new CustomEvent('valu_color-scheme', {detail: scheme}));
-              break;
-            }
-          }
-        });
-
-        const postToValuApplication = (name, message) => {
-          const data = {name, message};
-          source.postMessage(data, origin);
-        };
-
-        const pushRoute = path => {
-          postToValuApplication('api:run-command', {
-            command: 'pushRoute',
-            data: path,
-          });
-        };
-
-        window.addEventListener('valu_api-ready', async () => {
-          let oldPath = document.location.pathname;
-          const body = document.querySelector('body');
-          const observer = new MutationObserver(() => {
-            if (oldPath !== document.location.pathname) {
-              pushRoute(document.location.pathname);
-              oldPath = document.location.pathname;
-            }
-          });
-          observer.observe(body, {childList: true, subtree: true});
-          pushRoute(document.location.pathname);
+          if (event.source !== window.parent || event.data?.target !== 'valuApi') return;
+          if (event.data.name !== 'api:color-scheme') return;
+          const scheme = event.data.message?.scheme;
+          if (scheme !== 'light' && scheme !== 'dark') return;
+          window.__valuColorScheme = scheme;
+          document.documentElement.classList.toggle('dark', scheme === 'dark');
+          window.dispatchEvent(new CustomEvent('valu_color-scheme', {detail: scheme}));
         });
       })()`
     ]
@@ -108,15 +74,14 @@ export default defineConfigWithTheme({
     },
 
     // Two sidebars: the Explorer is its own section, entered from the nav (shown
-    // only inside Valu Social, where its pages can call the host's bridge).
+    // only inside Valu Social, where its pages run valu-api's functions).
     sidebar: {
       '/explorer/': [
         {
           text: 'Explorer',
           items: [
             {text: 'Your session', link: '/explorer/'},
-            {text: 'Intents', link: '/explorer/intents'},
-            {text: 'Service Intents', link: '/explorer/service-intents'},
+            {text: 'Functions', link: '/explorer/functions'},
             {text: 'REST APIs', link: '/explorer/rest-apis'},
           ]
         }

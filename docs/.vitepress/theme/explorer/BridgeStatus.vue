@@ -4,17 +4,17 @@
        state and needs no banner. -->
   <div v-if="!connected" class="vx-status" :class="framed ? 'wait' : 'off'" role="status">
     <span class="vx-dot" aria-hidden="true"></span>
-    <span class="vx-status-text">{{ framed ? 'Waiting for Valu Social to connect…' : offText }}</span>
+    <span class="vx-status-text">{{ !framed ? offText : failed ? `Valu Social did not connect: ${failed}` : 'Waiting for Valu Social to connect…' }}</span>
   </div>
 </template>
 
 <script setup>
-import {useValuBridge} from './valuBridge.mjs';
+import {useValu} from './valuClient.mjs';
 
 defineProps({
   /** Said when the page is not framed by Valu Social. */
   offText: {type: String, default: 'Reference only. Open Valu Docs inside Valu Social to run these calls.'},
 });
 
-const {framed, connected} = useValuBridge();
+const {framed, connected, failed} = useValu();
 </script>

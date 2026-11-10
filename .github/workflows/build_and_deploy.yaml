@@ -9,7 +9,7 @@ on:
   push:
     paths-ignore: [".github/**"]
   workflow_run:
-    workflows: ["Update Intents Documentation", "Sync Valu Package Docs"]
+    workflows: ["Sync Valu Package Docs"]
     types: [completed]
 
 jobs:

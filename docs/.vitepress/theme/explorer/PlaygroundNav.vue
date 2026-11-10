@@ -41,7 +41,7 @@
 <script setup>
 import {ref} from 'vue';
 
-// The playground's left column, shared by the intent and REST playgrounds so
+// The playground's left column, shared by the Functions and REST playgrounds so
 // the two browse the same way. It owns nothing but its scroll position: the
 // groups, which are open, the selection, the search and the filter all belong
 // to the page using it.

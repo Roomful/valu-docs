@@ -63,16 +63,17 @@ export function sampleValue(param) {
 export const sampleParams = params =>
   Object.fromEntries((params?.required ?? []).map(p => [p.name, sampleValue(p)]));
 
-// Words that mark an action as changing data. The manifests do not say, so the
-// action's own name does: it decides the "Changes data" filter and when Run
-// asks before sending.
+// Words that mark an action as changing data. The catalogue's `mutates` says
+// so for some functions, not all, so the action's own name decides the rest:
+// together they decide the "Changes data" filter and when Run asks first.
 const WRITE_WORDS = new Set([
   'accept', 'add', 'archive', 'assign', 'cancel', 'checkout', 'claim', 'clear', 'create', 'decline',
   'delete', 'edit', 'end', 'invite', 'join', 'mark', 'message', 'paste', 'post', 'publish', 'rate',
   'release', 'remove', 'rename', 'request', 'save', 'send', 'set', 'transfer', 'unlist', 'update', 'upload',
 ]);
 
-export const changesData = intent => intent.action.split(/[-_]/).some(word => WRITE_WORDS.has(word));
+export const changesData = fn => Boolean(fn.mutates)
+  || String(fn.action ?? '').split(/[-_]/).some(word => WRITE_WORDS.has(word));
 
 /** Pretty JSON for display; never throws on what a reply can hold. */
 export function prettyJson(value) {

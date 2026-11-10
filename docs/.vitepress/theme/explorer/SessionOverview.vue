@@ -28,22 +28,18 @@
             </div>
           </div>
 
-          <dl v-if="user.identityName || user.emailVerified !== undefined" class="vx-facts">
-            <template v-if="user.identityName">
-              <dt>Verus ID</dt>
-              <dd><code>{{ user.identityName }}</code> · {{ custody }}</dd>
+          <!-- What valu.data.Users.current() returns: the user's own profile,
+               no roles or account flags. -->
+          <dl v-if="user.companyName || user.companyTitle" class="vx-facts">
+            <template v-if="user.companyName">
+              <dt>Company</dt>
+              <dd>{{ user.companyName }}</dd>
             </template>
-            <template v-if="user.emailVerified !== undefined">
-              <dt>Email</dt>
-              <dd>{{ user.emailVerified ? 'Verified' : 'Not verified' }}</dd>
+            <template v-if="user.companyTitle">
+              <dt>Title</dt>
+              <dd>{{ user.companyTitle }}</dd>
             </template>
           </dl>
-
-          <div class="vx-flags vx-who-flags">
-            <span v-for="f in flags" :key="f.key" class="vx-flag" :class="{on: f.on}" :title="f.title">
-              <span class="vx-flag-mark" aria-hidden="true">{{ f.on ? '✓' : '–' }}</span>{{ f.label }}
-            </span>
-          </div>
         </PanelState>
       </section>
 
@@ -126,20 +122,6 @@
               </div>
             </div>
           </div>
-          <dl class="vx-facts">
-            <template v-if="networkInfo?.network?.type">
-              <dt>Type</dt>
-              <dd>{{ networkInfo.network.type }}</dd>
-            </template>
-            <template v-if="networkInfo?.network?.parentNetworkId">
-              <dt>Parent</dt>
-              <dd><code>{{ networkInfo.network.parentNetworkId }}</code></dd>
-            </template>
-            <template v-if="networkInfo && networkInfo.subscribed !== undefined">
-              <dt>Membership</dt>
-              <dd>{{ networkInfo.subscribed ? 'Subscribed' : 'Not subscribed' }}</dd>
-            </template>
-          </dl>
         </PanelState>
       </section>
 
@@ -151,14 +133,14 @@
 import {computed, defineComponent, h, onBeforeUnmount, onMounted, reactive, ref, watch} from 'vue';
 import BridgeStatus from './BridgeStatus.vue';
 import {copyText, decodeJwt} from './format.mjs';
-import {callService, runApi, settle, useValuBridge} from './valuBridge.mjs';
+import {callData, useValu} from './valuClient.mjs';
 
-const {connected} = useValuBridge();
+const {connected} = useValu();
 
 // ── calls ───────────────────────────────────────────────────────────────
 
 const blank = () => ({status: 'idle', data: null, error: ''});
-const calls = reactive({user: blank(), avatar: blank(), token: blank(), network: blank(), networkInfo: blank(), badges: blank()});
+const calls = reactive({user: blank(), avatar: blank(), token: blank(), network: blank(), badges: blank()});
 
 /** Run one call into its slot; resolves to the value, or undefined when it failed. */
 async function track(key, promise) {
@@ -173,22 +155,21 @@ async function track(key, promise) {
   }
 }
 
+// Each through valu-api, as an app calls them: valu.data.<Namespace>.<method>().
 async function load() {
   if (!connected.value) return;
-  const userCall = track('user', settle(callService('Users', 'current', {}).promise));
-  const networkCall = track('network', settle(callService('Networks', 'get-current-network', {}).promise));
-  track('token', settle(callService('Application', 'get-identity-token', {}).promise));
+  const userCall = track('user', callData('Users.current').then(data => data?.user ?? data));
+  const networkCall = track('network', callData('Networks.getCurrentNetwork'));
+  track('token', callData('Application.getIdentityToken'));
 
   const [me, net] = await Promise.all([userCall, networkCall]);
-  // The FE's Networks service answers {id, name}; its manifest and the SDK say
-  // {networkId, name}. Read either.
   const id = net?.networkId || net?.id;
-  if (id) track('networkInfo', settle(runApi('network', 'get', id)));
-  else calls.networkInfo = blank();
   if (me?.id) {
     avatarFailed.value = false;
-    track('avatar', settle(runApi('users', 'getIcon', {userId: me.id, size: 128})));
-    track('badges', settle(callService('Profile', 'get-user-badges', {userId: me.id, networkId: id || 'all'}).promise));
+    // `avatar` is the picture's resource id; Resources.getThumbnailUrl runs in the page.
+    if (me.avatar) track('avatar', callData('Resources.getThumbnailUrl', {resourceId: me.avatar, thumbnailSize: 128}).then(d => d?.url ?? ''));
+    else calls.avatar = {status: 'ok', data: '', error: ''};
+    track('badges', callData('Profile.getUserBadges', {userId: me.id, networkId: id || 'all'}));
   } else {
     calls.badges = {status: 'error', data: null, error: 'Needs the signed-in user.'};
   }
@@ -204,22 +185,9 @@ const fullName = computed(() => user.value.fullName
 const initials = computed(() => (fullName.value || '?')
   .split(/\s+/).filter(Boolean).slice(0, 2).map(w => w[0].toUpperCase()).join(''));
 
-// users.getIcon resolves to a pre-signed URL, or '' when there is no picture.
+// A thumbnail URL, or '' when the user has no picture.
 const avatarUrl = computed(() => (typeof calls.avatar.data === 'string' ? calls.avatar.data : ''));
 const avatarFailed = ref(false);
-
-const CUSTODY = {1: 'self-sovereign (wallet-owned)', 2: 'shared custody (ValuLight)'};
-const custody = computed(() => CUSTODY[user.value.identityCustody] ?? 'custody not set');
-
-const roles = computed(() => (Array.isArray(user.value.userRoles) ? user.value.userRoles : []));
-
-const flags = computed(() => [
-  {key: 'admin', label: 'Platform admin', on: Boolean(user.value.permissions?.admin), title: 'permissions.admin'},
-  {key: 'developer', label: 'Developer', on: Boolean(user.value.permissions?.developer), title: 'permissions.developer'},
-  ...[['superAdmin', 'Super admin'], ['networkAdmin', 'Network admin'], ['roomfulAdmin', 'Roomful admin']].map(([id, label]) => ({
-    key: id, label, on: roles.value.some(r => r.id === id), title: `role ${id}`,
-  })),
-]);
 
 // ── authorization ───────────────────────────────────────────────────────
 
@@ -263,8 +231,7 @@ const badgesError = computed(() => {
 // ── network ─────────────────────────────────────────────────────────────
 
 const networkId = computed(() => calls.network.data?.networkId || calls.network.data?.id || '');
-const networkInfo = computed(() => calls.networkInfo.data);
-const networkName = computed(() => calls.network.data?.name || networkInfo.value?.network?.fullName || 'Unnamed network');
+const networkName = computed(() => calls.network.data?.name || 'Unnamed network');
 
 // ── small pieces ────────────────────────────────────────────────────────
 
