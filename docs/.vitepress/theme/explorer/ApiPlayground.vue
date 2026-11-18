@@ -133,27 +133,21 @@ import BridgeStatus from './BridgeStatus.vue';
 import PlaygroundNav from './PlaygroundNav.vue';
 import {copyText, matches, richText} from './format.mjs';
 import {isSafeMethod, operationsOf, sampleFromSchema} from './openapi.mjs';
-import {call, errorOf, getValu, identityToken, useValu} from './valuClient.mjs';
+import {call, errorOf, identityToken, useValu} from './valuClient.mjs';
 
 const {connected} = useValu();
 
 /**
- * `valu.Developer.<method>()`, a typed intent Valu Social answers. A Valu
- * Social build older than valu-api 350750e does not know it yet (404
- * `unknown_function`) and gets the same intent over the older bridge instead,
- * `valu.callService(new Intent(...))`. Drop that fallback once every brand
- * runs the newer build. The reply is the intent's own: `{success, apis, ...}`.
+ * `valu.Developer.<method>()`, a typed intent Valu Social answers. Every brand
+ * runs a build that knows it, so there is no older-bridge fallback: a host that
+ * answers `unknown_function` is out of date and says so. The reply is the
+ * intent's own: `{success, apis, ...}`.
  */
-async function developerList(method, action) {
+async function developerList(method) {
   const reply = await call(`Developer.${method}`);
   // valu-api's envelope: {error: {status: true, code: 404, message: 'unknown_function'}}.
   if (reply?.error?.message === 'unknown_function') {
-    const valu = await getValu();
-    const {Intent} = await import('@arkeytyp/valu-api');
-    const old = await valu.callService(new Intent('Developer', action, {}));
-    const error = old && typeof old === 'object' && Object.keys(old).length === 1 ? old.error : undefined;
-    if (error) throw new Error(typeof error === 'string' ? error : error.message ?? JSON.stringify(error));
-    return old;
+    throw new Error(`This Valu Social build is too old to list application APIs (valu.Developer.${method}). Reload the page; if it persists, the brand needs a newer deploy.`);
   }
   const message = errorOf(reply);
   if (message) throw new Error(message);
@@ -245,10 +239,10 @@ async function load() {
   list.status = 'loading';
   try {
     const [published, mine] = await Promise.all([
-      developerList('listApplicationApis', 'list-application-apis'),
+      developerList('listApplicationApis'),
       // Newer than the published list: an older build answers nothing, which
       // only means there is no development section yet.
-      developerList('listMyApplicationApis', 'list-my-application-apis').catch(() => undefined),
+      developerList('listMyApplicationApis').catch(() => undefined),
     ]);
     // An older Valu Social build has no such intent and answers nothing at all.
     if (published === undefined || published === null) {
