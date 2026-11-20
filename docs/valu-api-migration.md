@@ -49,10 +49,10 @@ import { createValuApp } from 'https://cdn.jsdelivr.net/npm/@arkeytyp/valu-api@2
 
 The package carries its own docs for the version you installed. Read them before changing code:
 
-- `node_modules/@arkeytyp/valu-api/README.md`: how `createValuApp()` works (the same text as [Valu API](/valu-api)).
-- `node_modules/@arkeytyp/valu-api/CHANGELOG.md`: what changed in 2.0.0, 2.1.0 and 2.2.0.
+- `node_modules/@arkeytyp/valu-api/README.md`: how `createValuApp()` works (the same text as [Valu API](https://docs.texpo.io/valu-api)).
+- `node_modules/@arkeytyp/valu-api/CHANGELOG.md`: what changed in each release since 2.0.0.
 - `node_modules/@arkeytyp/valu-api/types/valu-api.d.ts` and `types/valu-services.d.ts`: every function, its parameters and what it returns.
-- [The service API](/valu-api-functions) and the [Functions explorer](/explorer/functions): the same functions, browsable.
+- [The service API](https://docs.texpo.io/valu-api-functions) and the [Functions explorer](https://docs.texpo.io/explorer/functions): the same functions, browsable.
 
 ## 2. Find every old call
 
@@ -139,7 +139,7 @@ Raw `postMessage` code (`window.parent.postMessage({ name: 'api:run-intent', …
 - **Check every function against the types** (`types/valu-services.d.ts`). The table names the function; the types give its exact parameters and return value. Some answers changed shape (for example `valu.Users.getIcon()` answers `{url}`, where the old `users.getIcon` answered a bare string).
 - **"Similar, not the same"** means the new function does a related job but not exactly the old one (for example `app.close` → `valu.Application.closeApplication()` closes only the calling app). Read its description in the types and check the app still behaves as intended.
 - **No replacement:** the old call has no typed function yet. Leave it, keep a comment on it, and report it to the Valu team rather than calling the old bridge some other way.
-- **Permissions:** a call that needs a scope the app hasn't declared is refused. See [Permissions](/valu-api#permissions).
+- **Permissions:** a call that needs a scope the app hasn't declared is refused. See [Permissions](https://docs.texpo.io/valu-api#permissions).
 
 ## 4. Check it
 
@@ -387,7 +387,6 @@ Key: `target.action`. `new Intent('textchat', 'open-channel', …)` is `textchat
 |---|---|
 | `pushRoute` | `valu.route.push(path)` |
 | `replaceRoute` | `valu.route.replace(path)` |
-
 ### Raw postMessage
 
 | Old message | Use instead |
