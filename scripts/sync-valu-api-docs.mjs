@@ -5,6 +5,8 @@
 //   valu-api/docs/service-api.md  → docs/valu-api-functions.md (generated there from
 //                                   valu-api's catalogue: every function, typed
 //                                   intents included; it replaces the Intents Reference)
+//   valu-api/docs/migrating.md    → docs/valu-api-migration.md (generated there on every
+//                                   release: its version and replacement table)
 //
 //   node scripts/sync-valu-api-docs.mjs ../valu-api
 //
@@ -23,6 +25,7 @@ const FILES = [
   ['README.md', 'valu-api.md'],
   ['valu-routing.md', 'valu-routing.md'],
   ['docs/service-api.md', 'valu-api-functions.md', {escapeTags: true}],
+  ['docs/migrating.md', 'valu-api-migration.md'],
 ];
 
 /** The tags the generated reference writes itself; any other `<` in its prose is text. */
