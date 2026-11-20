@@ -92,6 +92,7 @@ export default defineConfigWithTheme({
           items: [
             {text: 'Valu Overview', link: '/valu-overview'},
             {text: 'Valu API (JavaScript package)', link: '/valu-api'},
+            {text: 'Migrate to Valu API 2', link: '/valu-api-migration'},
             {text: 'Valuverse Bootsrap Pipeline', link: '/application-pipeline'},
             {text: 'Valu API Snippets', link: '/valu-snippets'},
             {text: 'Identity Token Validation', link: '/identity-token-validation'},
