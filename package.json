@@ -12,6 +12,6 @@
     "vitepress-carbon": "1.6.0"
   },
   "dependencies": {
-    "@arkeytyp/valu-api": "github:Roomful/valu-api#350750e"
+    "@arkeytyp/valu-api": "^2.2.0"
   }
 }
